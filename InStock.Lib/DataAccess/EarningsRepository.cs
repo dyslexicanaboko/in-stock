@@ -14,8 +14,8 @@ namespace InStock.Lib.DataAccess
 			SELECT
 				EarningsId,
 				StockId,
-				Date,
-				Order,
+				[Date],
+				[Order],
 				CreateOnUtc
 			FROM dbo.Earnings
 			WHERE EarningsId = @EarningsId";
@@ -38,8 +38,8 @@ namespace InStock.Lib.DataAccess
 			SELECT
 				EarningsId,
 				StockId,
-				Date,
-				Order,
+				[Date],
+				[Order],
 				CreateOnUtc
 			FROM dbo.Earnings";
 
@@ -56,8 +56,8 @@ namespace InStock.Lib.DataAccess
 		{
 			var sql = @"INSERT INTO dbo.Earnings (
 				StockId,
-				Date,
-				Order,
+				[Date],
+				[Order],
 				CreateOnUtc
 			) VALUES (
 				@StockId,
@@ -83,8 +83,8 @@ namespace InStock.Lib.DataAccess
 		{
 			var sql = @"UPDATE dbo.Earnings SET 
 				StockId = @StockId,
-				Date = @Date,
-				Order = @Order,
+				[Date] = @Date,
+				[Order] = @Order,
 				CreateOnUtc = @CreateOnUtc
 			WHERE EarningsId = @EarningsId";
 

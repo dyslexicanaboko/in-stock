@@ -1,6 +1,9 @@
+using InStock.Api;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+ContainerConfig.Configure(builder.Host);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

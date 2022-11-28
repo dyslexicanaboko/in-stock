@@ -1,43 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using InStock.Lib.DataAccess;
+using InStock.Lib.Entities;
+using InStock.Lib.Models;
+using InStock.Lib.Services.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InStock.Api.Controllers
 {
     [Route("api/earnings")]
     [ApiController]
-    public class EarningsController : ControllerBase
+    public class EarningsController
+        : BaseApiController<IEarnings, EarningsEntity, EarningsModel>
     {
-        // GET: api/<EarningsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        public EarningsController(
+            IRepository<EarningsEntity> repository,
+            IMapper<IEarnings, EarningsEntity, EarningsModel> mapper)
+            : base(repository, mapper)
         {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<EarningsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<EarningsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<EarningsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<EarningsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

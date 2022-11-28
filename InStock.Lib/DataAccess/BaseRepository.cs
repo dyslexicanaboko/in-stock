@@ -30,7 +30,7 @@ namespace InStock.Lib.DataAccess
 
             var configuration = builder.Build();
 
-            var connectionString = configuration.GetConnectionString("ScratchSpace");
+            var connectionString = configuration.GetConnectionString("InStock");
 
             return connectionString;
         }
