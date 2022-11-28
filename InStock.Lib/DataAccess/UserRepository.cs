@@ -1,3 +1,4 @@
+//https://www.nuget.org/packages/Dapper/
 using Dapper;
 using InStock.Lib.Entities;
 using Microsoft.Data.SqlClient;
@@ -5,24 +6,22 @@ using System.Data;
 
 namespace InStock.Lib.DataAccess
 {
-    public class EarningsRepository
+    public class UserRepository
         : BaseRepository
     {
-        public EarningsEntity Select(int earningsId)
+        public UserEntity Select(int userId)
         {
             var sql = @"
 			SELECT
-				EarningsId,
-				StockId,
-				Date,
-				Order,
+				UserId,
+				Name,
 				CreateOnUtc
-			FROM dbo.Earnings
-			WHERE EarningsId = @EarningsId";
+			FROM dbo.User
+			WHERE UserId = @UserId";
 
             using (var connection = new SqlConnection(ConnectionString))
             {
-                var lst = connection.Query<EarningsEntity>(sql, new { EarningsId = earningsId }).ToList();
+                var lst = connection.Query<UserEntity>(sql, new { UserId = userId }).ToList();
 
                 if (!lst.Any()) return null;
 
@@ -32,37 +31,31 @@ namespace InStock.Lib.DataAccess
             }
         }
 
-        public IEnumerable<EarningsEntity> SelectAll()
+        public IEnumerable<UserEntity> SelectAll()
         {
             var sql = @"
 			SELECT
-				EarningsId,
-				StockId,
-				Date,
-				Order,
+				UserId,
+				Name,
 				CreateOnUtc
-			FROM dbo.Earnings";
+			FROM dbo.User";
 
             using (var connection = new SqlConnection(ConnectionString))
             {
-                var lst = connection.Query<EarningsEntity>(sql).ToList();
+                var lst = connection.Query<UserEntity>(sql).ToList();
 
                 return lst;
             }
         }
 
         //Preference on whether or not insert method returns a value is up to the user and the object being inserted
-        public int Insert(EarningsEntity entity)
+        public int Insert(UserEntity entity)
         {
-            var sql = @"INSERT INTO dbo.Earnings (
-				StockId,
-				Date,
-				Order,
+            var sql = @"INSERT INTO dbo.User (
+				Name,
 				CreateOnUtc
 			) VALUES (
-				@StockId,
-				@Date,
-				@Order,
+				@Name,
 				@CreateOnUtc);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
@@ -70,31 +63,25 @@ namespace InStock.Lib.DataAccess
             using (var connection = new SqlConnection(ConnectionString))
             {
                 var p = new DynamicParameters();
-                p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-                p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-                p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
+                p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
                 p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
                 return connection.ExecuteScalar<int>(sql, entity);
             }
         }
 
-        public void Update(EarningsEntity entity)
+        public void Update(UserEntity entity)
         {
-            var sql = @"UPDATE dbo.Earnings SET 
-				StockId = @StockId,
-				Date = @Date,
-				Order = @Order,
+            var sql = @"UPDATE dbo.User SET 
+				Name = @Name,
 				CreateOnUtc = @CreateOnUtc
-			WHERE EarningsId = @EarningsId";
+			WHERE UserId = @UserId";
 
             using (var connection = new SqlConnection(ConnectionString))
             {
                 var p = new DynamicParameters();
-                p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
-                p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-                p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-                p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
+                p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+                p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
                 p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
                 connection.Execute(sql, p);

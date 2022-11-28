@@ -1,9 +1,9 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
 
-namespace InStock.Lib.Services.Cloning
+namespace InStock.Lib.Services.Mappers
 {
-    public class EarningsCloner
+    public class EarningsMapper
     {
         public EarningsEntity ToEntity(EarningsModel model)
         {

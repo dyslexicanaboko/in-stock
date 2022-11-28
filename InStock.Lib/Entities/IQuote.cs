@@ -1,14 +1,16 @@
 namespace InStock.Lib.Entities
 {
-    public interface IEarnings
+    public interface IQuote
     {
-        int EarningsId { get; set; }
+        int QuoteId { get; set; }
 
         int StockId { get; set; }
 
         DateTime Date { get; set; }
 
-        int Order { get; set; }
+        decimal Price { get; set; }
+
+        decimal Volume { get; set; }
 
         DateTime CreateOnUtc { get; set; }
     }

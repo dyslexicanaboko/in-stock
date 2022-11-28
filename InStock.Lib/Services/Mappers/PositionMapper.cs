@@ -1,10 +1,9 @@
-using System;
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
 
-namespace InStock.Lib.Services.Cloning
+namespace InStock.Lib.Services.Mappers
 {
-    public class PositionCloner
+    public class PositionMapper
     {
         public PositionEntity ToEntity(PositionModel model)
         {
