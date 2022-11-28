@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 namespace InStock.Lib.Services.Mappers
 {
     public class TradeMapper
+        : IMapper<ITrade, TradeEntity, TradeModel>
     {
         public TradeEntity ToEntity(TradeModel model)
         {

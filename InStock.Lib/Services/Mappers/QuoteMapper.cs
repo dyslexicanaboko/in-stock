@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 namespace InStock.Lib.Services.Mappers
 {
     public class QuoteMapper
+        : IMapper<IQuote, QuoteEntity, QuoteModel>
     {
         public QuoteEntity ToEntity(QuoteModel model)
         {

@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 namespace InStock.Lib.Services.Mappers
 {
     public class EarningsMapper
+        : IMapper<IEarnings, EarningsEntity, EarningsModel>
     {
         public EarningsEntity ToEntity(EarningsModel model)
         {

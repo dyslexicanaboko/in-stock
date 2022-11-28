@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 namespace InStock.Lib.Services.Mappers
 {
     public class PositionMapper
+        : IMapper<IPosition, PositionEntity, PositionModel>
     {
         public PositionEntity ToEntity(PositionModel model)
         {

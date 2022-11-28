@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 namespace InStock.Lib.Services.Mappers
 {
     public class UserMapper
+        : IMapper<IUser, UserEntity, UserModel>
     {
         public UserEntity ToEntity(UserModel model)
         {
