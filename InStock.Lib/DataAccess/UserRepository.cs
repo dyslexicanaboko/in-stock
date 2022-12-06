@@ -47,7 +47,7 @@ namespace InStock.Lib.DataAccess
 			}
 		}
 
-		//Preference on whether or not insert method returns a value is up to the user and the object being inserted
+		
 		public int Insert(UserEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.User (

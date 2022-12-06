@@ -6,7 +6,7 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class QuoteRepository
-		: BaseRepository, IRepository<QuoteEntity>
+		: BaseRepository, IQuoteRepository
 	{
 		public QuoteEntity Select(int quoteId)
 		{
@@ -53,7 +53,7 @@ namespace InStock.Lib.DataAccess
 			}
 		}
 
-		//Preference on whether or not insert method returns a value is up to the user and the object being inserted
+		
 		public int Insert(QuoteEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.Quote (
@@ -61,13 +61,11 @@ namespace InStock.Lib.DataAccess
 				Date,
 				Price,
 				Volume,
-				CreateOnUtc
 			) VALUES (
 				@StockId,
 				@Date,
 				@Price,
-				@Volume,
-				@CreateOnUtc);
+				@Volume);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
@@ -78,7 +76,6 @@ namespace InStock.Lib.DataAccess
 				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
 				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 				p.Add(name: "@Volume", dbType: DbType.Decimal, value: entity.Volume, precision: 10, scale: 2);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 				return connection.ExecuteScalar<int>(sql, entity);
 			}
