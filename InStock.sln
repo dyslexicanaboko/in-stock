@@ -5,9 +5,11 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "InStock.Database", "InStock.Database\InStock.Database.sqlproj", "{D9390FAF-542F-455C-BD07-2D900457BB90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InStock.Api", "InStock.Api\InStock.Api.csproj", "{70BC2B50-BC9F-4469-A622-677BEA46EBB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.Api", "InStock.Api\InStock.Api.csproj", "{70BC2B50-BC9F-4469-A622-677BEA46EBB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InStock.Lib", "InStock.Lib\InStock.Lib.csproj", "{D60B043F-F52D-4681-A690-9C7B3037BB7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.Lib", "InStock.Lib\InStock.Lib.csproj", "{D60B043F-F52D-4681-A690-9C7B3037BB7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InStock.UnitTesting", "InStock.UnitTesting\InStock.UnitTesting.csproj", "{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{D60B043F-F52D-4681-A690-9C7B3037BB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D60B043F-F52D-4681-A690-9C7B3037BB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D60B043F-F52D-4681-A690-9C7B3037BB7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
