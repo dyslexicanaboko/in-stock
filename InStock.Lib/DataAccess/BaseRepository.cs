@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Data;
 
 namespace InStock.Lib.DataAccess
 {
@@ -14,12 +13,32 @@ namespace InStock.Lib.DataAccess
     ///     Microsoft.Extensions.Configuration.Json, Version="5.0.0"
     /// </summary>
     public abstract class BaseRepository
+        : IDisposable
     {
         protected readonly string ConnectionString;
+        protected SqlConnection _connection;
+        protected SqlTransaction? _transaction;
 
         protected BaseRepository()
         {
             ConnectionString = LoadConnectionString();
+
+            _connection = new SqlConnection(ConnectionString);
+        }
+
+        protected BaseRepository(SqlConnection connection)
+        {
+            _connection = connection;
+            
+            ConnectionString = _connection.ConnectionString;
+        }
+
+        protected BaseRepository(SqlTransaction transaction)
+        {
+            _transaction = transaction;
+            _connection = _transaction.Connection;
+         
+            ConnectionString = _connection.ConnectionString;
         }
 
         private static string LoadConnectionString()
@@ -35,6 +54,20 @@ namespace InStock.Lib.DataAccess
             return connectionString;
         }
 
+        public void Dispose()
+        {
+            if (_connection == null) return;
+
+            //What happens if a transaction is not committed yet?
+            _transaction?.Dispose();
+
+            //The close and/or dispose method more than likely handle the closing if the connection is open
+            _connection.Close();
+            _connection.Dispose();
+        }
+
+        #region Not sure i will use any of this
+        /*
         protected void ExecuteNonQuery(string sql, SqlParameter[] parameters)
         {
             using (var con = new SqlConnection(ConnectionString))
@@ -98,5 +131,7 @@ namespace InStock.Lib.DataAccess
 
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
+        */
+        #endregion
     }
 }
