@@ -1,6 +1,6 @@
 ﻿using InStock.Lib.Entities;
 
-namespace InStock.Lib.Models
+namespace InStock.Lib.Services.ApiClient
 {
     public class StockQuoteModel
         : IQuoteMeta
@@ -11,9 +11,8 @@ namespace InStock.Lib.Models
 
         public string Name { get; set; }
 
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
-        public decimal Volume { get; set; }
-        
+        public long Volume { get; set; }
     }
 }

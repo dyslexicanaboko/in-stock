@@ -1,4 +1,5 @@
 ﻿using InStock.Lib.DataAccess;
+using InStock.Lib.Services.ApiClient;
 using InStock.Lib.Services.Mappers;
 using System.Reflection;
 
@@ -11,6 +12,7 @@ namespace InStock.Api
             host.ConfigureServices((hostContext, services) =>
             {
                 services.AddScoped<ITransactionManager, TransactionManager>();
+                services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
 
                 var asm = Assembly.Load("InStock.Lib");
                 var types = asm.GetTypes();
@@ -43,8 +45,11 @@ namespace InStock.Api
                 var iShared = types.Single(x => x.FullName == $"{ns}.Entities.I{root}");
                 var entity = types.Single(x => x.FullName == $"{ns}.Entities.{root}Entity");
                 var model = types.Single(x => x.FullName == $"{ns}.Models.{root}Model");
+                var iRepository = types.Single(x => x.FullName == $"{ns}.DataAccess.I{root}Repository");
                 var repository = types.Single(x => x.FullName == $"{ns}.DataAccess.{root}Repository");
                 var mapper = types.Single(x => x.FullName == $"{ns}.Services.Mappers.{root}Mapper");
+                var iService = types.SingleOrDefault(x => x.FullName == $"{ns}.Services.I{root}Service");
+                var service = types.SingleOrDefault(x => x.FullName == $"{ns}.Services.{root}Service");
 
                 //Set interface generic types
                 var iRepoRoot = iRepo.MakeGenericType(entity);
@@ -55,8 +60,13 @@ namespace InStock.Api
                 //services.AddTransient<IMapper<IEarnings, EarningsEntity, EarningsModel>, EarningsMapper>();
 
                 //Reflection equivalent
+                services.AddScoped(iRepository, repository);
                 services.AddScoped(iRepoRoot, repository);
                 services.AddScoped(iMapRoot, mapper);
+
+                if (iService == null || service == null) continue;
+
+                services.AddScoped(iService, service);
             }
         }
     }

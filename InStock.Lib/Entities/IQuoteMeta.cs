@@ -4,8 +4,8 @@ namespace InStock.Lib.Entities
     {
         DateTime Date { get; set; }
 
-        decimal Price { get; set; }
+        double Price { get; set; }
 
-        decimal Volume { get; set; }
+        long Volume { get; set; }
     }
 }

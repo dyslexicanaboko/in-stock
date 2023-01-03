@@ -9,7 +9,7 @@ namespace InStock.Api.Controllers
     [Route("api/positions")]
     [ApiController]
     public class PositionController
-        : BaseApiController<IPosition, PositionEntity, PositionModel>
+        : BaseApiStarterController<IPosition, PositionEntity, PositionModel>
     {
         public PositionController(
             IRepository<PositionEntity> repository,

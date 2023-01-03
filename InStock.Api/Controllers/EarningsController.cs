@@ -9,7 +9,7 @@ namespace InStock.Api.Controllers
     [Route("api/earnings")]
     [ApiController]
     public class EarningsController
-        : BaseApiController<IEarnings, EarningsEntity, EarningsModel>
+        : BaseApiStarterController<IEarnings, EarningsEntity, EarningsModel>
     {
         public EarningsController(
             IRepository<EarningsEntity> repository,

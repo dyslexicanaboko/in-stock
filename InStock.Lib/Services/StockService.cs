@@ -1,10 +1,11 @@
 ﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
+using InStock.Lib.Services.ApiClient;
 
 namespace InStock.Lib.Services
 {
-    public class StockService
+    public class StockService : IStockService
     {
         private readonly IStockRepository _repoStock;
         private readonly ITransactionManager _tran;
@@ -22,14 +23,21 @@ namespace InStock.Lib.Services
             _service = service;
         }
 
-        public StockEntity Add(string symbol) 
+        public StockEntity GetStock(int id)
+        {
+            var dbEntity = _repoStock.Using(x => x.Select(id));
+
+            return dbEntity;
+        }
+
+        public async Task<StockEntity> Add(string symbol)
         {
             var dbEntity = _repoStock.Using(x => x.Select(symbol));
 
             if (dbEntity != null) return dbEntity;
 
             //Needs to hit the API to get the Name at the minimum
-            var stockQuote = _service.GetQuote(symbol);
+            var stockQuote = await _service.GetQuote(symbol);
 
             //If the quote cannot be found raise exception I suppose?
             if (stockQuote == null) throw new SymbolNotFoundException(symbol);

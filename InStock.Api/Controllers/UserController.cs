@@ -9,7 +9,7 @@ namespace InStock.Api.Controllers
     [Route("api/users")]
     [ApiController]
     public class UserController
-        : BaseApiController<IUser, UserEntity, UserModel>
+        : BaseApiStarterController<IUser, UserEntity, UserModel>
     {
         public UserController(
             IRepository<UserEntity> repository,

@@ -6,7 +6,7 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class UserRepository
-		: BaseRepository, IRepository<UserEntity>
+		: BaseRepository, IUserRepository
 	{
 		public UserEntity Select(int userId)
 		{

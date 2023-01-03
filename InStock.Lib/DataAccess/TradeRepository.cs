@@ -6,7 +6,7 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class TradeRepository
-		: BaseRepository, IRepository<TradeEntity>
+		: BaseRepository, ITradeRepository
 	{
 		public TradeEntity Select(int tradeId)
 		{

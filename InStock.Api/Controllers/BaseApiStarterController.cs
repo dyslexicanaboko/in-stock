@@ -5,8 +5,16 @@ using System.Data;
 
 namespace InStock.Api.Controllers
 {
+    /// <summary>
+    /// Rigid Base API Controller to get a concept off the ground. Only good if the target model is to operate with
+    /// basic crud. This controller will not lend itself to different types of models being used or complex business
+    /// logic.
+    /// </summary>
+    /// <typeparam name="TSharedInterface">Shared interface between Entity and Model</typeparam>
+    /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <typeparam name="TModel">Model type</typeparam>
     [ApiController]
-    public abstract class BaseApiController<TSharedInterface, TEntity, TModel> 
+    public abstract class BaseApiStarterController<TSharedInterface, TEntity, TModel> 
         : ControllerBase
         where TSharedInterface : class
         where TEntity : class, new()
@@ -15,7 +23,7 @@ namespace InStock.Api.Controllers
         private readonly IRepository<TEntity> _repository;
         private readonly IMapper<TSharedInterface, TEntity, TModel> _mapper;
 
-        public BaseApiController(
+        public BaseApiStarterController(
             IRepository<TEntity> repository,
             IMapper<TSharedInterface, TEntity, TModel> mapper)
         {

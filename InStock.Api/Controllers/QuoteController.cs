@@ -9,7 +9,7 @@ namespace InStock.Api.Controllers
     [Route("api/quotes")]
     [ApiController]
     public class QuoteController
-        : BaseApiController<IQuote, QuoteEntity, QuoteModel>
+        : BaseApiStarterController<IQuote, QuoteEntity, QuoteModel>
     {
         public QuoteController(
             IRepository<QuoteEntity> repository,

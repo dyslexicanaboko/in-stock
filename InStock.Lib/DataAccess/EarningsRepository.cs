@@ -6,7 +6,7 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class EarningsRepository
-		: BaseRepository, IRepository<EarningsEntity>
+		: BaseRepository, IEarningsRepository
 	{
 		public EarningsEntity Select(int earningsId)
 		{

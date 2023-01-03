@@ -40,7 +40,7 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock
 			WHERE Symbol = @symbol";
 
-			var lst = GetConnection().Query<StockEntity>(sql, symbol, _transaction).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, new { symbol }, _transaction).ToList();
 
 			if (!lst.Any()) return null;
 

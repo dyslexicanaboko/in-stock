@@ -9,7 +9,7 @@ namespace InStock.Api.Controllers
     [Route("api/trades")]
     [ApiController]
     public class TradeController
-        : BaseApiController<ITrade, TradeEntity, TradeModel>
+        : BaseApiStarterController<ITrade, TradeEntity, TradeModel>
     {
         public TradeController(
             IRepository<TradeEntity> repository,
