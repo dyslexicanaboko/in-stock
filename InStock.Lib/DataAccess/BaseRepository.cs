@@ -15,15 +15,14 @@ namespace InStock.Lib.DataAccess
     public abstract class BaseRepository
         : IDisposable
     {
-        protected readonly string ConnectionString;
+        protected string ConnectionString;
         protected SqlConnection _connection;
         protected SqlTransaction? _transaction;
 
+        //NOTE: Do not instantiate the connection or transaction objects here. This is mostly for the purposes of DI.
         protected BaseRepository()
         {
             ConnectionString = LoadConnectionString();
-
-            _connection = new SqlConnection(ConnectionString);
         }
 
         protected BaseRepository(SqlConnection connection)
@@ -34,11 +33,9 @@ namespace InStock.Lib.DataAccess
         }
 
         protected BaseRepository(SqlTransaction transaction)
+            : this(transaction.Connection)
         {
             _transaction = transaction;
-            _connection = _transaction.Connection;
-         
-            ConnectionString = _connection.ConnectionString;
         }
 
         private static string LoadConnectionString()
@@ -54,6 +51,24 @@ namespace InStock.Lib.DataAccess
             return connectionString;
         }
 
+        protected SqlConnection GetConnection()
+        {
+            if(_connection == null) _connection = new SqlConnection(ConnectionString);
+
+            if(_connection.State != System.Data.ConnectionState.Open) _connection.Open();
+
+            return _connection;
+        }
+
+        //Not crazy about this
+        public void SetTransaction(SqlTransaction transaction)
+        {
+            _transaction = transaction;
+            _connection = _transaction.Connection;
+
+            ConnectionString = _connection.ConnectionString;
+        }
+
         public void Dispose()
         {
             if (_connection == null) return;
@@ -66,7 +81,7 @@ namespace InStock.Lib.DataAccess
             _connection.Dispose();
         }
 
-        #region Not sure i will use any of this
+        #region Not sure I will use any of this
         /*
         protected void ExecuteNonQuery(string sql, SqlParameter[] parameters)
         {

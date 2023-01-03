@@ -10,6 +10,8 @@ namespace InStock.Api
         {
             host.ConfigureServices((hostContext, services) =>
             {
+                services.AddScoped<ITransactionManager, TransactionManager>();
+
                 var asm = Assembly.Load("InStock.Lib");
                 var types = asm.GetTypes();
 

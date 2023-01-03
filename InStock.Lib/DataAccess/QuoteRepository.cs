@@ -1,6 +1,5 @@
 using Dapper;
 using InStock.Lib.Entities;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace InStock.Lib.DataAccess
@@ -21,16 +20,14 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Quote
 			WHERE QuoteId = @QuoteId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<QuoteEntity>(sql, new { QuoteId = quoteId }).ToList();
+			
+			var lst = GetConnection().Query<QuoteEntity>(sql, new { QuoteId = quoteId }, _transaction).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public IEnumerable<QuoteEntity> SelectAll()
@@ -45,12 +42,9 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.Quote";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<QuoteEntity>(sql).ToList();
+			var lst = GetConnection().Query<QuoteEntity>(sql, transaction: _transaction).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -68,17 +62,14 @@ namespace InStock.Lib.DataAccess
 				@Volume);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Volume", dbType: DbType.Decimal, value: entity.Volume, precision: 10, scale: 2);
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Volume", dbType: DbType.Decimal, value: entity.Volume, precision: 10, scale: 2);
-
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return GetConnection().ExecuteScalar<int>(sql, entity, _transaction);
 		}
 
 		public void Update(QuoteEntity entity)
@@ -91,18 +82,15 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc = @CreateOnUtc
 			WHERE QuoteId = @QuoteId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@QuoteId", dbType: DbType.Int32, value: entity.QuoteId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Volume", dbType: DbType.Decimal, value: entity.Volume, precision: 10, scale: 2);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			var p = new DynamicParameters();
+			p.Add(name: "@QuoteId", dbType: DbType.Int32, value: entity.QuoteId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Volume", dbType: DbType.Decimal, value: entity.Volume, precision: 10, scale: 2);
+			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
-				connection.Execute(sql, p);
-			}
+			GetConnection().Execute(sql, p, _transaction);
 		}
 	}
 }

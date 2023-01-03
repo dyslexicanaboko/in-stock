@@ -1,14 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InStock.Lib.DataAccess
+﻿namespace InStock.Lib.DataAccess
 {
     public class TransactionManager
-        : BaseRepository, IDisposable
+        : BaseRepository, ITransactionManager
     {
         private readonly Dictionary<string, object> _repositories;
 
@@ -20,25 +13,45 @@ namespace InStock.Lib.DataAccess
 
         public void Begin()
         {
-            _connection.Open();
-            
+            if (_transaction != null)
+                throw new InvalidOperationException("Transaction has already begun. Commit the current transaction before starting a new one.");
+
+            _connection = GetConnection();
+
             _transaction = _connection.BeginTransaction();
         }
 
-        public void Commit() => _transaction?.Commit();
+        public void Commit()
+        {
+            if (_transaction == null)
+                throw new InvalidOperationException("Cannot commit a transaction that was never begun. Transaction was null.");
+
+            _transaction.Commit();
+            _transaction.Dispose();
+            _transaction = null;
+        }
 
         public T GetRepository<T>()
             where T : BaseRepository, new()
         {
+            if (_connection == null || 
+                _transaction == null ||
+                _connection.State != System.Data.ConnectionState.Open)
+                throw new InvalidOperationException("You must call the Begin() method before access repositories in this context.");
+
             var t = typeof(T);
 
+            //Keep track of the repositories in use
             if (_repositories.ContainsKey(t.Name)) return (T)_repositories[t.Name];
 
-            var repo = new T(_transaction);
+            //Instantiate the repository, but set the transaction so it's automatically
+            //part of the opened connection and transaction.
+            var repo = new T();
+            repo.SetTransaction(_transaction);
 
-            _repositories.Add(t.Name, t);
+            _repositories.Add(t.Name, repo);
 
-            return 
+            return repo;
         }
     }
 }

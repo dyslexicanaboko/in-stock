@@ -1,6 +1,5 @@
 using Dapper;
 using InStock.Lib.Entities;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace InStock.Lib.DataAccess
@@ -20,16 +19,13 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock
 			WHERE StockId = @StockId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<StockEntity>(sql, new { StockId = stockId }).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, new { StockId = stockId }, _transaction).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public StockEntity Select(string symbol)
@@ -44,16 +40,13 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock
 			WHERE Symbol = @symbol";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<StockEntity>(sql, symbol).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, symbol, _transaction).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public IEnumerable<StockEntity> SelectAll()
@@ -67,12 +60,9 @@ namespace InStock.Lib.DataAccess
 				Notes
 			FROM dbo.Stock";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<StockEntity>(sql).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, transaction: _transaction).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -89,15 +79,12 @@ namespace InStock.Lib.DataAccess
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@Symbol", dbType: DbType.AnsiString, value: entity.Symbol, size: 10);
-				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
-				p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
+			var p = new DynamicParameters();
+			p.Add(name: "@Symbol", dbType: DbType.AnsiString, value: entity.Symbol, size: 10);
+			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+			p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return GetConnection().ExecuteScalar<int>(sql, entity, _transaction);
 		}
 
 		public void Update(StockEntity entity)
@@ -109,17 +96,14 @@ namespace InStock.Lib.DataAccess
 				Notes = @Notes
 			WHERE StockId = @StockId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Symbol", dbType: DbType.AnsiString, value: entity.Symbol, size: 10);
-				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
-				p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
+			var p = new DynamicParameters();
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Symbol", dbType: DbType.AnsiString, value: entity.Symbol, size: 10);
+			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
 
-				connection.Execute(sql, p);
-			}
+			GetConnection().Execute(sql, p, _transaction);
 		}
 	}
 }

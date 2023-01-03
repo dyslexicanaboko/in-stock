@@ -7,24 +7,24 @@ namespace InStock.Lib.Services
     public class StockService
     {
         private readonly IStockRepository _repoStock;
-        private readonly IQuoteRepository _repoQuote;
+        private readonly ITransactionManager _tran;
         private readonly IStockQuoteApiService _service;
 
         public StockService(
             IStockRepository repository,
-            IQuoteRepository repoQuote,
+            ITransactionManager transactionManager,
             IStockQuoteApiService service)
         {
             _repoStock = repository;
 
-            _repoQuote = repoQuote;
+            _tran = transactionManager;
 
             _service = service;
         }
 
         public StockEntity Add(string symbol) 
         {
-            var dbEntity = _repoStock.Select(symbol);
+            var dbEntity = _repoStock.Using(x => x.Select(symbol));
 
             if (dbEntity != null) return dbEntity;
 
@@ -40,19 +40,21 @@ namespace InStock.Lib.Services
                 Name = stockQuote.Name
             };
 
-            //A transaction needs to be opened to cover the repo work
-            entity.StockId = _repoStock.Insert(entity);
-
-            //I am not sure I want to keep this here
-            var quote = new QuoteEntity
+            using (_tran)
             {
-                StockId = entity.StockId,
-                Date = stockQuote.Date,
-                Price = stockQuote.Price,
-                Volume= stockQuote.Volume
-            };
+                entity.StockId = _tran.GetRepository<StockRepository>().Insert(entity);
 
-            _repoQuote.Insert(quote);
+                //I am not sure I want to keep this here
+                var quote = new QuoteEntity
+                {
+                    StockId = entity.StockId,
+                    Date = stockQuote.Date,
+                    Price = stockQuote.Price,
+                    Volume = stockQuote.Volume
+                };
+
+                _tran.GetRepository<QuoteRepository>().Insert(quote);
+            }
 
             return entity;
         }
