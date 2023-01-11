@@ -1,6 +1,6 @@
 ﻿namespace InStock.Lib.Models.Client
 {
-    public class StockV1Model
+    public class SymbolV1Model
     {
         public string Symbol { get; set; }
     }

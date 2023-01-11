@@ -30,6 +30,13 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
+        public StockEntity GetStock(string symbol)
+        {
+            var dbEntity = _repoStock.Using(x => x.Select(symbol));
+
+            return dbEntity;
+        }
+
         public async Task<StockEntity> Add(string symbol)
         {
             var dbEntity = _repoStock.Using(x => x.Select(symbol));
@@ -50,6 +57,8 @@ namespace InStock.Lib.Services
 
             using (_tran)
             {
+                _tran.Begin();
+
                 entity.StockId = _tran.GetRepository<StockRepository>().Insert(entity);
 
                 //I am not sure I want to keep this here
@@ -62,6 +71,8 @@ namespace InStock.Lib.Services
                 };
 
                 _tran.GetRepository<QuoteRepository>().Insert(quote);
+
+                _tran.Commit();
             }
 
             return entity;

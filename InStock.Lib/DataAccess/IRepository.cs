@@ -1,7 +1,7 @@
 ﻿namespace InStock.Lib.DataAccess
 {
     public interface IRepository<T>
-        : IDisposable
+        : IRepository
         where T : class, new()
     {
         T Select(int earningsId);
@@ -11,5 +11,11 @@
         int Insert(T entity);
 
         void Update(T entity);
+    }
+
+    public interface IRepository
+        : IDisposable
+    {
+        //This exists just to unify all repositories as being "a type of" repository
     }
 }

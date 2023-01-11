@@ -48,6 +48,7 @@ namespace InStock.Api
                 var iRepository = types.Single(x => x.FullName == $"{ns}.DataAccess.I{root}Repository");
                 var repository = types.Single(x => x.FullName == $"{ns}.DataAccess.{root}Repository");
                 var mapper = types.Single(x => x.FullName == $"{ns}.Services.Mappers.{root}Mapper");
+                var iMapper = types.SingleOrDefault(x => x.FullName == $"{ns}.Services.Mappers.I{root}Mapper");
                 var iService = types.SingleOrDefault(x => x.FullName == $"{ns}.Services.I{root}Service");
                 var service = types.SingleOrDefault(x => x.FullName == $"{ns}.Services.{root}Service");
 
@@ -63,6 +64,11 @@ namespace InStock.Api
                 services.AddScoped(iRepository, repository);
                 services.AddScoped(iRepoRoot, repository);
                 services.AddScoped(iMapRoot, mapper);
+
+                if (iMapper != null)
+                {
+                    services.AddScoped(iMapper, mapper);
+                }
 
                 if (iService == null || service == null) continue;
 

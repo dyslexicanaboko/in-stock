@@ -6,6 +6,8 @@ namespace InStock.Lib.Services
     {
         StockEntity GetStock(int id);
 
+        StockEntity GetStock(string symbol);
+
         Task<StockEntity> Add(string symbol);
     }
 }

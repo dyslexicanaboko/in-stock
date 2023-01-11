@@ -1,10 +1,11 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class QuoteMapper
-        : IMapper<IQuote, QuoteEntity, QuoteModel>
+        : IMapper<IQuote, QuoteEntity, QuoteModel>, IQuoteMapper
     {
         public QuoteEntity ToEntity(QuoteModel model)
         {
@@ -54,6 +55,18 @@ namespace InStock.Lib.Services.Mappers
             model.Price = target.Price;
             model.Volume = target.Volume;
             model.CreateOnUtc = target.CreateOnUtc;
+
+            return model;
+        }
+
+        public QuoteV1CreatedModel ToCreatedModel(IQuote target)
+        {
+            var model = new QuoteV1CreatedModel();
+            model.QuoteId = target.QuoteId;
+            model.StockId = target.StockId;
+            model.Date = target.Date;
+            model.Price = target.Price;
+            model.Volume = target.Volume;
 
             return model;
         }

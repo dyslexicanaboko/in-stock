@@ -1,10 +1,11 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class StockMapper
-        : IMapper<IStock, StockEntity, StockModel>
+        : IMapper<IStock, StockEntity, StockModel>, IStockMapper
     {
         public StockEntity ToEntity(StockModel model)
         {
@@ -50,6 +51,16 @@ namespace InStock.Lib.Services.Mappers
             model.Name = target.Name;
             model.CreateOnUtc = target.CreateOnUtc;
             model.Notes = target.Notes;
+
+            return model;
+        }
+
+        public StockV1CreatedModel ToCreatedModel(IStock target)
+        {
+            var model = new StockV1CreatedModel();
+            model.StockId = target.StockId;
+            model.Symbol = target.Symbol;
+            model.Name = target.Name;
 
             return model;
         }
