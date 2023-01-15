@@ -72,7 +72,6 @@ namespace InStock.Lib.DataAccess
 				Quantity,
 				StartDate,
 				EndDate,
-				CreateOnUtc,
 				Confirmation
 			) VALUES (
 				@UserId,
@@ -82,7 +81,6 @@ namespace InStock.Lib.DataAccess
 				@Quantity,
 				@StartDate,
 				@EndDate,
-				@CreateOnUtc,
 				@Confirmation);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
@@ -97,7 +95,6 @@ namespace InStock.Lib.DataAccess
 				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 				p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
 				p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 				p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
 				return connection.ExecuteScalar<int>(sql, entity);

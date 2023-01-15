@@ -1,10 +1,11 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class EarningsMapper
-        : IMapper<IEarnings, EarningsEntity, EarningsModel>
+        : MapperBase, IMapper<IEarnings, EarningsEntity, EarningsModel>, IEarningsMapper
     {
         public EarningsEntity ToEntity(EarningsModel model)
         {
@@ -50,6 +51,29 @@ namespace InStock.Lib.Services.Mappers
             model.Date = target.Date;
             model.Order = target.Order;
             model.CreateOnUtc = target.CreateOnUtc;
+
+            return model;
+        }
+
+        public IList<EarningsModel> ToModel(IList<EarningsEntity> target) => ToList(target, ToModel);
+
+        public EarningsEntity ToEntity(EarningsV1CreateModel model)
+        {
+            var entity = new EarningsEntity();
+            entity.StockId = model.StockId;
+            entity.Date = model.Date;
+            entity.Order = model.Order;
+
+            return entity;
+        }
+
+        public EarningsV1CreatedModel ToCreatedModel(EarningsEntity entity)
+        {
+            var model = new EarningsV1CreatedModel();
+            model.EarningsId = entity.EarningsId;
+            model.StockId = entity.StockId;
+            model.Date = entity.Date;
+            model.Order = entity.Order;
 
             return model;
         }

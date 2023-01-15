@@ -92,7 +92,6 @@ namespace InStock.Lib.DataAccess
 			var sql = @"UPDATE dbo.Stock SET 
 				Symbol = @Symbol,
 				Name = @Name,
-				CreateOnUtc = @CreateOnUtc,
 				Notes = @Notes
 			WHERE StockId = @StockId";
 
@@ -100,7 +99,6 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@Symbol", dbType: DbType.AnsiString, value: entity.Symbol, size: 10);
 			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
-			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 			p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
 
 			GetConnection().Execute(sql, p, _transaction);

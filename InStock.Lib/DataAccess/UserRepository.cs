@@ -51,11 +51,9 @@ namespace InStock.Lib.DataAccess
 		public int Insert(UserEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.User (
-				Name,
-				CreateOnUtc
+				Name
 			) VALUES (
-				@Name,
-				@CreateOnUtc);
+				@Name);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
@@ -63,7 +61,6 @@ namespace InStock.Lib.DataAccess
 			{
 				var p = new DynamicParameters();
 				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 				return connection.ExecuteScalar<int>(sql, entity);
 			}
@@ -81,7 +78,6 @@ namespace InStock.Lib.DataAccess
 				var p = new DynamicParameters();
 				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
 				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 				connection.Execute(sql, p);
 			}

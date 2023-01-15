@@ -66,16 +66,14 @@ namespace InStock.Lib.DataAccess
 				DateOpened,
 				DateClosed,
 				Price,
-				Quantity,
-				CreateOnUtc
+				Quantity
 			) VALUES (
 				@UserId,
 				@StockId,
 				@DateOpened,
 				@DateClosed,
 				@Price,
-				@Quantity,
-				@CreateOnUtc);
+				@Quantity);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
@@ -88,7 +86,6 @@ namespace InStock.Lib.DataAccess
 				p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
 				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 				return connection.ExecuteScalar<int>(sql, entity);
 			}
@@ -102,8 +99,7 @@ namespace InStock.Lib.DataAccess
 				DateOpened = @DateOpened,
 				DateClosed = @DateClosed,
 				Price = @Price,
-				Quantity = @Quantity,
-				CreateOnUtc = @CreateOnUtc
+				Quantity = @Quantity
 			WHERE PositionId = @PositionId";
 
 			using (var connection = new SqlConnection(ConnectionString))
@@ -116,7 +112,6 @@ namespace InStock.Lib.DataAccess
 				p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
 				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 				connection.Execute(sql, p);
 			}

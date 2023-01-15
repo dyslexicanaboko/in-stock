@@ -102,8 +102,7 @@ namespace InStock.Lib.DataAccess
 				StockId = @StockId,
 				Date = @Date,
 				Price = @Price,
-				Volume = @Volume,
-				CreateOnUtc = @CreateOnUtc
+				Volume = @Volume
 			WHERE QuoteId = @QuoteId";
 
 			var p = new DynamicParameters();
@@ -112,7 +111,6 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
 			p.Add(name: "@Price", dbType: DbType.Double, value: entity.Price);
 			p.Add(name: "@Volume", dbType: DbType.Int64, value: entity.Volume);
-			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 
 			GetConnection().Execute(sql, p, _transaction);
 		}
