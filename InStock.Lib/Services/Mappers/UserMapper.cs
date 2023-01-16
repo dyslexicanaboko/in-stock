@@ -1,10 +1,11 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class UserMapper
-        : IMapper<IUser, UserEntity, UserModel>
+        : MapperBase, IMapper<IUser, UserEntity, UserModel>, IUserMapper
     {
         public UserEntity ToEntity(UserModel model)
         {
@@ -45,5 +46,24 @@ namespace InStock.Lib.Services.Mappers
 
             return model;
         }
+
+        public UserEntity ToEntity(UserV1CreateModel target)
+        {
+            var model = new UserEntity();
+            model.Name = target.Name;
+
+            return model;
+        }
+
+        public UserV1CreatedModel ToCreatedModel(IUser target)
+        {
+            var model = new UserV1CreatedModel();
+            model.UserId = target.UserId;
+            model.Name = target.Name;
+
+            return model;
+        }
+
+        public IList<UserModel> ToModel(IList<UserEntity> target) => ToList(target, ToModel);
     }
 }

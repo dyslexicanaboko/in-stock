@@ -15,7 +15,7 @@ namespace InStock.Lib.DataAccess
 				UserId,
 				Name,
 				CreateOnUtc
-			FROM dbo.User
+			FROM dbo.[User]
 			WHERE UserId = @UserId";
 
 			using (var connection = new SqlConnection(ConnectionString))
@@ -37,7 +37,7 @@ namespace InStock.Lib.DataAccess
 				UserId,
 				Name,
 				CreateOnUtc
-			FROM dbo.User";
+			FROM dbo.[User]";
 
 			using (var connection = new SqlConnection(ConnectionString))
 			{
@@ -50,7 +50,7 @@ namespace InStock.Lib.DataAccess
 		
 		public int Insert(UserEntity entity)
 		{
-			var sql = @"INSERT INTO dbo.User (
+			var sql = @"INSERT INTO dbo.[User] (
 				Name
 			) VALUES (
 				@Name);
@@ -68,7 +68,7 @@ namespace InStock.Lib.DataAccess
 
 		public void Update(UserEntity entity)
 		{
-			var sql = @"UPDATE dbo.User SET 
+			var sql = @"UPDATE dbo.[User] SET 
 				Name = @Name,
 				CreateOnUtc = @CreateOnUtc
 			WHERE UserId = @UserId";

@@ -46,7 +46,7 @@ namespace InStock.Api.Controllers
         // POST api/earnings
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IEarnings))]
-        public async Task<ActionResult<IEarnings>> Post([FromBody] EarningsV1CreateModel model)
+        public async Task<ActionResult<EarningsV1CreatedModel>> Post([FromBody] EarningsV1CreateModel model)
         {
             var entity = await Task.FromResult(_service.Add(_mapper.ToEntity(model)));
 
@@ -57,6 +57,7 @@ namespace InStock.Api.Controllers
 
         // DELETE api/earnings/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(int id)
         {
             _service.Delete(id);
@@ -66,6 +67,7 @@ namespace InStock.Api.Controllers
 
         // DELETE api/earnings/MSFT/symbol
         [HttpDelete("{symbol}/symbol")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(string symbol)
         {
             _service.Delete(symbol);
