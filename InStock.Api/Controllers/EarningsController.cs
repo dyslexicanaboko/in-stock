@@ -57,16 +57,20 @@ namespace InStock.Api.Controllers
 
         // DELETE api/earnings/5
         [HttpDelete("{id}")]
-        public virtual void Delete(int id)
+        public ActionResult Delete(int id)
         {
             _service.Delete(id);
+         
+            return NoContent();
         }
 
         // DELETE api/earnings/MSFT/symbol
-        [HttpDelete("{symbol}")]
-        public virtual void Delete(string symbol)
+        [HttpDelete("{symbol}/symbol")]
+        public ActionResult Delete(string symbol)
         {
             _service.Delete(symbol);
+
+            return NoContent();
         }
     }
 }

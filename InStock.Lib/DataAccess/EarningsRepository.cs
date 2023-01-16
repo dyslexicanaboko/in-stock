@@ -134,7 +134,7 @@ namespace InStock.Lib.DataAccess
 				FROM dbo.Stock s
 				INNER JOIN dbo.Earnings e
 					ON s.StockId = e.StockId
-			WHERE StockId = @symbol";
+			WHERE s.Symbol = @symbol";
 
 			using (var connection = new SqlConnection(ConnectionString))
 			{

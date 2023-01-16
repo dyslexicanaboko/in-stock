@@ -17,7 +17,7 @@ namespace InStock.Api
                 var asm = Assembly.Load("InStock.Lib");
                 var types = asm.GetTypes();
 
-                AddRepositories(services, types,
+                RegisterPipelines(services, types,
                     "Earnings",
                     "Position",
                     "Quote",
@@ -34,7 +34,7 @@ namespace InStock.Api
 
         //https://stackoverflow.com/questions/39174989/how-to-register-multiple-implementations-of-the-same-interface-in-asp-net-core
         //https://github.com/aspnet/DependencyInjection/blob/release/2.1/src/DI.Abstractions/ServiceProviderServiceExtensions.cs#L98-L118
-        private static void AddRepositories(IServiceCollection services, Type[] types, params string[] classRoots)
+        private static void RegisterPipelines(IServiceCollection services, Type[] types, params string[] classRoots)
         {
             var ns = "InStock.Lib";
             var iRepo = typeof(IRepository<>);
