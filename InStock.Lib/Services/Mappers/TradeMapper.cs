@@ -51,7 +51,6 @@ namespace InStock.Lib.Services.Mappers
             entity.Quantity = target.Quantity;
             entity.StartDate = target.StartDate;
             entity.EndDate = target.EndDate;
-            entity.CreateOnUtc = target.CreateOnUtc;
             entity.Confirmation = target.Confirmation;
 
             return entity;
@@ -68,7 +67,6 @@ namespace InStock.Lib.Services.Mappers
             model.Quantity = target.Quantity;
             model.StartDate = target.StartDate;
             model.EndDate = target.EndDate;
-            model.CreateOnUtc = target.CreateOnUtc;
             model.Confirmation = target.Confirmation;
 
             return model;

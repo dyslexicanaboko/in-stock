@@ -8,7 +8,7 @@ namespace InStock.Lib.DataAccess
 	public class EarningsRepository
 		: BaseRepository, IEarningsRepository
 	{
-		public EarningsEntity Select(int earningsId)
+		public EarningsEntity? Select(int earningsId)
 		{
 			var sql = @"
 			SELECT

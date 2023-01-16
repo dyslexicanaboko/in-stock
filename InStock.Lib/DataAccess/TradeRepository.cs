@@ -8,7 +8,7 @@ namespace InStock.Lib.DataAccess
 	public class TradeRepository
 		: BaseRepository, ITradeRepository
 	{
-		public TradeEntity Select(int tradeId)
+		public TradeEntity? Select(int tradeId)
 		{
 			var sql = @"
 			SELECT

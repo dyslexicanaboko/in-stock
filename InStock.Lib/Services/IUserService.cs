@@ -4,8 +4,10 @@ namespace InStock.Lib.Services
 {
     public interface IUserService
     {
-        UserEntity Add(UserEntity user);
+        UserEntity? Add(UserEntity user);
+        
         IList<UserEntity> GetAllUsers();
-        UserEntity GetUser(int id);
+        
+        UserEntity? GetUser(int id);
     }
 }

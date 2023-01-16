@@ -7,7 +7,7 @@ namespace InStock.Lib.DataAccess
 	public class StockRepository
 		: BaseRepository, IStockRepository
 	{
-		public StockEntity Select(int stockId)
+		public StockEntity? Select(int stockId)
 		{
 			var sql = @"
 			SELECT
@@ -28,7 +28,7 @@ namespace InStock.Lib.DataAccess
 			return entity;
 		}
 
-		public StockEntity Select(string symbol)
+		public StockEntity? Select(string symbol)
 		{
 			var sql = @"
 			SELECT

@@ -13,7 +13,7 @@ namespace InStock.Lib.Services
             _repoEarnings = repoEarnings;
         }
 
-        public EarningsEntity GetEarnings(int id)
+        public EarningsEntity? GetEarnings(int id)
         {
             var dbEntity = _repoEarnings.Using(x => x.Select(id));
 

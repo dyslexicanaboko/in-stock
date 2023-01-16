@@ -7,7 +7,7 @@ namespace InStock.Lib.DataAccess
 	public class QuoteRepository
 		: BaseRepository, IQuoteRepository
 	{
-		public QuoteEntity Select(int quoteId)
+		public QuoteEntity? Select(int quoteId)
 		{
 			var sql = @"
 			SELECT
@@ -30,7 +30,7 @@ namespace InStock.Lib.DataAccess
 			return entity;
 		}
 
-		public QuoteEntity Select(string symbol)
+		public QuoteEntity? Select(string symbol)
 		{
 			var sql = @"
 			SELECT

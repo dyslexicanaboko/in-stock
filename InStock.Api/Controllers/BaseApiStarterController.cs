@@ -40,9 +40,13 @@ namespace InStock.Api.Controllers
 
         // GET api/<TController>/5
         [HttpGet("{id}")]
-        public virtual TModel Get(int id)
+        public virtual TModel? Get(int id)
         {
-            return _mapper.ToModel(_repository.Select(id));
+            var model = _repository.Select(id);
+
+            if (model == null) return null;
+
+            return _mapper.ToModel(model);
         }
 
         // POST api/<TController>

@@ -19,7 +19,7 @@
 			_holidays = BuildHolidayList();
 		}
 
-		public bool IsHoliday(DateTime todaysDate, out string holiday)
+		public bool IsHoliday(DateTime todaysDate, out string? holiday)
 		{
 			holiday = null;
 

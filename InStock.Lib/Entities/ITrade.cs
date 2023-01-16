@@ -18,8 +18,6 @@ namespace InStock.Lib.Entities
 
         DateTime EndDate { get; set; }
 
-        DateTime CreateOnUtc { get; set; }
-
         string Confirmation { get; set; }
     }
 }

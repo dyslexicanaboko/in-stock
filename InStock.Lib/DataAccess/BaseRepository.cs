@@ -16,7 +16,7 @@ namespace InStock.Lib.DataAccess
         : IDisposable
     {
         protected string ConnectionString;
-        protected SqlConnection _connection;
+        protected SqlConnection? _connection;
         protected SqlTransaction? _transaction;
 
         //NOTE: Do not instantiate the connection or transaction objects here. This is mostly for the purposes of DI.
@@ -48,7 +48,7 @@ namespace InStock.Lib.DataAccess
 
             var connectionString = configuration.GetConnectionString("InStock");
 
-            return connectionString;
+            return connectionString!;
         }
 
         protected SqlConnection GetConnection()

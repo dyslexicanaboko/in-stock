@@ -5,6 +5,6 @@ namespace InStock.Lib.DataAccess
     public interface IQuoteRepository
         : IRepository<QuoteEntity>
     {
-        QuoteEntity Select(string symbol);
+        QuoteEntity? Select(string symbol);
     }
 }

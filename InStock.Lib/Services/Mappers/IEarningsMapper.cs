@@ -6,18 +6,18 @@ namespace InStock.Lib.Services.Mappers
 {
     public interface IEarningsMapper
     {
-        EarningsEntity ToEntity(EarningsModel model);
+        EarningsEntity? ToEntity(EarningsModel? model);
         
         EarningsEntity ToEntity(EarningsV1CreateModel model);
         
-        EarningsEntity ToEntity(IEarnings target);
+        EarningsEntity? ToEntity(IEarnings? target);
         
-        EarningsModel ToModel(EarningsEntity entity);
+        EarningsModel? ToModel(EarningsEntity? entity);
         
-        EarningsModel ToModel(IEarnings target);
+        EarningsModel? ToModel(IEarnings? target);
 
         EarningsV1CreatedModel ToCreatedModel(EarningsEntity entity);
 
-        IList<EarningsModel> ToModel(IList<EarningsEntity> target);
+        IList<EarningsModel> ToModel(IList<EarningsEntity?> target);
     }
 }

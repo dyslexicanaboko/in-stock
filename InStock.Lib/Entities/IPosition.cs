@@ -15,7 +15,5 @@ namespace InStock.Lib.Entities
         decimal Price { get; set; }
 
         decimal Quantity { get; set; }
-
-        DateTime CreateOnUtc { get; set; }
     }
 }

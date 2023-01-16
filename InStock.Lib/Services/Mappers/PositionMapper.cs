@@ -6,8 +6,10 @@ namespace InStock.Lib.Services.Mappers
     public class PositionMapper
         : IMapper<IPosition, PositionEntity, PositionModel>
     {
-        public PositionEntity ToEntity(PositionModel model)
+        public PositionEntity? ToEntity(PositionModel? model)
         {
+            if (model == null) return null;
+
             var entity = new PositionEntity();
             entity.PositionId = model.PositionId;
             entity.UserId = model.UserId;
@@ -21,8 +23,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public PositionModel ToModel(PositionEntity entity)
+        public PositionModel? ToModel(PositionEntity? entity)
         {
+            if (entity == null) return null;
+            
             var model = new PositionModel();
             model.PositionId = entity.PositionId;
             model.UserId = entity.UserId;
@@ -36,8 +40,10 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public PositionEntity ToEntity(IPosition target)
+        public PositionEntity? ToEntity(IPosition? target)
         {
+            if (target == null) return null;
+            
             var entity = new PositionEntity();
             entity.PositionId = target.PositionId;
             entity.UserId = target.UserId;
@@ -46,13 +52,14 @@ namespace InStock.Lib.Services.Mappers
             entity.DateClosed = target.DateClosed;
             entity.Price = target.Price;
             entity.Quantity = target.Quantity;
-            entity.CreateOnUtc = target.CreateOnUtc;
 
             return entity;
         }
 
-        public PositionModel ToModel(IPosition target)
+        public PositionModel? ToModel(IPosition? target)
         {
+            if (target == null) return null;
+            
             var model = new PositionModel();
             model.PositionId = target.PositionId;
             model.UserId = target.UserId;
@@ -61,7 +68,6 @@ namespace InStock.Lib.Services.Mappers
             model.DateClosed = target.DateClosed;
             model.Price = target.Price;
             model.Quantity = target.Quantity;
-            model.CreateOnUtc = target.CreateOnUtc;
 
             return model;
         }

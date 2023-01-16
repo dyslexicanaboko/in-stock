@@ -5,7 +5,5 @@ namespace InStock.Lib.Entities
         int UserId { get; set; }
 
         string Name { get; set; }
-
-        DateTime CreateOnUtc { get; set; }
     }
 }

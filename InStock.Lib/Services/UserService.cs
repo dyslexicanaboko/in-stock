@@ -13,7 +13,7 @@ namespace InStock.Lib.Services
             _repoUser = repoUser;
         }
 
-        public UserEntity GetUser(int id)
+        public UserEntity? GetUser(int id)
         {
             var dbEntity = _repoUser.Using(x => x.Select(id));
 

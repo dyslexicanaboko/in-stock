@@ -37,7 +37,6 @@ namespace InStock.Lib.Services.Mappers
             entity.StockId = target.StockId;
             entity.Symbol = target.Symbol;
             entity.Name = target.Name;
-            entity.CreateOnUtc = target.CreateOnUtc;
             entity.Notes = target.Notes;
 
             return entity;
@@ -49,7 +48,6 @@ namespace InStock.Lib.Services.Mappers
             model.StockId = target.StockId;
             model.Symbol = target.Symbol;
             model.Name = target.Name;
-            model.CreateOnUtc = target.CreateOnUtc;
             model.Notes = target.Notes;
 
             return model;

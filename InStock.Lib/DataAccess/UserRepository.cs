@@ -8,7 +8,7 @@ namespace InStock.Lib.DataAccess
 	public class UserRepository
 		: BaseRepository, IUserRepository
 	{
-		public UserEntity Select(int userId)
+		public UserEntity? Select(int userId)
 		{
 			var sql = @"
 			SELECT

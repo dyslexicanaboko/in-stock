@@ -4,7 +4,7 @@
         : IRepository
         where T : class, new()
     {
-        T Select(int earningsId);
+        T? Select(int earningsId);
 
         IEnumerable<T> SelectAll();
 

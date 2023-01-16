@@ -5,6 +5,6 @@ namespace InStock.Lib.DataAccess
 	public interface IStockRepository
 		: IRepository<StockEntity>
 	{
-		StockEntity Select(string symbol);
+		StockEntity? Select(string symbol);
 	}
 }

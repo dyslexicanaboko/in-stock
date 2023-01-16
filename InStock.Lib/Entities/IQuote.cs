@@ -6,7 +6,5 @@ namespace InStock.Lib.Entities
         int QuoteId { get; set; }
 
         int StockId { get; set; }
-
-        DateTime CreateOnUtc { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace InStock.Lib.DataAccess
 	public class PositionRepository
 		: BaseRepository, IPositionRepository
 	{
-		public PositionEntity Select(int positionId)
+		public PositionEntity? Select(int positionId)
 		{
 			var sql = @"
 			SELECT

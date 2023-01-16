@@ -9,7 +9,5 @@ namespace InStock.Lib.Entities
         DateTime Date { get; set; }
 
         int Order { get; set; }
-
-        DateTime CreateOnUtc { get; set; }
     }
 }

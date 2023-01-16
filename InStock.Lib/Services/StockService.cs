@@ -23,14 +23,14 @@ namespace InStock.Lib.Services
             _service = service;
         }
 
-        public StockEntity GetStock(int id)
+        public StockEntity? GetStock(int id)
         {
             var dbEntity = _repoStock.Using(x => x.Select(id));
 
             return dbEntity;
         }
 
-        public StockEntity GetStock(string symbol)
+        public StockEntity? GetStock(string symbol)
         {
             var dbEntity = _repoStock.Using(x => x.Select(symbol));
 

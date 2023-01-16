@@ -32,7 +32,6 @@ namespace InStock.Lib.Services.Mappers
             var entity = new UserEntity();
             entity.UserId = target.UserId;
             entity.Name = target.Name;
-            entity.CreateOnUtc = target.CreateOnUtc;
 
             return entity;
         }
@@ -42,7 +41,6 @@ namespace InStock.Lib.Services.Mappers
             var model = new UserModel();
             model.UserId = target.UserId;
             model.Name = target.Name;
-            model.CreateOnUtc = target.CreateOnUtc;
 
             return model;
         }
