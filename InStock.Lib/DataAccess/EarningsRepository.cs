@@ -20,16 +20,15 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Earnings
 			WHERE EarningsId = @EarningsId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<EarningsEntity>(sql, new { EarningsId = earningsId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql, new { EarningsId = earningsId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public IList<EarningsEntity> Select(string symbol)
@@ -46,12 +45,11 @@ namespace InStock.Lib.DataAccess
 					ON s.StockId = e.StockId
 			WHERE s.Symbol = @symbol";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<EarningsEntity>(sql, new { symbol }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql, new { symbol }).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		public IEnumerable<EarningsEntity> SelectAll()
@@ -65,12 +63,11 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.Earnings";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<EarningsEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -87,15 +84,14 @@ namespace InStock.Lib.DataAccess
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(EarningsEntity entity)
@@ -106,26 +102,24 @@ namespace InStock.Lib.DataAccess
 				[Order] = @Order
 			WHERE EarningsId = @EarningsId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
 		}
 
 		public void Delete(int earningsId)
 		{
 			var sql = @"DELETE FROM dbo.Earnings WHERE EarningsId = @earningsId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				connection.Execute(sql, new { earningsId });
-			}
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { earningsId });
 		}
 
 		public void Delete(string symbol)
@@ -136,10 +130,9 @@ namespace InStock.Lib.DataAccess
 					ON s.StockId = e.StockId
 			WHERE s.Symbol = @symbol";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				connection.Execute(sql, new { symbol });
-			}
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { symbol });
 		}
 	}
 }

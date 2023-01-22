@@ -6,12 +6,12 @@ namespace InStock.Lib.Services.Mappers
         where TEntity : class, new()
         where TModel : class, new()
     {
-        TEntity? ToEntity(TModel? model);
+        public TEntity? ToEntity(TModel? model);
 
-        TModel? ToModel(TEntity? entity);
+        public TModel? ToModel(TEntity? entity);
 
-        TEntity? ToEntity(TSharedInterface? target);
+        public TEntity? ToEntity(TSharedInterface? target);
 
-        TModel? ToModel(TSharedInterface? target);
+        public TModel? ToModel(TSharedInterface? target);
     }
 }

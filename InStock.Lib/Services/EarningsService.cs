@@ -35,9 +35,9 @@ namespace InStock.Lib.Services
         //TODO: Enforce FK of StockId existence
         public EarningsEntity Add(EarningsEntity? earnings)
         {
-            Guard.IsNull(earnings);
+            Guard.IsNotNull(earnings);
             
-            earnings!.EarningsId = _repoEarnings.Using(x => x.Insert(earnings));
+            earnings.EarningsId = _repoEarnings.Using(x => x.Insert(earnings));
 
             return earnings;
         }

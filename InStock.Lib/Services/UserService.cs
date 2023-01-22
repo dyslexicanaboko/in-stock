@@ -30,9 +30,9 @@ namespace InStock.Lib.Services
 
         public UserEntity Add(UserEntity? user)
         {
-            Guard.IsNull(user);
+            Guard.IsNotNull(user);
 
-            user!.UserId = _repoUser.Using(x => x.Insert(user));
+            user.UserId = _repoUser.Using(x => x.Insert(user));
 
             return user;
         }

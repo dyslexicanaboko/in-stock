@@ -1,10 +1,11 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class PositionMapper
-        : IMapper<IPosition, PositionEntity, PositionModel>
+        : MapperBase, IMapper<IPosition, PositionEntity, PositionModel>, IPositionMapper
     {
         public PositionEntity? ToEntity(PositionModel? model)
         {
@@ -18,7 +19,6 @@ namespace InStock.Lib.Services.Mappers
             entity.DateClosed = model.DateClosed;
             entity.Price = model.Price;
             entity.Quantity = model.Quantity;
-            entity.CreateOnUtc = model.CreateOnUtc;
 
             return entity;
         }
@@ -35,7 +35,6 @@ namespace InStock.Lib.Services.Mappers
             model.DateClosed = entity.DateClosed;
             model.Price = entity.Price;
             model.Quantity = entity.Quantity;
-            model.CreateOnUtc = entity.CreateOnUtc;
 
             return model;
         }
@@ -71,5 +70,21 @@ namespace InStock.Lib.Services.Mappers
 
             return model;
         }
+
+        public PositionEntity? ToEntity(PositionV1CreateModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new PositionEntity();
+            entity.StockId = model.StockId;
+            entity.DateOpened = model.DateOpened;
+            entity.DateClosed = model.DateClosed;
+            entity.Price = model.Price;
+            entity.Quantity = model.Quantity;
+
+            return entity;
+        }
+
+        public IList<PositionModel> ToModel(IList<PositionEntity>? target) => ToList(target, ToModel);
     }
 }

@@ -23,16 +23,40 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Position
 			WHERE PositionId = @PositionId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<PositionEntity>(sql, new { PositionId = positionId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<PositionEntity>(sql, new { PositionId = positionId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
+		}
+
+		public IEnumerable<PositionEntity> Select(int userId, string symbol)
+		{
+			var sql = @"
+			SELECT
+				p.PositionId,
+				p.UserId,
+				p.StockId,
+				p.DateOpened,
+				p.DateClosed,
+				p.Price,
+				p.Quantity,
+				p.CreateOnUtc
+			FROM dbo.Stock s
+				INNER JOIN dbo.Position p
+					ON s.StockId = p.StockId
+						AND p.UserId = @userId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<PositionEntity>(sql, new { userId, symbol }).ToList();
+
+			return lst;
 		}
 
 		public IEnumerable<PositionEntity> SelectAll()
@@ -49,12 +73,11 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.Position";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<PositionEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<PositionEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -77,18 +100,17 @@ namespace InStock.Lib.DataAccess
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
-				p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
+			p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(PositionEntity entity)
@@ -102,19 +124,41 @@ namespace InStock.Lib.DataAccess
 				Quantity = @Quantity
 			WHERE PositionId = @PositionId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
-				p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
+			p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
+		}
+
+		public void Delete(int positionId)
+		{
+			var sql = @"DELETE FROM dbo.Position WHERE PositionId = @positionId";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { positionId });
+		}
+
+		public void Delete(int userId, string symbol)
+		{
+			var sql = @"DELETE p 
+				FROM dbo.Stock s
+				INNER JOIN dbo.Position p
+					ON s.StockId = p.StockId
+						AND p.UserId = @userId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { userId, symbol });
 		}
 	}
 }

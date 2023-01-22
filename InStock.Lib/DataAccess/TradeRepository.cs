@@ -25,16 +25,15 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Trade
 			WHERE TradeId = @TradeId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<TradeEntity>(sql, new { TradeId = tradeId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<TradeEntity>(sql, new { TradeId = tradeId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public IEnumerable<TradeEntity> SelectAll()
@@ -53,12 +52,11 @@ namespace InStock.Lib.DataAccess
 				Confirmation
 			FROM dbo.Trade";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<TradeEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<TradeEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -85,20 +83,19 @@ namespace InStock.Lib.DataAccess
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
-				p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
-				p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
+			p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
+			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(TradeEntity entity)
@@ -115,22 +112,21 @@ namespace InStock.Lib.DataAccess
 				Confirmation = @Confirmation
 			WHERE TradeId = @TradeId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@TradeId", dbType: DbType.Int32, value: entity.TradeId);
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
-				p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
-				p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@TradeId", dbType: DbType.Int32, value: entity.TradeId);
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
+			p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
+			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
 		}
 	}
 }

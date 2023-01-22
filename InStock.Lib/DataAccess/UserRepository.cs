@@ -18,16 +18,15 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.[User]
 			WHERE UserId = @UserId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<UserEntity>(sql, new { UserId = userId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+            var lst = connection.Query<UserEntity>(sql, new { UserId = userId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
 		}
 
 		public IEnumerable<UserEntity> SelectAll()
@@ -39,12 +38,11 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.[User]";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<UserEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+            var lst = connection.Query<UserEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
 		
@@ -57,13 +55,12 @@ namespace InStock.Lib.DataAccess
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+			using var connection = new SqlConnection(ConnectionString);
+			
+            var p = new DynamicParameters();
+			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(UserEntity entity)
@@ -73,14 +70,13 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc = @CreateOnUtc
 			WHERE UserId = @UserId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+			using var connection = new SqlConnection(ConnectionString);
+			
+            var p = new DynamicParameters();
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
 		}
 	}
 }

@@ -7,6 +7,6 @@ namespace InStock.Api.Controllers
     public abstract class BaseApiSecureController
         : ControllerBase
     {
-
+        protected int UserId = 1; //TODO: This needs to be set correctly
     }
 }
