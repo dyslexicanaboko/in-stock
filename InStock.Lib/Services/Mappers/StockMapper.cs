@@ -7,8 +7,10 @@ namespace InStock.Lib.Services.Mappers
     public class StockMapper
         : IMapper<IStock, StockEntity, StockModel>, IStockMapper
     {
-        public StockEntity ToEntity(StockModel model)
+        public StockEntity? ToEntity(StockModel? model)
         {
+            if (model == null) return null;
+            
             var entity = new StockEntity();
             entity.StockId = model.StockId;
             entity.Symbol = model.Symbol;
@@ -19,8 +21,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public StockModel ToModel(StockEntity entity)
+        public StockModel? ToModel(StockEntity? entity)
         {
+            if (entity == null) return null;
+            
             var model = new StockModel();
             model.StockId = entity.StockId;
             model.Symbol = entity.Symbol;
@@ -31,8 +35,10 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public StockEntity ToEntity(IStock target)
+        public StockEntity? ToEntity(IStock? target)
         {
+            if (target == null) return null;
+            
             var entity = new StockEntity();
             entity.StockId = target.StockId;
             entity.Symbol = target.Symbol;
@@ -42,8 +48,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public StockModel ToModel(IStock target)
+        public StockModel? ToModel(IStock? target)
         {
+            if (target == null) return null;
+            
             var model = new StockModel();
             model.StockId = target.StockId;
             model.Symbol = target.Symbol;
@@ -53,8 +61,10 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public StockV1CreatedModel ToCreatedModel(IStock target)
+        public StockV1CreatedModel? ToCreatedModel(IStock? target)
         {
+            if (target == null) return null;
+            
             var model = new StockV1CreatedModel();
             model.StockId = target.StockId;
             model.Symbol = target.Symbol;

@@ -24,7 +24,7 @@ namespace InStock.Api.Controllers
         }
 
         // GET api/stock/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IStock))]
         public ActionResult<IStock> Get(int id)
         {

@@ -6,8 +6,10 @@ namespace InStock.Lib.Services.Mappers
     public class TradeMapper
         : IMapper<ITrade, TradeEntity, TradeModel>
     {
-        public TradeEntity ToEntity(TradeModel model)
+        public TradeEntity? ToEntity(TradeModel? model)
         {
+            if (model == null) return null;
+            
             var entity = new TradeEntity();
             entity.TradeId = model.TradeId;
             entity.UserId = model.UserId;
@@ -23,8 +25,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public TradeModel ToModel(TradeEntity entity)
+        public TradeModel? ToModel(TradeEntity? entity)
         {
+            if (entity == null) return null;
+            
             var model = new TradeModel();
             model.TradeId = entity.TradeId;
             model.UserId = entity.UserId;
@@ -40,8 +44,10 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public TradeEntity ToEntity(ITrade target)
+        public TradeEntity? ToEntity(ITrade? target)
         {
+            if (target == null) return null;
+            
             var entity = new TradeEntity();
             entity.TradeId = target.TradeId;
             entity.UserId = target.UserId;
@@ -56,8 +62,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public TradeModel ToModel(ITrade target)
+        public TradeModel? ToModel(ITrade? target)
         {
+            if (target == null) return null;
+            
             var model = new TradeModel();
             model.TradeId = target.TradeId;
             model.UserId = target.UserId;

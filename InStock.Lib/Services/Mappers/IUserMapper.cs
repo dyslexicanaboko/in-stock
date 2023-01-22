@@ -6,17 +6,17 @@ namespace InStock.Lib.Services.Mappers
 {
     public interface IUserMapper
     {
-        UserV1CreatedModel ToCreatedModel(IUser target);
+        UserV1CreatedModel? ToCreatedModel(IUser? target);
 
-        UserEntity ToEntity(IUser target);
+        UserEntity? ToEntity(IUser? target);
 
-        UserEntity ToEntity(UserModel model);
+        UserEntity? ToEntity(UserModel? model);
 
-        UserModel ToModel(IUser target);
+        UserModel? ToModel(IUser? target);
 
-        UserModel ToModel(UserEntity entity);
+        UserModel? ToModel(UserEntity? entity);
 
-        UserEntity ToEntity(UserV1CreateModel target);
+        UserEntity? ToEntity(UserV1CreateModel? target);
 
         IList<UserModel> ToModel(IList<UserEntity> target);
     }

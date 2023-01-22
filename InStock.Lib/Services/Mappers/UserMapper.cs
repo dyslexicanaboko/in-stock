@@ -7,8 +7,10 @@ namespace InStock.Lib.Services.Mappers
     public class UserMapper
         : MapperBase, IMapper<IUser, UserEntity, UserModel>, IUserMapper
     {
-        public UserEntity ToEntity(UserModel model)
+        public UserEntity? ToEntity(UserModel? model)
         {
+            if (model == null) return null;
+
             var entity = new UserEntity();
             entity.UserId = model.UserId;
             entity.Name = model.Name;
@@ -17,8 +19,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public UserModel ToModel(UserEntity entity)
+        public UserModel? ToModel(UserEntity? entity)
         {
+            if (entity == null) return null;
+
             var model = new UserModel();
             model.UserId = entity.UserId;
             model.Name = entity.Name;
@@ -27,8 +31,10 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public UserEntity ToEntity(IUser target)
+        public UserEntity? ToEntity(IUser? target)
         {
+            if (target == null) return null;
+
             var entity = new UserEntity();
             entity.UserId = target.UserId;
             entity.Name = target.Name;
@@ -36,8 +42,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public UserModel ToModel(IUser target)
+        public UserModel? ToModel(IUser? target)
         {
+            if (target == null) return null;
+
             var model = new UserModel();
             model.UserId = target.UserId;
             model.Name = target.Name;
@@ -45,16 +53,20 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public UserEntity ToEntity(UserV1CreateModel target)
+        public UserEntity? ToEntity(UserV1CreateModel? target)
         {
+            if (target == null) return null;
+
             var model = new UserEntity();
             model.Name = target.Name;
 
             return model;
         }
 
-        public UserV1CreatedModel ToCreatedModel(IUser target)
+        public UserV1CreatedModel? ToCreatedModel(IUser? target)
         {
+            if (target == null) return null;
+            
             var model = new UserV1CreatedModel();
             model.UserId = target.UserId;
             model.Name = target.Name;
