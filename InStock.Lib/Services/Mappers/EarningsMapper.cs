@@ -61,10 +61,12 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public IList<EarningsModel> ToModel(IList<EarningsEntity?> target) => ToList(target, ToModel);
+        public IList<EarningsModel> ToModel(IList<EarningsEntity>? target) => ToList(target, ToModel);
 
-        public EarningsEntity ToEntity(EarningsV1CreateModel model)
+        public EarningsEntity? ToEntity(EarningsV1CreateModel? model)
         {
+            if (model == null) return null;
+            
             var entity = new EarningsEntity();
             entity.StockId = model.StockId;
             entity.Date = model.Date;
@@ -73,8 +75,10 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public EarningsV1CreatedModel ToCreatedModel(EarningsEntity entity)
+        public EarningsV1CreatedModel? ToCreatedModel(EarningsEntity? entity)
         {
+            if (entity == null) return null;
+
             var model = new EarningsV1CreatedModel();
             model.EarningsId = entity.EarningsId;
             model.StockId = entity.StockId;

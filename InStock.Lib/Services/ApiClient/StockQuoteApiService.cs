@@ -1,4 +1,5 @@
 ﻿using NodaTime;
+using System.Diagnostics;
 using YahooQuotesApi;
 
 namespace InStock.Lib.Services.ApiClient
@@ -31,15 +32,15 @@ namespace InStock.Lib.Services.ApiClient
             var history = item.PriceHistory.Value.First();
 
             var sq = new StockQuoteModel
-            {
-                Symbol = symbol,
-                Name = item.LongName,
+            (
+                new DateTime(history.Date.Year, history.Date.Month, history.Date.Day),
+                symbol,
+                item.LongName,
                 //Bid = item.Bid,
                 //Ask = item.Ask,
-                Date = new DateTime(history.Date.Year, history.Date.Month, history.Date.Day),
-                Price = history.Close,
-                Volume = history.Volume
-            };
+                history.Close,
+                history.Volume
+            );
 
             return sq;
         }

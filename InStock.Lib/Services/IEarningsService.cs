@@ -4,7 +4,7 @@ namespace InStock.Lib.Services
 {
     public interface IEarningsService
     {
-        EarningsEntity? Add(EarningsEntity earnings);
+        EarningsEntity Add(EarningsEntity? earnings);
         
         void Delete(int earningsId);
         
@@ -12,6 +12,6 @@ namespace InStock.Lib.Services
         
         EarningsEntity? GetEarnings(int id);
         
-        IList<EarningsEntity> GetEarnings(string symbol);
+        IList<EarningsEntity>? GetEarnings(string symbol);
     }
 }

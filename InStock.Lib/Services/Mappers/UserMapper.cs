@@ -11,9 +11,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (model == null) return null;
 
-            var entity = new UserEntity();
-            entity.UserId = model.UserId;
-            entity.Name = model.Name;
+            var entity = new UserEntity(model);
             entity.CreateOnUtc = model.CreateOnUtc;
 
             return entity;
@@ -23,9 +21,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (entity == null) return null;
 
-            var model = new UserModel();
-            model.UserId = entity.UserId;
-            model.Name = entity.Name;
+            var model = new UserModel(entity);
             model.CreateOnUtc = entity.CreateOnUtc;
 
             return model;
@@ -35,9 +31,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
 
-            var entity = new UserEntity();
-            entity.UserId = target.UserId;
-            entity.Name = target.Name;
+            var entity = new UserEntity(target);
 
             return entity;
         }
@@ -46,9 +40,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
 
-            var model = new UserModel();
-            model.UserId = target.UserId;
-            model.Name = target.Name;
+            var model = new UserModel(target);
 
             return model;
         }
@@ -57,8 +49,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
 
-            var model = new UserEntity();
-            model.Name = target.Name;
+            var model = new UserEntity(target);
 
             return model;
         }
@@ -67,9 +58,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var model = new UserV1CreatedModel();
-            model.UserId = target.UserId;
-            model.Name = target.Name;
+            var model = new UserV1CreatedModel(target);
 
             return model;
         }

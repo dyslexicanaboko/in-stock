@@ -8,7 +8,7 @@ namespace InStock.Lib.Services.Mappers
     {
         EarningsEntity? ToEntity(EarningsModel? model);
         
-        EarningsEntity ToEntity(EarningsV1CreateModel model);
+        EarningsEntity? ToEntity(EarningsV1CreateModel? model);
         
         EarningsEntity? ToEntity(IEarnings? target);
         
@@ -16,8 +16,8 @@ namespace InStock.Lib.Services.Mappers
         
         EarningsModel? ToModel(IEarnings? target);
 
-        EarningsV1CreatedModel ToCreatedModel(EarningsEntity entity);
+        EarningsV1CreatedModel? ToCreatedModel(EarningsEntity? entity);
 
-        IList<EarningsModel> ToModel(IList<EarningsEntity?> target);
+        IList<EarningsModel> ToModel(IList<EarningsEntity>? target);
     }
 }

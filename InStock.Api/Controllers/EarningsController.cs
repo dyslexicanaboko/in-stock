@@ -24,7 +24,7 @@ namespace InStock.Api.Controllers
         }
 
         // GET api/earnings/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEarnings))]
         public ActionResult<IEarnings> Get(int id)
         {
@@ -52,11 +52,11 @@ namespace InStock.Api.Controllers
 
             var m = _mapper.ToCreatedModel(entity);
 
-            return CreatedAtAction(nameof(Get), new { id = m.EarningsId }, m);
+            return CreatedAtAction(nameof(Get), new { id = m!.EarningsId }, m);
         }
 
         // DELETE api/earnings/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(int id)
         {

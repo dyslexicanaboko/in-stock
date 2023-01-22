@@ -35,7 +35,9 @@ namespace InStock.Api.Controllers
         [HttpGet]
         public virtual IEnumerable<TModel> Get()
         {
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
             return ToList(_repository.SelectAll());
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
         }
 
         // GET api/<TController>/5
@@ -53,7 +55,9 @@ namespace InStock.Api.Controllers
         [HttpPost]
         public virtual void Post([FromBody] TModel value)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             _repository.Insert(_mapper.ToEntity(value));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         // PUT api/<TController>/5
@@ -61,7 +65,9 @@ namespace InStock.Api.Controllers
         public virtual void Put(int id, [FromBody] TModel value)
         {
             //Update the ID of the object?
+#pragma warning disable CS8604 // Possible null reference argument.
             _repository.Update(_mapper.ToEntity(value));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         // DELETE api/<TController>/5
@@ -71,7 +77,7 @@ namespace InStock.Api.Controllers
             throw new NotImplementedException("Deletes are not supported by default on purpose.");
         }
 
-        protected IEnumerable<TModel> ToList(IEnumerable<TEntity> entities)
+        protected IEnumerable<TModel?> ToList(IEnumerable<TEntity> entities)
         {
             if (entities == null)
                 return Enumerable.Empty<TModel>();

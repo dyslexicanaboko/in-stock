@@ -21,6 +21,6 @@ namespace InStock.Lib.Entities
 
         public DateTime CreateOnUtc { get; set; }
 
-        public string Confirmation { get; set; }
+        public string? Confirmation { get; set; }
     }
 }

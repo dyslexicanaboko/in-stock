@@ -8,6 +8,6 @@ namespace InStock.Lib.Entities
 
         string Name { get; set; }
 
-        string Notes { get; set; }
+        string? Notes { get; set; }
     }
 }

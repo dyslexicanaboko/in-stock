@@ -52,7 +52,7 @@ namespace InStock.Api.Controllers
 
             var m = _mapper.ToCreatedModel(entity);
 
-            return CreatedAtAction(nameof(Get), new { id = m.UserId }, m);
+            return CreatedAtAction(nameof(Get), new { id = m!.UserId }, m);
         }
     }
 }

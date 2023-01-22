@@ -1,4 +1,5 @@
-﻿using InStock.Lib.DataAccess;
+﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 
 namespace InStock.Lib.Services
@@ -27,9 +28,11 @@ namespace InStock.Lib.Services
             return lst;
         }
 
-        public UserEntity Add(UserEntity user)
+        public UserEntity Add(UserEntity? user)
         {
-            user.UserId = _repoUser.Using(x => x.Insert(user));
+            Guard.IsNull(user);
+
+            user!.UserId = _repoUser.Using(x => x.Insert(user));
 
             return user;
         }

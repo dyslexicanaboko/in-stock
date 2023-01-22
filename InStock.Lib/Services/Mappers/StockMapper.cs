@@ -11,10 +11,8 @@ namespace InStock.Lib.Services.Mappers
         {
             if (model == null) return null;
             
-            var entity = new StockEntity();
+            var entity = new StockEntity(model);
             entity.StockId = model.StockId;
-            entity.Symbol = model.Symbol;
-            entity.Name = model.Name;
             entity.CreateOnUtc = model.CreateOnUtc;
             entity.Notes = model.Notes;
 
@@ -25,10 +23,8 @@ namespace InStock.Lib.Services.Mappers
         {
             if (entity == null) return null;
             
-            var model = new StockModel();
+            var model = new StockModel(entity);
             model.StockId = entity.StockId;
-            model.Symbol = entity.Symbol;
-            model.Name = entity.Name;
             model.CreateOnUtc = entity.CreateOnUtc;
             model.Notes = entity.Notes;
 
@@ -39,10 +35,8 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var entity = new StockEntity();
+            var entity = new StockEntity(target);
             entity.StockId = target.StockId;
-            entity.Symbol = target.Symbol;
-            entity.Name = target.Name;
             entity.Notes = target.Notes;
 
             return entity;
@@ -52,10 +46,8 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var model = new StockModel();
+            var model = new StockModel(target);
             model.StockId = target.StockId;
-            model.Symbol = target.Symbol;
-            model.Name = target.Name;
             model.Notes = target.Notes;
 
             return model;
@@ -65,10 +57,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var model = new StockV1CreatedModel();
-            model.StockId = target.StockId;
-            model.Symbol = target.Symbol;
-            model.Name = target.Name;
+            var model = new StockV1CreatedModel(target);
 
             return model;
         }
