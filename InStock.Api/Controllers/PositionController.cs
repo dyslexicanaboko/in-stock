@@ -55,6 +55,7 @@ namespace InStock.Api.Controllers
             
             Guard.IsNotNull(entity);
 
+            //TODO: Need to get the UserId from the header or something?
             entity.UserId = UserId;
 
             await Task.FromResult(_service.Add(entity));
@@ -79,6 +80,7 @@ namespace InStock.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(string symbol)
         {
+            //TODO: Need to get the UserId from the header or something?
             _service.Delete(UserId, symbol);
 
             return NoContent();

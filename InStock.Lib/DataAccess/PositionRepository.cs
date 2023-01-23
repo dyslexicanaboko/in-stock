@@ -105,8 +105,8 @@ namespace InStock.Lib.DataAccess
 			var p = new DynamicParameters();
 			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
 			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-			p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
-			p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
+			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
+			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 
@@ -130,8 +130,8 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
 			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
 			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-			p.Add(name: "@DateOpened", dbType: DbType.Date, value: entity.DateOpened);
-			p.Add(name: "@DateClosed", dbType: DbType.Date, value: entity.DateClosed);
+			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
+			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 

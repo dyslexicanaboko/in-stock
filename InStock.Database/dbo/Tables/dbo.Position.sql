@@ -8,8 +8,13 @@ CREATE TABLE [dbo].[Position]
 [Price] [decimal] (10, 2) NOT NULL,
 [Quantity] [decimal] (10, 4) NOT NULL,
 [CreateOnUtc] [datetime2] (0) NOT NULL CONSTRAINT [DF_dbo.Position_CreatedOnUtc] DEFAULT (sysutcdatetime()),
-CONSTRAINT [PK_dbo.Position_PositionId] PRIMARY KEY CLUSTERED ([PositionId]),
+CONSTRAINT [PK_dbo.Position_PositionId] PRIMARY KEY NONCLUSTERED ([PositionId]),
 CONSTRAINT [FK_dbo.Position_dbo.Stock_StockId] FOREIGN KEY ([StockId]) REFERENCES [dbo].[Stock] ([StockId]),
 CONSTRAINT [FK_dbo.Position_dbo.User_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([UserId]),
+CONSTRAINT [CK_dbo.Position_OpenLessThanClosed] CHECK ([DateOpened] <= ISNULL([DateClosed], '9999-12-31')),
 CONSTRAINT [UK_dbo.Position_UniquePosition] UNIQUE ([UserId], [StockId], [DateOpened])
 )
+GO
+
+CREATE CLUSTERED INDEX [IX_dbo.Position_UserIdStockId] ON [dbo].[Position] ([UserId], [StockId])
+GO

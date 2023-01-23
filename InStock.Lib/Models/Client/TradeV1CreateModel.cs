@@ -1,13 +1,7 @@
-using InStock.Lib.Entities;
-
-namespace InStock.Lib.Models
+namespace InStock.Lib.Models.Client
 {
-    public class TradeModel : ITrade
+    public class TradeV1CreateModel
     {
-        public int TradeId { get; set; }
-
-        public int UserId { get; set; }
-
         public int StockId { get; set; }
 
         public bool Type { get; set; }
