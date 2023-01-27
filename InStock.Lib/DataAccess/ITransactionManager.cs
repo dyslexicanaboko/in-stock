@@ -4,7 +4,9 @@
         : IDisposable
     {
         void Begin();
+
         void Commit();
-        T GetRepository<T>() where T : BaseRepository, new();
+        
+        TRepository GetRepository<TRepository>() where TRepository : IRepository;
     }
 }

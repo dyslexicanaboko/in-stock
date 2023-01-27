@@ -1,5 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+﻿using InStock.Lib.Services;
+using Microsoft.Data.SqlClient;
 
 namespace InStock.Lib.DataAccess
 {
@@ -15,70 +15,61 @@ namespace InStock.Lib.DataAccess
     public abstract class BaseRepository
         : IDisposable
     {
-        protected string ConnectionString;
-        protected SqlConnection? _connection;
-        protected SqlTransaction? _transaction;
+        protected string? ConnectionString;
+        protected SqlConnection? Connection;
+        protected SqlTransaction? Transaction;
 
-        //NOTE: Do not instantiate the connection or transaction objects here. This is mostly for the purposes of DI.
         protected BaseRepository()
         {
-            ConnectionString = LoadConnectionString();
+            //NOTE: Do not instantiate the connection or transaction objects here. This is mostly for the purposes of DI.
+        }
+
+        protected BaseRepository(IAppConfiguration configuration)
+        {
+            ConnectionString = configuration.GetConnectionString();
         }
 
         protected BaseRepository(SqlConnection connection)
         {
-            _connection = connection;
+            Connection = connection;
             
-            ConnectionString = _connection.ConnectionString;
+            ConnectionString = Connection.ConnectionString;
         }
 
         protected BaseRepository(SqlTransaction transaction)
             : this(transaction.Connection)
         {
-            _transaction = transaction;
+            Transaction = transaction;
         }
-
-        private static string LoadConnectionString()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-            var configuration = builder.Build();
-
-            var connectionString = configuration.GetConnectionString("InStock");
-
-            return connectionString!;
-        }
-
+        
         protected SqlConnection GetConnection()
         {
-            if(_connection == null) _connection = new SqlConnection(ConnectionString);
+            Connection ??= new SqlConnection(ConnectionString);
 
-            if(_connection.State != System.Data.ConnectionState.Open) _connection.Open();
+            if(Connection.State != System.Data.ConnectionState.Open) Connection.Open();
 
-            return _connection;
+            return Connection;
         }
 
         //Not crazy about this
         public void SetTransaction(SqlTransaction transaction)
         {
-            _transaction = transaction;
-            _connection = _transaction.Connection;
+            Transaction = transaction;
+            Connection = Transaction.Connection;
 
-            ConnectionString = _connection.ConnectionString;
+            ConnectionString = Connection.ConnectionString;
         }
 
         public void Dispose()
         {
-            if (_connection == null) return;
+            if (Connection == null) return;
 
             //What happens if a transaction is not committed yet?
-            _transaction?.Dispose();
+            Transaction?.Dispose();
 
             //The close and/or dispose method more than likely handle the closing if the connection is open
-            _connection.Close();
-            _connection.Dispose();
+            Connection.Close();
+            Connection.Dispose();
         }
 
         #region Not sure I will use any of this

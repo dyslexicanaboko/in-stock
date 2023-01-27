@@ -5,51 +5,63 @@
     {
         private readonly Dictionary<string, object> _repositories;
 
-        public TransactionManager()
+        //NOTE: I hate this giant eye sore, but I am going to leave it for now until I can fix it
+        //I couldn't unit test properly because I was using concrete implementations
+        public TransactionManager(
+            IEarningsRepository earningsRepository,
+            IPositionRepository positionRepository,
+            IQuoteRepository quoteRepository,
+            IStockRepository stockRepository,
+            ITradeRepository tradeRepository,
+            IUserRepository userRepository)
             : base()
         {
-            _repositories = new Dictionary<string, object>();
+            _repositories = new Dictionary<string, object>
+            {
+                { nameof(IEarningsRepository), earningsRepository },
+                { nameof(IPositionRepository), positionRepository },
+                { nameof(IQuoteRepository), quoteRepository },
+                { nameof(IStockRepository), stockRepository },
+                { nameof(ITradeRepository), tradeRepository },
+                { nameof(IUserRepository), userRepository }
+            };
         }
 
         public void Begin()
         {
-            if (_transaction != null)
+            if (Transaction != null)
                 throw new InvalidOperationException("Transaction has already begun. Commit the current transaction before starting a new one.");
 
-            _connection = GetConnection();
+            Connection = GetConnection();
 
-            _transaction = _connection.BeginTransaction();
+            Transaction = Connection.BeginTransaction();
         }
 
         public void Commit()
         {
-            if (_transaction == null)
+            if (Transaction == null)
                 throw new InvalidOperationException("Cannot commit a transaction that was never begun. Transaction was null.");
 
-            _transaction.Commit();
-            _transaction.Dispose();
-            _transaction = null;
+            Transaction.Commit();
+            Transaction.Dispose();
+            Transaction = null;
         }
 
-        public T GetRepository<T>()
-            where T : BaseRepository, new()
+        public TRepository GetRepository<TRepository>()
+            where TRepository : IRepository
         {
-            if (_connection == null || 
-                _transaction == null ||
-                _connection.State != System.Data.ConnectionState.Open)
+            if (Connection == null || 
+                Transaction == null ||
+                Connection.State != System.Data.ConnectionState.Open)
                 throw new InvalidOperationException("You must call the Begin() method before access repositories in this context.");
 
-            var t = typeof(T);
+            var t = typeof(TRepository);
 
             //Keep track of the repositories in use
-            if (_repositories.ContainsKey(t.Name)) return (T)_repositories[t.Name];
+            var repo = (TRepository)_repositories[t.Name];
 
-            //Instantiate the repository, but set the transaction so it's automatically
-            //part of the opened connection and transaction.
-            var repo = new T();
-            repo.SetTransaction(_transaction);
-
-            _repositories.Add(t.Name, repo);
+            //Set the transaction so it's automatically part of the opened connection and transaction.
+            repo.SetTransaction(Transaction);
 
             return repo;
         }

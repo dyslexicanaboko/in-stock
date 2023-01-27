@@ -1,5 +1,6 @@
 using Dapper;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using System.Data;
 
 namespace InStock.Lib.DataAccess
@@ -7,6 +8,17 @@ namespace InStock.Lib.DataAccess
 	public class StockRepository
 		: BaseRepository, IStockRepository
 	{
+		public StockRepository()
+		{
+			
+		}
+
+		public StockRepository(IAppConfiguration configuration)
+			: base(configuration)
+		{
+			
+		}
+
 		public StockEntity? Select(int stockId)
 		{
 			var sql = @"
@@ -19,7 +31,7 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock
 			WHERE StockId = @StockId";
 
-			var lst = GetConnection().Query<StockEntity>(sql, new { StockId = stockId }, _transaction).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, new { StockId = stockId }, Transaction).ToList();
 
 			if (!lst.Any()) return null;
 
@@ -40,7 +52,7 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock
 			WHERE Symbol = @symbol";
 
-			var lst = GetConnection().Query<StockEntity>(sql, new { symbol }, _transaction).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, new { symbol }, Transaction).ToList();
 
 			if (!lst.Any()) return null;
 
@@ -60,7 +72,7 @@ namespace InStock.Lib.DataAccess
 				Notes
 			FROM dbo.Stock";
 
-			var lst = GetConnection().Query<StockEntity>(sql, transaction: _transaction).ToList();
+			var lst = GetConnection().Query<StockEntity>(sql, transaction: Transaction).ToList();
 
 			return lst;
 		}
@@ -84,7 +96,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
 			p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
 
-			return GetConnection().ExecuteScalar<int>(sql, entity, _transaction);
+			return GetConnection().ExecuteScalar<int>(sql, entity, Transaction);
 		}
 
 		public void Update(StockEntity entity)
@@ -101,7 +113,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
 			p.Add(name: "@Notes", dbType: DbType.String, value: entity.Notes, size: 4000);
 
-			GetConnection().Execute(sql, p, _transaction);
+			GetConnection().Execute(sql, p, Transaction);
 		}
 	}
 }
