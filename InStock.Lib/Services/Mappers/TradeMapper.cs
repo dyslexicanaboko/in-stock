@@ -1,13 +1,16 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class TradeMapper
-        : IMapper<ITrade, TradeEntity, TradeModel>
+        : MapperBase, IMapper<ITrade, TradeEntity, TradeModel>, ITradeMapper
     {
-        public TradeEntity ToEntity(TradeModel model)
+        public TradeEntity? ToEntity(TradeModel? model)
         {
+            if (model == null) return null;
+            
             var entity = new TradeEntity();
             entity.TradeId = model.TradeId;
             entity.UserId = model.UserId;
@@ -17,14 +20,15 @@ namespace InStock.Lib.Services.Mappers
             entity.Quantity = model.Quantity;
             entity.StartDate = model.StartDate;
             entity.EndDate = model.EndDate;
-            entity.CreateOnUtc = model.CreateOnUtc;
             entity.Confirmation = model.Confirmation;
 
             return entity;
         }
 
-        public TradeModel ToModel(TradeEntity entity)
+        public TradeModel? ToModel(TradeEntity? entity)
         {
+            if (entity == null) return null;
+            
             var model = new TradeModel();
             model.TradeId = entity.TradeId;
             model.UserId = entity.UserId;
@@ -34,14 +38,15 @@ namespace InStock.Lib.Services.Mappers
             model.Quantity = entity.Quantity;
             model.StartDate = entity.StartDate;
             model.EndDate = entity.EndDate;
-            model.CreateOnUtc = entity.CreateOnUtc;
             model.Confirmation = entity.Confirmation;
 
             return model;
         }
 
-        public TradeEntity ToEntity(ITrade target)
+        public TradeEntity? ToEntity(ITrade? target)
         {
+            if (target == null) return null;
+            
             var entity = new TradeEntity();
             entity.TradeId = target.TradeId;
             entity.UserId = target.UserId;
@@ -51,14 +56,15 @@ namespace InStock.Lib.Services.Mappers
             entity.Quantity = target.Quantity;
             entity.StartDate = target.StartDate;
             entity.EndDate = target.EndDate;
-            entity.CreateOnUtc = target.CreateOnUtc;
             entity.Confirmation = target.Confirmation;
 
             return entity;
         }
 
-        public TradeModel ToModel(ITrade target)
+        public TradeModel? ToModel(ITrade? target)
         {
+            if (target == null) return null;
+            
             var model = new TradeModel();
             model.TradeId = target.TradeId;
             model.UserId = target.UserId;
@@ -68,10 +74,27 @@ namespace InStock.Lib.Services.Mappers
             model.Quantity = target.Quantity;
             model.StartDate = target.StartDate;
             model.EndDate = target.EndDate;
-            model.CreateOnUtc = target.CreateOnUtc;
             model.Confirmation = target.Confirmation;
 
             return model;
         }
+
+        public TradeEntity? ToEntity(TradeV1CreateModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new TradeEntity();
+            entity.StockId = model.StockId;
+            entity.Type = model.Type;
+            entity.Price = model.Price;
+            entity.Quantity = model.Quantity;
+            entity.StartDate = model.StartDate;
+            entity.EndDate = model.EndDate;
+            entity.Confirmation = model.Confirmation;
+
+            return entity;
+        }
+
+        public IList<TradeModel> ToModel(IList<TradeEntity>? target) => ToList(target, ToModel);
     }
 }

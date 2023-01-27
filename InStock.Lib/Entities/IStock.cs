@@ -8,8 +8,6 @@ namespace InStock.Lib.Entities
 
         string Name { get; set; }
 
-        DateTime CreateOnUtc { get; set; }
-
-        string Notes { get; set; }
+        string? Notes { get; set; }
     }
 }

@@ -1,55 +1,63 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class StockMapper
-        : IMapper<IStock, StockEntity, StockModel>
+        : IMapper<IStock, StockEntity, StockModel>, IStockMapper
     {
-        public StockEntity ToEntity(StockModel model)
+        public StockEntity? ToEntity(StockModel? model)
         {
-            var entity = new StockEntity();
+            if (model == null) return null;
+            
+            var entity = new StockEntity(model);
             entity.StockId = model.StockId;
-            entity.Symbol = model.Symbol;
-            entity.Name = model.Name;
             entity.CreateOnUtc = model.CreateOnUtc;
             entity.Notes = model.Notes;
 
             return entity;
         }
 
-        public StockModel ToModel(StockEntity entity)
+        public StockModel? ToModel(StockEntity? entity)
         {
-            var model = new StockModel();
+            if (entity == null) return null;
+            
+            var model = new StockModel(entity);
             model.StockId = entity.StockId;
-            model.Symbol = entity.Symbol;
-            model.Name = entity.Name;
             model.CreateOnUtc = entity.CreateOnUtc;
             model.Notes = entity.Notes;
 
             return model;
         }
 
-        public StockEntity ToEntity(IStock target)
+        public StockEntity? ToEntity(IStock? target)
         {
-            var entity = new StockEntity();
+            if (target == null) return null;
+            
+            var entity = new StockEntity(target);
             entity.StockId = target.StockId;
-            entity.Symbol = target.Symbol;
-            entity.Name = target.Name;
-            entity.CreateOnUtc = target.CreateOnUtc;
             entity.Notes = target.Notes;
 
             return entity;
         }
 
-        public StockModel ToModel(IStock target)
+        public StockModel? ToModel(IStock? target)
         {
-            var model = new StockModel();
+            if (target == null) return null;
+            
+            var model = new StockModel(target);
             model.StockId = target.StockId;
-            model.Symbol = target.Symbol;
-            model.Name = target.Name;
-            model.CreateOnUtc = target.CreateOnUtc;
             model.Notes = target.Notes;
+
+            return model;
+        }
+
+        public StockV1CreatedModel? ToCreatedModel(IStock? target)
+        {
+            if (target == null) return null;
+            
+            var model = new StockV1CreatedModel(target);
 
             return model;
         }

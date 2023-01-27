@@ -20,8 +20,6 @@ namespace InStock.Lib.Models
 
         public DateTime EndDate { get; set; }
 
-        public DateTime CreateOnUtc { get; set; }
-
-        public string Confirmation { get; set; }
+        public string? Confirmation { get; set; }
     }
 }

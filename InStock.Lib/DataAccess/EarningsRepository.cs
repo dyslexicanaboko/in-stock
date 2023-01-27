@@ -6,9 +6,9 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class EarningsRepository
-		: BaseRepository, IRepository<EarningsEntity>
+		: BaseRepository, IEarningsRepository
 	{
-		public EarningsEntity Select(int earningsId)
+		public EarningsEntity? Select(int earningsId)
 		{
 			var sql = @"
 			SELECT
@@ -20,16 +20,36 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Earnings
 			WHERE EarningsId = @EarningsId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<EarningsEntity>(sql, new { EarningsId = earningsId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql, new { EarningsId = earningsId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
+		}
+
+		public IList<EarningsEntity> Select(string symbol)
+		{
+			var sql = @"
+			SELECT
+				e.EarningsId,
+				e.StockId,
+				e.[Date],
+				e.[Order],
+				e.CreateOnUtc
+			FROM dbo.Stock s
+				INNER JOIN dbo.Earnings e
+					ON s.StockId = e.StockId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql, new { symbol }).ToList();
+
+			return lst;
 		}
 
 		public IEnumerable<EarningsEntity> SelectAll()
@@ -43,40 +63,35 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.Earnings";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<EarningsEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<EarningsEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
 
-		//Preference on whether or not insert method returns a value is up to the user and the object being inserted
+		
 		public int Insert(EarningsEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.Earnings (
 				StockId,
 				[Date],
-				[Order],
-				CreateOnUtc
+				[Order]
 			) VALUES (
 				@StockId,
 				@Date,
-				@Order,
-				@CreateOnUtc);
+				@Order);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(EarningsEntity entity)
@@ -84,21 +99,40 @@ namespace InStock.Lib.DataAccess
 			var sql = @"UPDATE dbo.Earnings SET 
 				StockId = @StockId,
 				[Date] = @Date,
-				[Order] = @Order,
-				CreateOnUtc = @CreateOnUtc
+				[Order] = @Order
 			WHERE EarningsId = @EarningsId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
-				p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
+			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
+		}
+
+		public void Delete(int earningsId)
+		{
+			var sql = @"DELETE FROM dbo.Earnings WHERE EarningsId = @earningsId";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { earningsId });
+		}
+
+		public void Delete(string symbol)
+		{
+			var sql = @"DELETE e 
+				FROM dbo.Stock s
+				INNER JOIN dbo.Earnings e
+					ON s.StockId = e.StockId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+			
+			connection.Execute(sql, new { symbol });
 		}
 	}
 }

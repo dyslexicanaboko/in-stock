@@ -1,49 +1,68 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class UserMapper
-        : IMapper<IUser, UserEntity, UserModel>
+        : MapperBase, IMapper<IUser, UserEntity, UserModel>, IUserMapper
     {
-        public UserEntity ToEntity(UserModel model)
+        public UserEntity? ToEntity(UserModel? model)
         {
-            var entity = new UserEntity();
-            entity.UserId = model.UserId;
-            entity.Name = model.Name;
+            if (model == null) return null;
+
+            var entity = new UserEntity(model);
             entity.CreateOnUtc = model.CreateOnUtc;
 
             return entity;
         }
 
-        public UserModel ToModel(UserEntity entity)
+        public UserModel? ToModel(UserEntity? entity)
         {
-            var model = new UserModel();
-            model.UserId = entity.UserId;
-            model.Name = entity.Name;
+            if (entity == null) return null;
+
+            var model = new UserModel(entity);
             model.CreateOnUtc = entity.CreateOnUtc;
 
             return model;
         }
 
-        public UserEntity ToEntity(IUser target)
+        public UserEntity? ToEntity(IUser? target)
         {
-            var entity = new UserEntity();
-            entity.UserId = target.UserId;
-            entity.Name = target.Name;
-            entity.CreateOnUtc = target.CreateOnUtc;
+            if (target == null) return null;
+
+            var entity = new UserEntity(target);
 
             return entity;
         }
 
-        public UserModel ToModel(IUser target)
+        public UserModel? ToModel(IUser? target)
         {
-            var model = new UserModel();
-            model.UserId = target.UserId;
-            model.Name = target.Name;
-            model.CreateOnUtc = target.CreateOnUtc;
+            if (target == null) return null;
+
+            var model = new UserModel(target);
 
             return model;
         }
+
+        public UserEntity? ToEntity(UserV1CreateModel? target)
+        {
+            if (target == null) return null;
+
+            var model = new UserEntity(target);
+
+            return model;
+        }
+
+        public UserV1CreatedModel? ToCreatedModel(IUser? target)
+        {
+            if (target == null) return null;
+            
+            var model = new UserV1CreatedModel(target);
+
+            return model;
+        }
+
+        public IList<UserModel> ToModel(IList<UserEntity> target) => ToList(target, ToModel);
     }
 }

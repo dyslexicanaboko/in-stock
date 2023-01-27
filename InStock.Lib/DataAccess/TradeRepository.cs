@@ -6,9 +6,9 @@ using System.Data;
 namespace InStock.Lib.DataAccess
 {
 	public class TradeRepository
-		: BaseRepository, IRepository<TradeEntity>
+		: BaseRepository, ITradeRepository
 	{
-		public TradeEntity Select(int tradeId)
+		public TradeEntity? Select(int tradeId)
 		{
 			var sql = @"
 			SELECT
@@ -25,16 +25,42 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Trade
 			WHERE TradeId = @TradeId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<TradeEntity>(sql, new { TradeId = tradeId }).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<TradeEntity>(sql, new { TradeId = tradeId }).ToList();
 
-				if (!lst.Any()) return null;
+			if (!lst.Any()) return null;
 
-				var entity = lst.Single();
+			var entity = lst.Single();
 
-				return entity;
-			}
+			return entity;
+		}
+
+		public IEnumerable<TradeEntity> Select(int userId, string symbol)
+		{
+			var sql = @"
+			SELECT
+				t.TradeId,
+				t.UserId,
+				t.StockId,
+				t.Type,
+				t.Price,
+				t.Quantity,
+				t.StartDate,
+				t.EndDate,
+				t.CreateOnUtc,
+				t.Confirmation
+			FROM dbo.Stock s
+				INNER JOIN dbo.Trade t
+					ON s.StockId = t.StockId
+						AND t.UserId = @userId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<TradeEntity>(sql, new { userId, symbol }).ToList();
+
+			return lst;
 		}
 
 		public IEnumerable<TradeEntity> SelectAll()
@@ -53,15 +79,13 @@ namespace InStock.Lib.DataAccess
 				Confirmation
 			FROM dbo.Trade";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var lst = connection.Query<TradeEntity>(sql).ToList();
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var lst = connection.Query<TradeEntity>(sql).ToList();
 
-				return lst;
-			}
+			return lst;
 		}
-
-		//Preference on whether or not insert method returns a value is up to the user and the object being inserted
+		
 		public int Insert(TradeEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.Trade (
@@ -72,7 +96,6 @@ namespace InStock.Lib.DataAccess
 				Quantity,
 				StartDate,
 				EndDate,
-				CreateOnUtc,
 				Confirmation
 			) VALUES (
 				@UserId,
@@ -82,26 +105,23 @@ namespace InStock.Lib.DataAccess
 				@Quantity,
 				@StartDate,
 				@EndDate,
-				@CreateOnUtc,
 				@Confirmation);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
-				p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
-				p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			p.Add(name: "@StartDate", dbType: DbType.DateTime2, value: entity.StartDate, scale: 0);
+			p.Add(name: "@EndDate", dbType: DbType.DateTime2, value: entity.EndDate, scale: 0);
+			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
-				return connection.ExecuteScalar<int>(sql, entity);
-			}
+			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(TradeEntity entity)
@@ -118,22 +138,44 @@ namespace InStock.Lib.DataAccess
 				Confirmation = @Confirmation
 			WHERE TradeId = @TradeId";
 
-			using (var connection = new SqlConnection(ConnectionString))
-			{
-				var p = new DynamicParameters();
-				p.Add(name: "@TradeId", dbType: DbType.Int32, value: entity.TradeId);
-				p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-				p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-				p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
-				p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
-				p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-				p.Add(name: "@StartDate", dbType: DbType.Date, value: entity.StartDate);
-				p.Add(name: "@EndDate", dbType: DbType.Date, value: entity.EndDate);
-				p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
-				p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
+			using var connection = new SqlConnection(ConnectionString);
+			
+			var p = new DynamicParameters();
+			p.Add(name: "@TradeId", dbType: DbType.Int32, value: entity.TradeId);
+			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
+			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
+			p.Add(name: "@Type", dbType: DbType.Boolean, value: entity.Type);
+			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
+			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
+			p.Add(name: "@StartDate", dbType: DbType.DateTime2, value: entity.StartDate, scale: 0);
+			p.Add(name: "@EndDate", dbType: DbType.DateTime2, value: entity.EndDate, scale: 0);
+			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
+			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
-				connection.Execute(sql, p);
-			}
+			connection.Execute(sql, p);
+		}
+
+		public void Delete(int tradeId)
+		{
+			var sql = @"DELETE FROM dbo.Trade WHERE TradeId = @tradeId";
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			connection.Execute(sql, new { tradeId });
+		}
+
+		public void Delete(int userId, string symbol)
+		{
+			var sql = @"DELETE t 
+				FROM dbo.Stock s
+				INNER JOIN dbo.Trade t
+					ON s.StockId = t.StockId
+						AND t.UserId = @userId
+			WHERE s.Symbol = @symbol";
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			connection.Execute(sql, new { userId, symbol });
 		}
 	}
 }

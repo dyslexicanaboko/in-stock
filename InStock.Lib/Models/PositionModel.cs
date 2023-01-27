@@ -17,7 +17,5 @@ namespace InStock.Lib.Models
         public decimal Price { get; set; }
 
         public decimal Quantity { get; set; }
-
-        public DateTime CreateOnUtc { get; set; }
     }
 }
