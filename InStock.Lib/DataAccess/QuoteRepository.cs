@@ -8,10 +8,10 @@ namespace InStock.Lib.DataAccess
 	public class QuoteRepository
 		: BaseRepository, IQuoteRepository
 	{
-        public QuoteRepository()
-        {
-            
-        }
+		public QuoteRepository()
+		{
+			
+		}
 
 		public QuoteRepository(IAppConfiguration configuration)
 			: base(configuration)
@@ -45,7 +45,7 @@ namespace InStock.Lib.DataAccess
 		public QuoteEntity? Select(string symbol)
 		{
 			var sql = @"
-			SELECT
+			SELECT TOP 1
 				q.QuoteId,
 				q.StockId,
 				q.Date,
@@ -55,9 +55,44 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock s
 				INNER JOIN dbo.Quote q
 					ON s.StockId = q.StockId
-			WHERE s.Symbol = @symbol";
+			WHERE s.Symbol = @symbol
+			ORDER BY q.Date DESC, q.CreatedOnUtc DESC ";
 
 			var lst = GetConnection().Query<QuoteEntity>(sql, new { symbol }, Transaction).ToList();
+
+			if (!lst.Any()) return null;
+
+			var entity = lst.Single();
+
+			return entity;
+		}
+
+		public QuoteEntity? SelectRecent(string symbol, DateTime relativeTimeUtc, int lastXMinutes)
+		{
+			var dtmStart = relativeTimeUtc.AddMinutes(-lastXMinutes);
+
+			var sql = @"
+			SELECT TOP 1
+				q.QuoteId,
+				q.StockId,
+				q.Date,
+				q.Price,
+				q.Volume,
+				q.CreateOnUtc
+			FROM dbo.Stock s
+				INNER JOIN dbo.Quote q
+					ON s.StockId = q.StockId
+			WHERE s.Symbol = @symbol
+				AND q.CreateOnUtc >= @dtmStart AND @relativeTimeUtc <= q.CreateOnUtc
+			ORDER BY q.Date DESC, q.CreatedOnUtc DESC ";
+
+			var lst = GetConnection().Query<QuoteEntity>(sql, new
+				{
+					symbol,
+					dtmStart,
+					relativeTimeUtc
+				}
+				, Transaction).ToList();
 
 			if (!lst.Any()) return null;
 

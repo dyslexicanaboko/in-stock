@@ -6,5 +6,7 @@ namespace InStock.Lib.DataAccess
         : IRepository<QuoteEntity>
     {
         QuoteEntity? Select(string symbol);
+
+        QuoteEntity? SelectRecent(string symbol, DateTime relativeTimeUtc, int lastXMinutes);
     }
 }

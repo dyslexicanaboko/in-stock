@@ -9,18 +9,18 @@ namespace InStock.Lib.Services
     {
         private readonly IStockRepository _repoStock;
         private readonly IQuoteRepository _repoQuote;
-        private readonly IStockQuoteApiService _service;
+        private readonly IStockQuoteApiService _stockQuoteApi;
 
         public QuoteService(
             IQuoteRepository repoQuote,
             IStockRepository repoStock,
-            IStockQuoteApiService service)
+            IStockQuoteApiService stockQuoteApi)
         {
             _repoQuote = repoQuote;
 
             _repoStock = repoStock;
 
-            _service = service;
+            _stockQuoteApi = stockQuoteApi;
         }
 
         public QuoteEntity? GetQuote(int id)
@@ -37,6 +37,14 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
+        public QuoteEntity? GetRecentQuote(string symbol)
+        {
+            //This is hard coded for now until I figure out how to deal with it properly
+            var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, DateTime.UtcNow, 5));
+
+            return dbEntity;
+        }
+
         public async Task<QuoteEntity> Add(string symbol)
         {
             var stock = _repoStock.Using(x => x.Select(symbol));
@@ -46,10 +54,13 @@ namespace InStock.Lib.Services
             return await Add(stock);
         }
 
-        //Need to prevent hits to the API by checking if a quote is already available from the last X time
         public async Task<QuoteEntity> Add(StockEntity stock)
         {
-            var stockQuote = await _service.GetQuote(stock.Symbol);
+            var existingQuote = GetRecentQuote(stock.Symbol);
+
+            if (existingQuote != null) return existingQuote;
+
+            var stockQuote = await _stockQuoteApi.GetQuote(stock.Symbol);
 
             //If the quote cannot be found raise exception I suppose?
             if (stockQuote == null) throw new SymbolNotFoundException(stock.Symbol);
