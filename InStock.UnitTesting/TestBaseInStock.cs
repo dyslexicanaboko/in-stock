@@ -7,6 +7,7 @@ namespace InStock.UnitTesting
         : TestBase
     {
         public string SomeSymbol = "FLDUH";
+        private const int SomeStockId = 7777777;
 
         public StockEntity GetSomeStock()
         {
@@ -15,7 +16,19 @@ namespace InStock.UnitTesting
                 Symbol = SomeSymbol,
                 Name = "FLoriDUHH",
                 Notes = "Florida sucks",
-                StockId = 7777777
+                StockId = SomeStockId
+            };
+        }
+
+        public QuoteEntity GetSomeQuote()
+        {
+            return new QuoteEntity
+            {
+                QuoteId = 1,
+                StockId = SomeStockId,
+                Date = TodayUtc,
+                Price = 35.81,
+                Volume = 2000000
             };
         }
 

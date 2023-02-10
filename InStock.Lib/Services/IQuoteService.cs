@@ -11,5 +11,7 @@ namespace InStock.Lib.Services
         QuoteEntity? GetQuote(int id);
         
         QuoteEntity? GetQuote(string symbol);
+
+        QuoteEntity? GetRecentQuote(string symbol);
     }
 }

@@ -49,7 +49,7 @@ namespace InStock.Lib.Services
         {
             var stock = _repoStock.Using(x => x.Select(symbol));
 
-            if (stock == null) throw new Exception("Stock not found - make proper exception here.");
+            if (stock == null) throw new StockNotFoundException(symbol);
 
             return await Add(stock);
         }

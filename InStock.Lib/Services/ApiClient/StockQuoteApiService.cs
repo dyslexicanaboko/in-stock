@@ -19,7 +19,7 @@ namespace InStock.Lib.Services.ApiClient
 
         //TODO: Need to handle after hours quotes - scenario:
         //It's 01/03/2023 00:00 which is Tuesday, but the markets don't open until 09:30 ET
-        public async Task<StockQuoteModel> GetQuote(string symbol)
+        public async Task<StockQuoteModel?> GetQuote(string symbol)
         {
             var dtm = GetMostRecentWeekday();
 

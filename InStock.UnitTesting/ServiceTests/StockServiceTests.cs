@@ -34,6 +34,9 @@ namespace InStock.UnitTesting.ServiceTests
         public async Task Add_WhenStockExistsAlready_ThenExistingStockIsReturned()
         {
             //Arrange
+            var stockQuoteApi = A.Fake<IStockQuoteApiService>(); //Declaring locally, was having a clash with a different test
+
+
             var expected = GetSomeStock();
 
             A.CallTo(() => _repoStock.Select(A<string>._)).Returns(expected);
@@ -43,7 +46,8 @@ namespace InStock.UnitTesting.ServiceTests
 
             //Assert
             Assert.AreEqual(expected.StockId, actual.StockId);
-            A.CallTo(() => _stockQuoteApi.GetQuote(A<string>._))
+            
+            A.CallTo(() => stockQuoteApi.GetQuote(A<string>._))
                 .MustNotHaveHappened();
         }
 
