@@ -9,5 +9,7 @@ namespace InStock.Lib.Services
         StockEntity? GetStock(string symbol);
 
         Task<StockEntity> Add(string symbol);
+
+        void EditNotes(int stockId, string? notes);
     }
 }

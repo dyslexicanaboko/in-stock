@@ -44,9 +44,10 @@ namespace InStock.Lib.DataAccess
         
         protected SqlConnection GetConnection()
         {
-            Connection ??= new SqlConnection(ConnectionString);
+            if(Connection == null || string.IsNullOrWhiteSpace(Connection.ConnectionString))
+                Connection = new SqlConnection(ConnectionString);
 
-            if(Connection.State != System.Data.ConnectionState.Open) Connection.Open();
+            if (Connection.State != System.Data.ConnectionState.Open) Connection.Open();
 
             return Connection;
         }

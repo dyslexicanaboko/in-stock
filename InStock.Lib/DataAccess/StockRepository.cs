@@ -115,5 +115,18 @@ namespace InStock.Lib.DataAccess
 
 			GetConnection().Execute(sql, p, Transaction);
 		}
+
+		public void UpdateNotes(int stockId, string? notes)
+		{
+			var sql = @"UPDATE dbo.Stock SET 
+				Notes = @notes
+			WHERE StockId = @stockId";
+
+			var p = new DynamicParameters();
+			p.Add(name: "@stockId", dbType: DbType.Int32, value: stockId);
+			p.Add(name: "@notes", dbType: DbType.String, value: notes, size: 4000);
+
+			GetConnection().Execute(sql, p, Transaction);
+		}
 	}
 }

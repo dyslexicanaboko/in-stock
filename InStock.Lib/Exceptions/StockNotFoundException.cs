@@ -9,6 +9,19 @@
 
         }
 
+        public StockNotFoundException(int stockId)
+            : base(GetMessage(stockId))
+        {
+
+        }
+
+        private static string GetMessage(int stockId)
+        {
+            var str = $"A stock with id \"{stockId}\" could not be found.";
+
+            return str;
+        }
+
         private static string GetMessage(string symbol)
         {
             //Should I say where it looked?

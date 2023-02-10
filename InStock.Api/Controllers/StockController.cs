@@ -2,6 +2,7 @@
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InStock.Api.Controllers
@@ -41,6 +42,21 @@ namespace InStock.Api.Controllers
             var entity = _service.GetStock(symbol);
 
             return Ok(_mapper.ToModel(entity));
+        }
+
+        // PATCH api/stock/5
+        [HttpPatch("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult Patch(int id, [FromBody] JsonPatchDocument<StockV1PatchModel> patchDoc)
+        {
+            var model = new StockV1PatchModel();
+            model.StockId = id;
+
+            patchDoc.ApplyTo(model);
+
+            _service.EditNotes(model.StockId, model.Notes);
+
+            return NoContent();
         }
 
         // POST api/stock

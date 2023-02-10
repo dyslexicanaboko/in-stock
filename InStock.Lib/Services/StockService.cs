@@ -37,6 +37,18 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
+        public void EditNotes(int stockId, string? notes)
+        {
+            using (_repoStock)
+            {
+                var stock = _repoStock.Select(stockId);
+
+                if (stock == null) throw new StockNotFoundException(stockId);
+
+                _repoStock.UpdateNotes(stockId, notes);
+            }
+        }
+
         public async Task<StockEntity> Add(string symbol)
         {
             var dbEntity = _repoStock.Using(x => x.Select(symbol));
