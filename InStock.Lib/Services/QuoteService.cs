@@ -1,4 +1,5 @@
-﻿using InStock.Lib.DataAccess;
+﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Services.ApiClient;
@@ -25,6 +26,8 @@ namespace InStock.Lib.Services
 
         public QuoteEntity? GetQuote(int id)
         {
+            Guard.IsGreaterThan(id, 0, nameof(id));
+
             var dbEntity = _repoQuote.Using(x => x.Select(id));
 
             return dbEntity;
@@ -32,6 +35,8 @@ namespace InStock.Lib.Services
 
         public QuoteEntity? GetQuote(string symbol)
         {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
             var dbEntity = _repoQuote.Using(x => x.Select(symbol));
 
             return dbEntity;
@@ -39,6 +44,8 @@ namespace InStock.Lib.Services
 
         public QuoteEntity? GetRecentQuote(string symbol)
         {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
             //This is hard coded for now until I figure out how to deal with it properly
             var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, DateTime.UtcNow, 5));
 
@@ -47,6 +54,8 @@ namespace InStock.Lib.Services
 
         public async Task<QuoteEntity> Add(string symbol)
         {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
             var stock = _repoStock.Using(x => x.Select(symbol));
 
             if (stock == null) throw new StockNotFoundException(symbol);
