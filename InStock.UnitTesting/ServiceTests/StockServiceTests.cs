@@ -11,13 +11,14 @@ namespace InStock.UnitTesting.ServiceTests
     public class StockServiceTests
         : TestBaseInStock
     {
-        private readonly IStockRepository _repoStock;
-        private readonly IQuoteRepository _repoQuote;
-        private readonly ITransactionManager _tran;
-        private readonly IStockQuoteApiService _stockQuoteApi;
-        private readonly IStockService _service;
+        private IStockRepository _repoStock;
+        private IQuoteRepository _repoQuote;
+        private ITransactionManager _tran;
+        private IStockQuoteApiService _stockQuoteApi;
+        private IStockService _service;
 
-        public StockServiceTests()
+        [SetUp]
+        public void Setup()
         {
             _repoStock = A.Fake<IStockRepository>();
             

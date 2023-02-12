@@ -1,4 +1,5 @@
-﻿using InStock.Lib.Entities;
+﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.Entities;
 using InStock.Lib.Services.ApiClient;
 
 namespace InStock.UnitTesting
@@ -8,9 +9,9 @@ namespace InStock.UnitTesting
     {
         protected int SomeUserId = 1;
         protected string SomeSymbol = "FLDUH";
-        private const int SomeStockId = 7777777;
+        protected const int SomeStockId = 7777777;
 
-        public StockEntity GetSomeStock()
+        protected StockEntity GetSomeStock()
         {
             return new StockEntity
             {
@@ -21,7 +22,7 @@ namespace InStock.UnitTesting
             };
         }
 
-        public QuoteEntity GetSomeQuote()
+        protected QuoteEntity GetSomeQuote()
         {
             return new QuoteEntity
             {
@@ -33,11 +34,38 @@ namespace InStock.UnitTesting
             };
         }
 
-        public StockQuoteModel GetSomeStockQuote()
+        protected StockQuoteModel GetSomeStockQuote()
         {
             var e = GetSomeStock();
 
             return new StockQuoteModel(TodayUtc, e.Symbol, e.Name, 0.0001, 3);
+        }
+
+        protected List<PositionEntity> GetSomePositions(int count = 3)
+        {
+            var lst = new List<PositionEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomePosition(i));
+            }
+
+            return lst;
+        }
+
+        protected PositionEntity GetSomePosition(int increment = 1)
+        {
+            Guard.IsGreaterThan(increment, 0, nameof(increment));
+
+            return new PositionEntity
+            {
+                PositionId = increment,
+                StockId = SomeStockId,
+                UserId = SomeUserId,
+                Price = increment,
+                Quantity = increment,
+                DateOpened = TodayUtc.AddDays(-increment)
+            };
         }
     }
 }
