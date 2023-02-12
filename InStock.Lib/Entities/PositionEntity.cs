@@ -1,7 +1,8 @@
 namespace InStock.Lib.Entities
 {
 
-    public class PositionEntity : IPosition
+    public class PositionEntity 
+        : IPosition, IEquatable<PositionEntity>
     {
         public int PositionId { get; set; }
 
