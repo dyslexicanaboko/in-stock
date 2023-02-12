@@ -1,17 +1,22 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 
 namespace InStock.Lib.Services
 {
     public class PositionService : IPositionService
     {
         private readonly IPositionRepository _repoPosition;
+        private readonly IStockRepository _repoStock;
 
         public PositionService(
-            IPositionRepository repoPosition)
+            IPositionRepository repoPosition,
+            IStockRepository repoStock)
         {
             _repoPosition = repoPosition;
+
+            _repoStock = repoStock;
         }
 
         public PositionEntity? GetPosition(int id)
@@ -21,7 +26,6 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
-        //TODO: Need to check for existence of the symbol?
         public IList<PositionEntity> GetPosition(int userId, string symbol)
         {
             var lst = _repoPosition
@@ -42,15 +46,16 @@ namespace InStock.Lib.Services
             return position;
         }
 
-        //Position only affects reporting, so if it is deleted, then it just needs to be re-added.
+        //Position only affects reporting, so if it is deleted, then it just needs to be re-added at worst.
         public void Delete(int positionId)
         {
             _repoPosition.Using(x => x.Delete(positionId));
         }
 
-        //TODO: Need to check for existence of the symbol?
         public void Delete(int userId, string symbol)
         {
+            if (_repoStock.Select(symbol) == null) throw new SymbolNotFoundException(symbol);
+
             _repoPosition.Using(x => x.Delete(userId, symbol));
         }
     }

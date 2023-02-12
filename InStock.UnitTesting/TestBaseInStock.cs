@@ -6,7 +6,8 @@ namespace InStock.UnitTesting
     public abstract class TestBaseInStock
         : TestBase
     {
-        public string SomeSymbol = "FLDUH";
+        protected int SomeUserId = 1;
+        protected string SomeSymbol = "FLDUH";
         private const int SomeStockId = 7777777;
 
         public StockEntity GetSomeStock()

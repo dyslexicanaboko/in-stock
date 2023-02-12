@@ -1,13 +1,11 @@
 ﻿using FakeItEasy;
 using InStock.Lib.DataAccess;
-using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
-using InStock.UnitTesting;
 using NUnit.Framework;
 
-namespace InQuote.UnitTesting.ServiceTests
+namespace InStock.UnitTesting.ServiceTests
 {
     [TestFixture]
     public class QuoteServiceTests
