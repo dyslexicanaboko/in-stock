@@ -1,5 +1,6 @@
 using Dapper;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using System.Data;
 
 namespace InStock.Lib.DataAccess
@@ -7,6 +8,17 @@ namespace InStock.Lib.DataAccess
 	public class QuoteRepository
 		: BaseRepository, IQuoteRepository
 	{
+		public QuoteRepository()
+		{
+			
+		}
+
+		public QuoteRepository(IAppConfiguration configuration)
+			: base(configuration)
+		{
+
+		}
+
 		public QuoteEntity? Select(int quoteId)
 		{
 			var sql = @"
@@ -21,7 +33,7 @@ namespace InStock.Lib.DataAccess
 			WHERE QuoteId = @QuoteId";
 
 			
-			var lst = GetConnection().Query<QuoteEntity>(sql, new { QuoteId = quoteId }, _transaction).ToList();
+			var lst = GetConnection().Query<QuoteEntity>(sql, new { QuoteId = quoteId }, Transaction).ToList();
 
 			if (!lst.Any()) return null;
 
@@ -33,7 +45,7 @@ namespace InStock.Lib.DataAccess
 		public QuoteEntity? Select(string symbol)
 		{
 			var sql = @"
-			SELECT
+			SELECT TOP 1
 				q.QuoteId,
 				q.StockId,
 				q.Date,
@@ -43,9 +55,44 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Stock s
 				INNER JOIN dbo.Quote q
 					ON s.StockId = q.StockId
-			WHERE s.Symbol = @symbol";
+			WHERE s.Symbol = @symbol
+			ORDER BY q.Date DESC, q.CreatedOnUtc DESC ";
 
-			var lst = GetConnection().Query<QuoteEntity>(sql, new { symbol }, _transaction).ToList();
+			var lst = GetConnection().Query<QuoteEntity>(sql, new { symbol }, Transaction).ToList();
+
+			if (!lst.Any()) return null;
+
+			var entity = lst.Single();
+
+			return entity;
+		}
+
+		public QuoteEntity? SelectRecent(string symbol, DateTime relativeTimeUtc, int lastXMinutes)
+		{
+			var dtmStart = relativeTimeUtc.AddMinutes(-lastXMinutes);
+
+			var sql = @"
+			SELECT TOP 1
+				q.QuoteId,
+				q.StockId,
+				q.Date,
+				q.Price,
+				q.Volume,
+				q.CreateOnUtc
+			FROM dbo.Stock s
+				INNER JOIN dbo.Quote q
+					ON s.StockId = q.StockId
+			WHERE s.Symbol = @symbol
+				AND q.CreateOnUtc >= @dtmStart AND @relativeTimeUtc <= q.CreateOnUtc
+			ORDER BY q.Date DESC, q.CreatedOnUtc DESC ";
+
+			var lst = GetConnection().Query<QuoteEntity>(sql, new
+				{
+					symbol,
+					dtmStart,
+					relativeTimeUtc
+				}
+				, Transaction).ToList();
 
 			if (!lst.Any()) return null;
 
@@ -66,7 +113,7 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc
 			FROM dbo.Quote";
 
-			var lst = GetConnection().Query<QuoteEntity>(sql, transaction: _transaction).ToList();
+			var lst = GetConnection().Query<QuoteEntity>(sql, transaction: Transaction).ToList();
 
 			return lst;
 		}
@@ -93,7 +140,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@Price", dbType: DbType.Double, value: entity.Price);
 			p.Add(name: "@Volume", dbType: DbType.Int64, value: entity.Volume);
 
-			return GetConnection().ExecuteScalar<int>(sql, entity, _transaction);
+			return GetConnection().ExecuteScalar<int>(sql, entity, Transaction);
 		}
 
 		public void Update(QuoteEntity entity)
@@ -112,7 +159,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@Price", dbType: DbType.Double, value: entity.Price);
 			p.Add(name: "@Volume", dbType: DbType.Int64, value: entity.Volume);
 
-			GetConnection().Execute(sql, p, _transaction);
+			GetConnection().Execute(sql, p, Transaction);
 		}
 	}
 }

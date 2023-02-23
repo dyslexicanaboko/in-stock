@@ -24,7 +24,7 @@ namespace InStock.Api.Controllers
         }
 
         // GET api/quote/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IQuote))]
         public ActionResult<IQuote> Get(int id)
         {
@@ -45,7 +45,7 @@ namespace InStock.Api.Controllers
 
             return Ok(_mapper.ToModel(entity));
         }
-
+        
         // POST api/quote
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IQuote))]

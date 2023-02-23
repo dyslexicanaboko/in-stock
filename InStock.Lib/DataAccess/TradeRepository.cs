@@ -1,5 +1,6 @@
 using Dapper;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -8,6 +9,17 @@ namespace InStock.Lib.DataAccess
 	public class TradeRepository
 		: BaseRepository, ITradeRepository
 	{
+        public TradeRepository()
+        {
+            
+        }
+
+		public TradeRepository(IAppConfiguration configuration)
+			: base(configuration)
+		{
+
+		}
+
 		public TradeEntity? Select(int tradeId)
 		{
 			var sql = @"

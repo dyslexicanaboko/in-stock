@@ -1,4 +1,6 @@
-﻿namespace InStock.Lib.DataAccess
+﻿using Microsoft.Data.SqlClient;
+
+namespace InStock.Lib.DataAccess
 {
     public interface IRepository<T>
         : IRepository
@@ -17,5 +19,6 @@
         : IDisposable
     {
         //This exists just to unify all repositories as being "a type of" repository
+        void SetTransaction(SqlTransaction transaction);
     }
 }

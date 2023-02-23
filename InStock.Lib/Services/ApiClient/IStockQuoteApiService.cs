@@ -2,6 +2,6 @@
 {
     public interface IStockQuoteApiService
     {
-        Task<StockQuoteModel> GetQuote(string symbol);
+        Task<StockQuoteModel?> GetQuote(string symbol);
     }
 }

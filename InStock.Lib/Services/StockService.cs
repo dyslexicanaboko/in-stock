@@ -9,18 +9,18 @@ namespace InStock.Lib.Services
     {
         private readonly IStockRepository _repoStock;
         private readonly ITransactionManager _tran;
-        private readonly IStockQuoteApiService _service;
+        private readonly IStockQuoteApiService _stockQuoteApi;
 
         public StockService(
             IStockRepository repository,
             ITransactionManager transactionManager,
-            IStockQuoteApiService service)
+            IStockQuoteApiService stockQuoteApi)
         {
             _repoStock = repository;
 
             _tran = transactionManager;
 
-            _service = service;
+            _stockQuoteApi = stockQuoteApi;
         }
 
         public StockEntity? GetStock(int id)
@@ -37,6 +37,18 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
+        public void EditNotes(int stockId, string? notes)
+        {
+            using (_repoStock)
+            {
+                var stock = _repoStock.Select(stockId);
+
+                if (stock == null) throw new StockNotFoundException(stockId);
+
+                _repoStock.UpdateNotes(stockId, notes);
+            }
+        }
+
         public async Task<StockEntity> Add(string symbol)
         {
             var dbEntity = _repoStock.Using(x => x.Select(symbol));
@@ -44,7 +56,7 @@ namespace InStock.Lib.Services
             if (dbEntity != null) return dbEntity;
 
             //Needs to hit the API to get the Name at the minimum
-            var stockQuote = await _service.GetQuote(symbol);
+            var stockQuote = await _stockQuoteApi.GetQuote(symbol);
 
             //If the quote cannot be found raise exception I suppose?
             if (stockQuote == null) throw new SymbolNotFoundException(symbol);
@@ -59,7 +71,7 @@ namespace InStock.Lib.Services
             {
                 _tran.Begin();
 
-                entity.StockId = _tran.GetRepository<StockRepository>().Insert(entity);
+                entity.StockId = _tran.GetRepository<IStockRepository>().Insert(entity);
 
                 //I am not sure I want to keep this here
                 var quote = new QuoteEntity
@@ -70,7 +82,7 @@ namespace InStock.Lib.Services
                     Volume = stockQuote.Volume
                 };
 
-                _tran.GetRepository<QuoteRepository>().Insert(quote);
+                _tran.GetRepository<IQuoteRepository>().Insert(quote);
 
                 _tran.Commit();
             }

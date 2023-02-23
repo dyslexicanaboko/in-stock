@@ -2,6 +2,7 @@
 using InStock.Lib.Services.ApiClient;
 using InStock.Lib.Services.Mappers;
 using System.Reflection;
+using InStock.Lib.Services;
 
 namespace InStock.Api
 {
@@ -11,6 +12,7 @@ namespace InStock.Api
         {
             host.ConfigureServices((hostContext, services) =>
             {
+                services.AddSingleton<IAppConfiguration, AppConfiguration>();
                 services.AddScoped<ITransactionManager, TransactionManager>();
                 services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
 

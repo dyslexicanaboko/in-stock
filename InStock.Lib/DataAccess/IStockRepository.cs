@@ -6,5 +6,7 @@ namespace InStock.Lib.DataAccess
 		: IRepository<StockEntity>
 	{
 		StockEntity? Select(string symbol);
+
+		void UpdateNotes(int stockId, string? notes);
 	}
 }

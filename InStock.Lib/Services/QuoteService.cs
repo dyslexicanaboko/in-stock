@@ -1,4 +1,5 @@
-﻿using InStock.Lib.DataAccess;
+﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Services.ApiClient;
@@ -9,22 +10,24 @@ namespace InStock.Lib.Services
     {
         private readonly IStockRepository _repoStock;
         private readonly IQuoteRepository _repoQuote;
-        private readonly IStockQuoteApiService _service;
+        private readonly IStockQuoteApiService _stockQuoteApi;
 
         public QuoteService(
             IQuoteRepository repoQuote,
             IStockRepository repoStock,
-            IStockQuoteApiService service)
+            IStockQuoteApiService stockQuoteApi)
         {
             _repoQuote = repoQuote;
 
             _repoStock = repoStock;
 
-            _service = service;
+            _stockQuoteApi = stockQuoteApi;
         }
 
         public QuoteEntity? GetQuote(int id)
         {
+            Guard.IsGreaterThan(id, 0, nameof(id));
+
             var dbEntity = _repoQuote.Using(x => x.Select(id));
 
             return dbEntity;
@@ -32,24 +35,41 @@ namespace InStock.Lib.Services
 
         public QuoteEntity? GetQuote(string symbol)
         {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
             var dbEntity = _repoQuote.Using(x => x.Select(symbol));
+
+            return dbEntity;
+        }
+
+        public QuoteEntity? GetRecentQuote(string symbol)
+        {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
+            //This is hard coded for now until I figure out how to deal with it properly
+            var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, DateTime.UtcNow, 5));
 
             return dbEntity;
         }
 
         public async Task<QuoteEntity> Add(string symbol)
         {
+            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            
             var stock = _repoStock.Using(x => x.Select(symbol));
 
-            if (stock == null) throw new Exception("Stock not found - make proper exception here.");
+            if (stock == null) throw new StockNotFoundException(symbol);
 
             return await Add(stock);
         }
 
-        //Need to prevent hits to the API by checking if a quote is already available from the last X time
         public async Task<QuoteEntity> Add(StockEntity stock)
         {
-            var stockQuote = await _service.GetQuote(stock.Symbol);
+            var existingQuote = GetRecentQuote(stock.Symbol);
+
+            if (existingQuote != null) return existingQuote;
+
+            var stockQuote = await _stockQuoteApi.GetQuote(stock.Symbol);
 
             //If the quote cannot be found raise exception I suppose?
             if (stockQuote == null) throw new SymbolNotFoundException(stock.Symbol);
