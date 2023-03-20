@@ -10,7 +10,6 @@ namespace InStock.IntegrationTesting.ServiceTests
         : TestBaseInStock
     {
         private IStockQuoteApiService _stockQuoteApi;
-        private AmericanHolidaySearch _holidays;
         private IDateTimeService _dateTimeService;
 
         [SetUp]
@@ -20,8 +19,6 @@ namespace InStock.IntegrationTesting.ServiceTests
 
             A.CallTo(() => _dateTimeService.Now).Returns(new DateTime(2022,1,1));
             A.CallTo(() => _dateTimeService.UtcNow).Returns(new DateTime(2022,1,1));
-
-            _holidays = new AmericanHolidaySearch(_dateTimeService.UtcNow.Year);
 
             _stockQuoteApi = new StockQuoteApiService(_dateTimeService);
         }
@@ -47,6 +44,22 @@ namespace InStock.IntegrationTesting.ServiceTests
             var actual = _stockQuoteApi.GetMostRecentWeekday();
 
             Assert.AreEqual(expected, actual);
+        }
+
+        //These tests do hit the Yahoo Finance API - so be cognizant of running this
+        //03/17/2023 - Friday
+        [TestCase("01/03/2023 00:00")] //Tuesday before 9:30 ET when the market opens
+        [TestCase("03/18/2023")] //Saturday
+        [TestCase("03/19/2023")] //Sunday
+        public async Task GetQuote_ShouldReturnFridayQuote_WhenMarketIsClosed(string weekend)
+        {
+            var dtm = Convert.ToDateTime(weekend);
+
+            A.CallTo(() => _dateTimeService.Now).Returns(dtm);
+
+            var actual = await _stockQuoteApi.GetQuote("PCTY");
+
+            Assert.IsNotNull(actual);
         }
     }
 }
