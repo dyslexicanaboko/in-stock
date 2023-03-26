@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.Api", "InStock.Api\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.Lib", "InStock.Lib\InStock.Lib.csproj", "{D60B043F-F52D-4681-A690-9C7B3037BB7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InStock.UnitTesting", "InStock.UnitTesting\InStock.UnitTesting.csproj", "{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.UnitTesting", "InStock.UnitTesting\InStock.UnitTesting.csproj", "{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F1DEFB6F-D0E0-46EE-84B5-B021A41C5E71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InStock.IntegrationTesting", "InStock.IntegrationTesting\InStock.IntegrationTesting.csproj", "{D650AB00-E2FA-45B7-8578-79963F1A4AD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,9 +39,17 @@ Global
 		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D650AB00-E2FA-45B7-8578-79963F1A4AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D650AB00-E2FA-45B7-8578-79963F1A4AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D650AB00-E2FA-45B7-8578-79963F1A4AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D650AB00-E2FA-45B7-8578-79963F1A4AD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FDD5E3AD-7855-4A95-8925-68DC924EB2C5} = {F1DEFB6F-D0E0-46EE-84B5-B021A41C5E71}
+		{D650AB00-E2FA-45B7-8578-79963F1A4AD2} = {F1DEFB6F-D0E0-46EE-84B5-B021A41C5E71}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB2B59D9-B320-4C86-ACC3-75D0069E2801}

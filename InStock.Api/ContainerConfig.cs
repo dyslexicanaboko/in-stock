@@ -14,6 +14,7 @@ namespace InStock.Api
             {
                 services.AddSingleton<IAppConfiguration, AppConfiguration>();
                 services.AddScoped<ITransactionManager, TransactionManager>();
+                services.AddSingleton<IDateTimeService, DateTimeService>();
                 services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
 
                 var asm = Assembly.Load("InStock.Lib");

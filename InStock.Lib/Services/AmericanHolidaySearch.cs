@@ -12,6 +12,10 @@
 
 		private readonly int _year;
 
+		/// <summary>
+		/// Build a list of well known American Holidays for the provided year.
+		/// </summary>
+		/// <param name="year">Holiday year</param>
 		public AmericanHolidaySearch(int year)
 		{
 			_year = year;
@@ -19,11 +23,21 @@
 			_holidays = BuildHolidayList();
 		}
 
-		public bool IsHoliday(DateTime todaysDate, out string? holiday)
+		/// <summary>
+		/// Tests if the provided date is a holiday or not. If it is a holiday then
+		/// the name of the holiday is provided via the out parameter.
+		/// </summary>
+		/// <param name="date">Date to test.</param>
+		/// <param name="holiday">Name of holiday if provided date is a holiday. Otherwise null.</param>
+		/// <returns>
+		/// True if it is a holiday.
+		/// False if it is not a holiday.
+		/// </returns>
+		public bool IsHoliday(DateTime date, out string? holiday)
 		{
 			holiday = null;
 
-			var d = todaysDate.Date;
+			var d = date.Date;
 
 			if (!_holidays.ContainsKey(d)) return false;
 
@@ -31,6 +45,12 @@
 
 			return true;
 		}
+
+		/// <summary>
+		/// Get a list of calculated holiday dates and their names.
+		/// </summary>
+		/// <returns>Read only dictionary of dates and holiday names.</returns>
+		public IReadOnlyDictionary<DateTime, string> GetHolidays() => _holidays;
 
 		private SortedDictionary<DateTime, string> BuildHolidayList()
 		{
@@ -40,6 +60,7 @@
 			//No one is celebrating Inauguration Day - I didn't even know this was a thing
 			//	{ D(1, 20) , "Inauguration Day" },
 			//	{ D(1, 21) , "Inauguration Day" },
+				{ D(6, 19) , "Juneteenth" },
 				{ D(7, 4) , "Independence Day" },
 				{ D(11, 11) , "Veterans Day" },
 				{ D(12, 25) , "Christmas" },

@@ -3,5 +3,7 @@
     public interface IStockQuoteApiService
     {
         Task<StockQuoteModel?> GetQuote(string symbol);
+
+        DateTime GetMostRecentWeekday();
     }
 }
