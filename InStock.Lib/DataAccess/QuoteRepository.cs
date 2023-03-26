@@ -28,7 +28,7 @@ namespace InStock.Lib.DataAccess
 				Date,
 				Price,
 				Volume,
-				CreateOnUtc
+				CreatedOnUtc
 			FROM dbo.Quote
 			WHERE QuoteId = @QuoteId";
 
@@ -51,7 +51,7 @@ namespace InStock.Lib.DataAccess
 				q.Date,
 				q.Price,
 				q.Volume,
-				q.CreateOnUtc
+				q.CreatedOnUtc
 			FROM dbo.Stock s
 				INNER JOIN dbo.Quote q
 					ON s.StockId = q.StockId
@@ -78,12 +78,12 @@ namespace InStock.Lib.DataAccess
 				q.Date,
 				q.Price,
 				q.Volume,
-				q.CreateOnUtc
+				q.CreatedOnUtc
 			FROM dbo.Stock s
 				INNER JOIN dbo.Quote q
 					ON s.StockId = q.StockId
 			WHERE s.Symbol = @symbol
-				AND q.CreateOnUtc >= @dtmStart AND @relativeTimeUtc <= q.CreateOnUtc
+				AND q.CreatedOnUtc >= @dtmStart AND @relativeTimeUtc <= q.CreatedOnUtc
 			ORDER BY q.Date DESC, q.CreatedOnUtc DESC ";
 
 			var lst = GetConnection().Query<QuoteEntity>(sql, new
@@ -110,7 +110,7 @@ namespace InStock.Lib.DataAccess
 				Date,
 				Price,
 				Volume,
-				CreateOnUtc
+				CreatedOnUtc
 			FROM dbo.Quote";
 
 			var lst = GetConnection().Query<QuoteEntity>(sql, transaction: Transaction).ToList();

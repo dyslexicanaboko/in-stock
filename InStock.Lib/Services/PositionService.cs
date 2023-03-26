@@ -42,7 +42,18 @@ namespace InStock.Lib.Services
             return lst;
         }
         
-        public PositionEntity Add(PositionEntity? position)
+        public PositionEntity Add(IList<PositionEntity>? position)
+        {
+            Guard.IsNotNull(position);
+
+            /* TODO
+             * Left off on needing to change the Add-single into an Add-Multiple.
+             * Each position needs to be added independently of one another and in order of date opened.
+             * If one errors, it should not kill the batch therefore a different object needs to be returned
+             * with the results of the operation. */
+        }
+
+        private PositionEntity AddSingle(PositionEntity? position)
         {
             Guard.IsNotNull(position);
             Guard.IsGreaterThan(position.UserId, 0, nameof(position.UserId));

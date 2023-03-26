@@ -65,6 +65,29 @@ namespace InStock.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = m!.PositionId }, m);
         }
 
+        // POST api/position/multiple
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
+        public async Task<ActionResult<PositionModel>> Post([FromBody] PositionV1CreateModel[] model)
+        {
+
+            var entity = _mapper.ToEntity(model);
+
+            Guard.IsNotNull(entity);
+            Guard.IsNotEmpty(entity);
+
+            var lst = entity.ToList();
+
+            //TODO: Need to get the UserId from the header or something?
+            lst.ForEach(x => x.UserId = UserId);
+
+            await Task.FromResult(_service.Add(entity));
+
+            var m = _mapper.ToModel(entity);
+
+            return CreatedAtAction(nameof(Get), new { id = m!.PositionId }, m);
+        }
+
         // DELETE api/position/5
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

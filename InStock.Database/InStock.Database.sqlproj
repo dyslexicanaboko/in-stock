@@ -82,4 +82,7 @@
     <Build Include="dbo\Tables\dbo.Trade.sql" />
     <Build Include="dbo\Tables\dbo.User.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="InStock.Database.publish.xml" />
+  </ItemGroup>
 </Project>

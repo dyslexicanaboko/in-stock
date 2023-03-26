@@ -17,4 +17,6 @@ public interface IPositionMapper
     PositionModel? ToModel(IPosition? target);
 
     IList<PositionModel> ToModel(IList<PositionEntity>? target);
+    
+    IList<PositionEntity> ToEntity(IList<PositionV1CreateModel>? target);
 }

@@ -86,5 +86,7 @@ namespace InStock.Lib.Services.Mappers
         }
 
         public IList<PositionModel> ToModel(IList<PositionEntity>? target) => ToList(target, ToModel);
+        
+        public IList<PositionEntity> ToEntity(IList<PositionV1CreateModel>? target) => ToList(target, ToEntity);
     }
 }
