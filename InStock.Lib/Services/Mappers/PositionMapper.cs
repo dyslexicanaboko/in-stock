@@ -1,6 +1,8 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
+using static Dapper.SqlMapper;
 
 namespace InStock.Lib.Services.Mappers
 {
@@ -35,6 +37,26 @@ namespace InStock.Lib.Services.Mappers
             model.DateClosed = entity.DateClosed;
             model.Price = entity.Price;
             model.Quantity = entity.Quantity;
+
+            return model;
+        }
+
+        public PositionV1CreateModel? ToCreateModel(PositionEntity? entity)
+        {
+            if (entity == null) return null;
+            
+            var model = new PositionV1CreateModel(entity);
+
+            return model;
+        }
+
+        public PositionV1FailedCreateModel? ToFailedCreateModel(AddPositionResult? result)
+        {
+            if (result == null) return null;
+
+            var model = new PositionV1FailedCreateModel(result.Position);
+            model.FailureCode = 100; //This needs to be set correctly
+            model.FailureReason = result.GetErrorMessage();
 
             return model;
         }

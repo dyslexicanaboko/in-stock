@@ -9,10 +9,10 @@ namespace InStock.Lib.DataAccess
 	public class PositionRepository
 		: BaseRepository, IPositionRepository
 	{
-        public PositionRepository()
-        {
-            
-        }
+		public PositionRepository()
+		{
+			
+		}
 
 		public PositionRepository(IAppConfiguration configuration)
 			: base(configuration)

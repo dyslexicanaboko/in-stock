@@ -2,6 +2,9 @@
 using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
+using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
+using InStock.Lib.Services.Mappers;
 
 namespace InStock.Lib.Services
 {
@@ -9,14 +12,18 @@ namespace InStock.Lib.Services
     {
         private readonly IPositionRepository _repoPosition;
         private readonly IStockRepository _repoStock;
+        private readonly IPositionMapper _mapper;
 
         public PositionService(
             IPositionRepository repoPosition,
-            IStockRepository repoStock)
+            IStockRepository repoStock,
+            IPositionMapper mapper)
         {
             _repoPosition = repoPosition;
 
             _repoStock = repoStock;
+
+            _mapper = mapper;
         }
 
         public PositionEntity? GetPosition(int id)
@@ -42,18 +49,68 @@ namespace InStock.Lib.Services
             return lst;
         }
         
-        public PositionEntity Add(IList<PositionEntity>? position)
+        public IList<AddPositionResult> Add(IList<PositionEntity>? positions)
         {
-            Guard.IsNotNull(position);
+            Guard.IsNotNull(positions);
 
-            /* TODO
-             * Left off on needing to change the Add-single into an Add-Multiple.
-             * Each position needs to be added independently of one another and in order of date opened.
-             * If one errors, it should not kill the batch therefore a different object needs to be returned
-             * with the results of the operation. */
+            //Get a distinct list of Stock Ids as there is no guarantee they are the same
+            var stockIds = positions.Select(x => x.StockId).Distinct().ToList();
+
+            //Get all stocks to prove they exist and order them by Stock Id so that the positions
+            //are processed in stock order (grouped by stockId)
+            var stocks = _repoStock
+                .Using(x => x.Select(stockIds))
+                .OrderBy(x => x.StockId)
+                .ToList();
+
+            var positionsSorted = positions.OrderBy(x => x.StockId).ToList();
+
+            var results = new List<AddPositionResult>(positions.Count);
+
+            foreach (var p in positionsSorted)
+            {
+                var r = new AddPositionResult(p);
+
+                try
+                {
+                    var s = stocks.SingleOrDefault(x => x.StockId == p.StockId);
+
+                    //Stock must exist before attempting to make positions with it
+                    if (s == null)
+                        throw new StockNotFoundException(p.StockId);
+
+                    r.Position = Add(s.Symbol, p);
+
+                    r.Success();
+                }
+                catch (Exception ex)
+                {
+                    r.Failure(ex);
+                }
+
+                results.Add(r);
+            }
+            return results;
         }
 
-        private PositionEntity AddSingle(PositionEntity? position)
+        public PositionV1CreateMultipleModel TranslateToModel(IList<AddPositionResult> results)
+        {
+            var success = results
+                .Where(x => x.IsSuccessful)
+                .Select(x => _mapper.ToModel(x.Position))
+                .ToList();
+            
+            var failure = results
+                .Where(x => !x.IsSuccessful)
+                .Select(x => _mapper.ToFailedCreateModel(x))
+                .ToList();
+
+            var m = new PositionV1CreateMultipleModel(success, failure);
+
+            return m;
+        }
+
+        private PositionEntity Add(string symbol, PositionEntity? position)
         {
             Guard.IsNotNull(position);
             Guard.IsGreaterThan(position.UserId, 0, nameof(position.UserId));
@@ -66,18 +123,15 @@ namespace InStock.Lib.Services
             {
                 Guard.IsGreaterThanOrEqualTo(position.DateClosed.Value, position.DateOpened, nameof(position.DateClosed));
             }
-
-            //Stock must exist before attempting to make positions with it
-            var stock = _repoStock.Using(x => x.Select(position.StockId));
-
-            if (stock is null) throw new StockNotFoundException(position.StockId);
-
+            
             using (_repoPosition)
             {
-                var positions = _repoPosition.Select(position.UserId, stock.Symbol).ToList();
+                //For now, not going to store existing positions in memory on the off chance positions
+                //are being added via different threads somehow for the same user. Low chance, but possible.
+                var positions = _repoPosition.Select(position.UserId, symbol).ToList();
 
                 //To avoid breaking unique constraints check if existing positions do not conflict
-                if (positions.Any(x => x == position)) throw new PositionExistsAlreadyException(stock.Symbol, position);
+                if (positions.Any(x => x == position)) throw new PositionExistsAlreadyException(symbol, position);
 
                 //If this is a unique position then insert it
                 position.PositionId = _repoPosition.Insert(position);

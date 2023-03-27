@@ -77,6 +77,28 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
+		public IEnumerable<StockEntity> Select(IList<int> stockIds)
+		{
+			var tvp = GetTvpIntegerList(stockIds);
+
+			var sql = @"
+			SELECT
+				s.StockId,
+				s.Symbol,
+				s.Name,
+				s.CreateOnUtc,
+				s.Notes
+			FROM dbo.Stock s
+				INNER JOIN @tvp t
+					ON s.StockId = t.IntValue";
+
+			var lst = GetConnection().Query<StockEntity>(
+				sql, 
+				new { tvp }, 
+				transaction: Transaction).ToList();
+
+			return lst;
+		}
 		
 		public int Insert(StockEntity entity)
 		{

@@ -7,6 +7,8 @@ namespace InStock.Lib.DataAccess
 	{
 		StockEntity? Select(string symbol);
 
+		IEnumerable<StockEntity> Select(IList<int> stockId);
+
 		void UpdateNotes(int stockId, string? notes);
 	}
 }
