@@ -58,19 +58,22 @@ namespace InStock.Api.Controllers
             //TODO: Need to get the UserId from the header or something?
             entity.UserId = UserId;
 
-            await Task.FromResult(_service.Add(entity));
+            var lst = new List<PositionEntity> { entity };
 
-            var m = _mapper.ToModel(entity);
+            var result = (await Task.FromResult(_service.Add(lst))).Single();
+
+            if (!result.IsSuccessful) throw result.Exception!;
+
+            var m = _mapper.ToModel(result.Position);
 
             return CreatedAtAction(nameof(Get), new { id = m!.PositionId }, m);
         }
 
         // POST api/position/multiple
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
-        public async Task<ActionResult<PositionModel>> Post([FromBody] PositionV1CreateModel[] model)
+        [HttpPost("multiple")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
+        public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] model)
         {
-
             var entity = _mapper.ToEntity(model);
 
             Guard.IsNotNull(entity);
@@ -81,11 +84,12 @@ namespace InStock.Api.Controllers
             //TODO: Need to get the UserId from the header or something?
             lst.ForEach(x => x.UserId = UserId);
 
-            await Task.FromResult(_service.Add(entity));
+            var results = await Task.FromResult(_service.Add(lst));
 
-            var m = _mapper.ToModel(entity);
+            var m = _service.TranslateToModel(results);           
 
-            return CreatedAtAction(nameof(Get), new { id = m!.PositionId }, m);
+            //Ignoring the URI for this because this doesn't conform to rigid REST standards
+            return Created(string.Empty, m);
         }
 
         // DELETE api/position/5
