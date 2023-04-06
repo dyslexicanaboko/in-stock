@@ -48,7 +48,10 @@ namespace InStock.Lib.Services
 
             return lst;
         }
-        
+
+        public IList<AddPositionResult> Add(PositionEntity position)
+            => Add(new List<PositionEntity> { position });
+
         public IList<AddPositionResult> Add(IList<PositionEntity>? positions)
         {
             Guard.IsNotNull(positions);
