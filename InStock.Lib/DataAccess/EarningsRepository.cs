@@ -9,10 +9,10 @@ namespace InStock.Lib.DataAccess
 	public class EarningsRepository
 		: BaseRepository, IEarningsRepository
 	{
-        public EarningsRepository()
-        {
-            
-        }
+		public EarningsRepository()
+		{
+			
+		}
 
 		public EarningsRepository(IAppConfiguration configuration)
 			: base(configuration)
@@ -60,6 +60,25 @@ namespace InStock.Lib.DataAccess
 			using var connection = new SqlConnection(ConnectionString);
 			
 			var lst = connection.Query<EarningsEntity>(sql, new { symbol }).ToList();
+
+			return lst;
+		}
+
+		public IList<EarningsEntity> SelectAll(int stockId)
+		{
+			var sql = @"
+			SELECT
+				e.EarningsId,
+				e.StockId,
+				e.[Date],
+				e.[Order],
+				e.CreateOnUtc
+			FROM dbo.Earnings e
+			WHERE e.StockId = @stockId";
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<EarningsEntity>(sql, new { stockId }).ToList();
 
 			return lst;
 		}

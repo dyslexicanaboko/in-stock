@@ -22,18 +22,23 @@ namespace InStock.UnitTesting.ServiceTests
 
             _repoEarnings = A.Fake<IEarningsRepository>();
 
-            _service = new EarningsService(_repoEarnings);
+            _service = new EarningsService(_repoEarnings, _repoStock);
         }
 
         [Test]
         public void Add_WhenEarningsIsUnique_ThenEarningsIsInserted()
         {
             //Arrange
-            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(new List<StockEntity> { GetSomeStock() });
-            //A.CallTo(() => _repoEarnings.Select(A<int>._, A<string>._)).Returns(Enumerable.Empty<EarningsEntity>());
+            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
+
+            var existing = GetSomeEarnings();
+            existing.Date = existing.Date.AddDays(1);
+            existing.Order++;
+
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(AsList(existing));
 
             //Act
-            var actual = _service.Add(GetSomeEarnings());
+            _service.Add(GetSomeEarnings());
 
             //Assert
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
@@ -41,14 +46,27 @@ namespace InStock.UnitTesting.ServiceTests
         }
 
         [Test]
-        public void Add_WhenEarningsIsNotUnique_ThenEarningsExistsAlreadyException()
+        public void Add_WhenEarningsDateIsNotUnique_ThenEarningsExistsAlreadyException()
+            => Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
+                entity.Date = entity.Date.AddDays(1));
+
+        [Test]
+        public void Add_WhenEarningsOrderIsNotUnique_ThenEarningsExistsAlreadyException()
+            => Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
+                entity.Order++);
+
+        public void Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException(Action<EarningsEntity> modifyEarnings)
         {
             //Arrange
-            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(new List<StockEntity> { GetSomeStock() });
-            //A.CallTo(() => _repoEarnings.Select(A<int>._, A<string>._)).Returns(Enumerable.Empty<EarningsEntity>());
+            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(AsList(GetSomeEarnings()));
+
+            var entity = GetSomeEarnings();
+            
+            modifyEarnings(entity);
 
             //Act/Assert
-            Assert.Throws<EarningsExistsAlreadyException>(() => _service.Add(GetSomeEarnings()));
+            Assert.Throws<EarningsExistsAlreadyException>(() => _service.Add(entity));
 
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
                 .MustNotHaveHappened();
@@ -59,11 +77,24 @@ namespace InStock.UnitTesting.ServiceTests
         {
             //Arrange
             A.CallTo(() => _repoStock.Select(A<int>._)).Returns(null);
+            
+            //Act/Assert
+            Assert.Throws<StockNotFoundException>(() => _service.Add(GetSomeEarnings()));
 
-            var earnings = GetSomeEarnings();
+            //Assert
+            A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
+                .MustNotHaveHappened();
+        }
+
+        [Test]
+        public void Add_WhenStockHasEnoughEarningsEntries_ThenMaxEntriesExceptionIsRaised()
+        {
+            //Arrange
+            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(GetMultipleEarnings(EarningsService.MaxEntries));
 
             //Act/Assert
-            Assert.Throws<StockNotFoundException>(() => _service.Add(earnings));
+            Assert.Throws<MaxEntriesException>(() => _service.Add(GetSomeEarnings()));
 
             //Assert
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))

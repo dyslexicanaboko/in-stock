@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
 
 namespace InStock.UnitTesting
@@ -68,13 +69,25 @@ namespace InStock.UnitTesting
             };
         }
 
+        protected IList<EarningsEntity> GetMultipleEarnings(int count)
+        {
+            var lst = new List<EarningsEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomeEarnings(i));
+            }
+
+            return lst;
+        }
+
         protected EarningsEntity GetSomeEarnings(int increment = 1)
         {
             return new EarningsEntity
             {
                 EarningsId = increment,
                 StockId = SomeStockId,
-                Date = TodayUtc,
+                Date = EarningsService.GetYearAgnosticDate(TodayUtc),
                 Order = 1
             };
         }
