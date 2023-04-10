@@ -86,10 +86,17 @@ namespace InStock.Api.Controllers
 
             var results = await Task.FromResult(_service.Add(lst));
 
-            var m = _service.TranslateToModel(results);           
+            var m = _service.TranslateToModel(results);
 
             //Ignoring the URI for this because this doesn't conform to rigid REST standards
-            return Created(string.Empty, m);
+            //If there is at least one success then return a 201
+            if (m.Success.Any()) return Created(string.Empty, m);
+
+            //If there are errors only then raise a bad request
+            if (m.Failure.Any()) return BadRequest(m);
+
+            //If there is nothing then a 200 is fine
+            return Ok(m);
         }
 
         // DELETE api/position/5

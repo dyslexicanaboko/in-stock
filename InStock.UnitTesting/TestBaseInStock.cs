@@ -67,5 +67,16 @@ namespace InStock.UnitTesting
                 DateOpened = TodayUtc.AddDays(-increment)
             };
         }
+
+        protected EarningsEntity GetSomeEarnings(int increment = 1)
+        {
+            return new EarningsEntity
+            {
+                EarningsId = increment,
+                StockId = SomeStockId,
+                Date = TodayUtc,
+                Order = 1
+            };
+        }
     }
 }
