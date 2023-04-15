@@ -59,17 +59,52 @@ namespace InStock.Lib.Services
                     throw new MaxEntriesException(stock.Symbol, "earnings", MaxEntries);
 
                 //Reject duplicate entries
-                if (lstEarnings.Any(x => x.Date == earnings.Date) ||
-                    lstEarnings.Any(x => x.Order == earnings.Order))
-                {
-                    throw new EarningsExistsAlreadyException(stock.Symbol, earnings);
-                }
+                CheckForDuplicates(lstEarnings, earnings, stock.Symbol);
 
                 //Order cannot be enforced because it depends on the user to input the dates and order correctly.
                 earnings.EarningsId = _repoEarnings.Insert(earnings);
 
                 return earnings;
             }
+        }
+
+        public void Edit(EarningsEntity? earnings)
+        {
+            Guard.IsNotNull(earnings);
+
+            //Years are meaningless here, so they will be minified on purpose.
+            earnings.Date = GetYearAgnosticDate(earnings.Date);
+
+            var stock = _repoStock.Using(x => x.Select(earnings.StockId));
+
+            if (stock is null) throw new StockNotFoundException(earnings.StockId);
+
+            using (_repoEarnings)
+            {
+                //To enforce uniqueness, all earnings must be returned so a compare can be performed
+                //Exclude the current Earnings row on purpose because it is being edited
+                var lstEarnings = _repoEarnings.SelectAll(earnings.StockId, earnings.EarningsId);
+
+                //Enforce the four entries here is not necessary since we are only doing a scalar edit
+
+                //Reject duplicate entries
+                CheckForDuplicates(lstEarnings, earnings, stock.Symbol);
+
+                //Order cannot be enforced because it depends on the user to input the dates and order correctly.
+                _repoEarnings.Update(earnings);
+            }
+        }
+
+        private void CheckForDuplicates(IList<EarningsEntity> existingEarnings, EarningsEntity earnings, string symbol)
+        {
+            var dupDate = existingEarnings.Any(x => x.Date == earnings.Date);
+            var dupOrder = existingEarnings.Any(x => x.Order == earnings.Order);
+
+            if (!dupDate && !dupOrder) return;
+
+            var part = dupDate ? EarningsExistsAlreadyException.Part.Date : EarningsExistsAlreadyException.Part.Order;
+
+            throw new EarningsExistsAlreadyException(symbol, earnings, part);
         }
 
         //Earnings only affects reporting, so if it is deleted, then it just needs to be re-added.
@@ -90,6 +125,6 @@ namespace InStock.Lib.Services
 
         //Parking this here for now, but really this is a generic thing
         public static DateTime GetYearAgnosticDate(DateTime date)
-            => new (DateTime.MinValue.Year, date.Month, date.Day);
+            => new (1753, date.Month, date.Day);
     }
 }

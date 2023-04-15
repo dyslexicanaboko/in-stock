@@ -87,8 +87,8 @@ namespace InStock.UnitTesting
             {
                 EarningsId = increment,
                 StockId = SomeStockId,
-                Date = EarningsService.GetYearAgnosticDate(TodayUtc),
-                Order = 1
+                Date = EarningsService.GetYearAgnosticDate(new DateTime(1, 1, increment)),
+                Order = increment
             };
         }
     }

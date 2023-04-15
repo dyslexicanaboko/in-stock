@@ -7,7 +7,7 @@ namespace InStock.Lib.DataAccess
     {
         IList<EarningsEntity> Select(string symbol);
 
-        IList<EarningsEntity> SelectAll(int stockId);
+        IList<EarningsEntity> SelectAll(int stockId, int? exceptEarningsId = null);
 
         void Delete(int earningsId);
         

@@ -64,7 +64,7 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
-		public IList<EarningsEntity> SelectAll(int stockId)
+		public IList<EarningsEntity> SelectAll(int stockId, int? exceptEarningsId = null)
 		{
 			var sql = @"
 			SELECT
@@ -76,9 +76,20 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.Earnings e
 			WHERE e.StockId = @stockId";
 
+			var parameters = new DynamicParameters();
+			parameters.AddDynamicParams(new { stockId });
+
+
+			if (exceptEarningsId.HasValue)
+			{
+				sql += " AND e.EarningsId <> @exceptEarningsId";
+
+				parameters.AddDynamicParams(new { exceptEarningsId });
+			}
+
 			using var connection = new SqlConnection(ConnectionString);
 
-			var lst = connection.Query<EarningsEntity>(sql, new { stockId }).ToList();
+			var lst = connection.Query<EarningsEntity>(sql, parameters).ToList();
 
 			return lst;
 		}

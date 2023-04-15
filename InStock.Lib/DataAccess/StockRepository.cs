@@ -29,7 +29,7 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc,
 				Notes
 			FROM dbo.Stock
-			WHERE StockId = @StockId";
+			WHERE StockId = @stockId";
 
 			var lst = GetConnection().Query<StockEntity>(sql, new { StockId = stockId }, Transaction).ToList();
 

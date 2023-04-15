@@ -35,7 +35,7 @@ namespace InStock.UnitTesting.ServiceTests
             existing.Date = existing.Date.AddDays(1);
             existing.Order++;
 
-            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(AsList(existing));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._, null)).Returns(AsList(existing));
 
             //Act
             _service.Add(GetSomeEarnings());
@@ -59,7 +59,7 @@ namespace InStock.UnitTesting.ServiceTests
         {
             //Arrange
             A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
-            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(AsList(GetSomeEarnings()));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._, null)).Returns(AsList(GetSomeEarnings()));
 
             var entity = GetSomeEarnings();
             
@@ -69,6 +69,34 @@ namespace InStock.UnitTesting.ServiceTests
             Assert.Throws<EarningsExistsAlreadyException>(() => _service.Add(entity));
 
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
+                .MustNotHaveHappened();
+        }
+
+        [Test]
+        public void Edit_WhenEarningsDateIsNotUnique_ThenEarningsExistsAlreadyException()
+            => Edit_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
+                entity.Date = entity.Date.AddDays(-1));
+
+        [Test]
+        public void Edit_WhenEarningsOrderIsNotUnique_ThenEarningsExistsAlreadyException()
+            => Edit_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
+                entity.Order--);
+
+        public void Edit_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException(Action<EarningsEntity> modifyEarnings)
+        {
+            //Arrange
+            var existingEarnings = GetMultipleEarnings(3); //1 through 3
+            var entity = GetSomeEarnings(4); //Four on its own
+
+            modifyEarnings(entity); //Modify 4th
+
+            A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._, A<int>._)).Returns(existingEarnings);
+
+            //Act/Assert
+            Assert.Throws<EarningsExistsAlreadyException>(() => _service.Edit(entity));
+
+            A.CallTo(() => _repoEarnings.Update(A<EarningsEntity>._))
                 .MustNotHaveHappened();
         }
 
@@ -91,7 +119,7 @@ namespace InStock.UnitTesting.ServiceTests
         {
             //Arrange
             A.CallTo(() => _repoStock.Select(A<IList<int>>._)).Returns(AsList(GetSomeStock()));
-            A.CallTo(() => _repoEarnings.SelectAll(A<int>._)).Returns(GetMultipleEarnings(EarningsService.MaxEntries));
+            A.CallTo(() => _repoEarnings.SelectAll(A<int>._, null)).Returns(GetMultipleEarnings(EarningsService.MaxEntries));
 
             //Act/Assert
             Assert.Throws<MaxEntriesException>(() => _service.Add(GetSomeEarnings()));
