@@ -3,7 +3,9 @@ using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Services;
+using InStock.Lib.Services.Mappers;
 using NUnit.Framework;
+using YahooQuotesApi;
 
 namespace InStock.UnitTesting.ServiceTests
 {
@@ -22,7 +24,7 @@ namespace InStock.UnitTesting.ServiceTests
 
             _repoEarnings = A.Fake<IEarningsRepository>();
 
-            _service = new EarningsService(_repoEarnings, _repoStock);
+            _service = new EarningsService(_repoEarnings, _repoStock, new EarningsMapper());
         }
 
         [Test]
@@ -46,14 +48,14 @@ namespace InStock.UnitTesting.ServiceTests
         }
 
         [Test]
-        public void Add_WhenEarningsDateIsNotUnique_ThenEarningsExistsAlreadyException()
-            => Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
-                entity.Date = entity.Date.AddDays(1));
-
-        [Test]
         public void Add_WhenEarningsOrderIsNotUnique_ThenEarningsExistsAlreadyException()
             => Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
-                entity.Order++);
+                entity.Date = entity.Date.AddDays(1)); //Date changed, order remains the same
+
+        [Test]
+        public void Add_WhenEarningsDateIsNotUnique_ThenEarningsExistsAlreadyException()
+            => Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException((entity) =>
+                entity.Order++); //Order changed, date remains the same
 
         public void Add_WhenEarningsXIsNotUnique_ThenEarningsExistsAlreadyException(Action<EarningsEntity> modifyEarnings)
         {
@@ -66,7 +68,14 @@ namespace InStock.UnitTesting.ServiceTests
             modifyEarnings(entity);
 
             //Act/Assert
-            Assert.Throws<EarningsExistsAlreadyException>(() => _service.Add(entity));
+            var result = _service.Add(entity);
+
+            var actual = result.Single();
+
+            //Assert
+            Assert.IsFalse(actual.IsSuccessful);
+
+            Assert.IsTrue(actual.Exception is EarningsExistsAlreadyException);
 
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
                 .MustNotHaveHappened();
@@ -106,10 +115,16 @@ namespace InStock.UnitTesting.ServiceTests
             //Arrange
             A.CallTo(() => _repoStock.Select(A<int>._)).Returns(null);
             
-            //Act/Assert
-            Assert.Throws<StockNotFoundException>(() => _service.Add(GetSomeEarnings()));
+            //Act
+            var result = _service.Add(GetSomeEarnings());
+
+            var actual = result.Single();
 
             //Assert
+            Assert.IsFalse(actual.IsSuccessful);
+
+            Assert.IsTrue(actual.Exception is StockNotFoundException);
+
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
                 .MustNotHaveHappened();
         }
@@ -122,7 +137,14 @@ namespace InStock.UnitTesting.ServiceTests
             A.CallTo(() => _repoEarnings.SelectAll(A<int>._, null)).Returns(GetMultipleEarnings(EarningsService.MaxEntries));
 
             //Act/Assert
-            Assert.Throws<MaxEntriesException>(() => _service.Add(GetSomeEarnings()));
+            var result = _service.Add(GetSomeEarnings());
+
+            var actual = result.Single();
+
+            //Assert
+            Assert.IsFalse(actual.IsSuccessful);
+
+            Assert.IsTrue(actual.Exception is MaxEntriesException);
 
             //Assert
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))

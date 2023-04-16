@@ -1,10 +1,14 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
 
 namespace InStock.Lib.Services
 {
     public interface IEarningsService
     {
-        EarningsEntity Add(EarningsEntity? earnings);
+        IList<AddEarningsResult> Add(EarningsEntity earnings);
+
+        IList<AddEarningsResult> Add(IList<EarningsEntity>? multipleEarnings);
 
         void Edit(EarningsEntity? earnings);
 
@@ -13,7 +17,9 @@ namespace InStock.Lib.Services
         void Delete(string symbol);
         
         EarningsEntity? GetEarnings(int id);
-        
+
+        EarningsV1CreateMultipleModel TranslateToModel(IList<AddEarningsResult> results);
+
         IList<EarningsEntity>? GetEarnings(string symbol);
     }
 }

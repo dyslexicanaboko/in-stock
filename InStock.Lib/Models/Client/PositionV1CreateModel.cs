@@ -9,7 +9,7 @@ namespace InStock.Lib.Models.Client
 
         }
 
-        public PositionV1CreateModel(PositionEntity entity)
+        public PositionV1CreateModel(IPosition entity)
         {
             StockId = entity.StockId;
             DateOpened = entity.DateOpened;

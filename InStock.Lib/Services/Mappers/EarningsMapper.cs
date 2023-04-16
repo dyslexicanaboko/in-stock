@@ -1,6 +1,7 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
 
 namespace InStock.Lib.Services.Mappers
 {
@@ -87,5 +88,18 @@ namespace InStock.Lib.Services.Mappers
 
             return model;
         }
+
+        public EarningsV1FailedCreateModel? ToFailedCreateModel(AddEarningsResult? result)
+        {
+            if (result == null) return null;
+
+            var model = new EarningsV1FailedCreateModel(result.Earnings);
+            model.FailureCode = 100; //This needs to be set correctly
+            model.FailureReason = result.GetErrorMessage();
+
+            return model;
+        }
+
+        public IList<EarningsEntity> ToEntity(IList<EarningsV1CreateModel>? target) => ToList(target, ToEntity);
     }
 }

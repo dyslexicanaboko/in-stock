@@ -1,6 +1,7 @@
 ﻿using InStock.Lib.Entities;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
 
 namespace InStock.Lib.Services.Mappers
 {
@@ -18,6 +19,10 @@ namespace InStock.Lib.Services.Mappers
 
         EarningsV1CreatedModel? ToCreatedModel(EarningsEntity? entity);
 
+        EarningsV1FailedCreateModel? ToFailedCreateModel(AddEarningsResult? result);
+
         IList<EarningsModel> ToModel(IList<EarningsEntity>? target);
+
+        IList<EarningsEntity> ToEntity(IList<EarningsV1CreateModel>? target);
     }
 }

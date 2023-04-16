@@ -1,4 +1,6 @@
-﻿using InStock.Lib.Entities;
+﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.Entities;
+using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
@@ -46,13 +48,48 @@ namespace InStock.Api.Controllers
         // POST api/earnings
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IEarnings))]
-        public async Task<ActionResult<EarningsV1CreatedModel>> Post([FromBody] EarningsV1CreateModel model)
+        public async Task<ActionResult<EarningsModel>> Post([FromBody] EarningsV1CreateModel model)
         {
-            var entity = await Task.FromResult(_service.Add(_mapper.ToEntity(model)));
+            var entity = _mapper.ToEntity(model);
 
-            var m = _mapper.ToCreatedModel(entity);
+            Guard.IsNotNull(entity);
+
+            var lst = new List<EarningsEntity> { entity };
+
+            var result = (await Task.FromResult(_service.Add(lst))).Single();
+
+            if (!result.IsSuccessful) throw result.Exception!;
+
+            var m = _mapper.ToModel(result.Earnings);
 
             return CreatedAtAction(nameof(Get), new { id = m!.EarningsId }, m);
+        }
+
+        // POST api/position/multiple
+        [HttpPost("multiple")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
+        public async Task<ActionResult<EarningsV1CreateMultipleModel>> Post([FromBody] EarningsV1CreateModel[] model)
+        {
+            var entity = _mapper.ToEntity(model);
+
+            Guard.IsNotNull(entity);
+            Guard.IsNotEmpty(entity);
+
+            var lst = entity.ToList();
+
+            var results = await Task.FromResult(_service.Add(lst));
+
+            var m = _service.TranslateToModel(results);
+
+            //Ignoring the URI for this because this doesn't conform to rigid REST standards
+            //If there is at least one success then return a 201
+            if (m.Success.Any()) return Created(string.Empty, m);
+
+            //If there are errors only then raise a bad request
+            if (m.Failure.Any()) return BadRequest(m);
+
+            //If there is nothing then a 200 is fine
+            return Ok(m);
         }
 
         // DELETE api/earnings/5
