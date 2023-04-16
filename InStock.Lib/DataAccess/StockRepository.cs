@@ -61,6 +61,29 @@ namespace InStock.Lib.DataAccess
 			return entity;
 		}
 
+		public StockEntity? SelectByEarningsId(int earningsId)
+		{
+			var sql = @"
+			SELECT
+				s.StockId,
+				s.Symbol,
+				s.Name,
+				s.CreateOnUtc,
+				s.Notes
+			FROM dbo.Stock s
+				INNER JOIN dbo.Earnings e
+					ON s.StockId = e.StockId
+			WHERE EarningsId = @earningsId";
+
+			var lst = GetConnection().Query<StockEntity>(sql, new { earningsId }, Transaction).ToList();
+
+			if (!lst.Any()) return null;
+
+			var entity = lst.Single();
+
+			return entity;
+		}
+
 		public IEnumerable<StockEntity> SelectAll()
 		{
 			var sql = @"

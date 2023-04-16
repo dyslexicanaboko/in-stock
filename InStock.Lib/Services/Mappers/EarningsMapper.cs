@@ -36,6 +36,18 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
+        public EarningsV1PatchModel? ToPatchModel(EarningsEntity? entity)
+        {
+            if (entity == null) return null;
+
+            var model = new EarningsV1PatchModel();
+            model.EarningsId = entity.EarningsId;
+            model.Date = entity.Date;
+            model.Order = entity.Order;
+
+            return model;
+        }
+
         public EarningsEntity? ToEntity(IEarnings? target)
         {
             if (target == null) return null;
@@ -70,6 +82,18 @@ namespace InStock.Lib.Services.Mappers
             
             var entity = new EarningsEntity();
             entity.StockId = model.StockId;
+            entity.Date = model.Date;
+            entity.Order = model.Order;
+
+            return entity;
+        }
+
+        public EarningsEntity? ToEntity(EarningsV1PatchModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new EarningsEntity();
+            entity.EarningsId = model.EarningsId;
             entity.Date = model.Date;
             entity.Order = model.Order;
 

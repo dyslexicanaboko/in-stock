@@ -12,10 +12,14 @@ namespace InStock.Lib.Services.Mappers
         EarningsEntity? ToEntity(EarningsV1CreateModel? model);
         
         EarningsEntity? ToEntity(IEarnings? target);
-        
+
+        EarningsEntity? ToEntity(EarningsV1PatchModel? model);
+
         EarningsModel? ToModel(EarningsEntity? entity);
         
         EarningsModel? ToModel(IEarnings? target);
+
+        EarningsV1PatchModel? ToPatchModel(EarningsEntity? entity);
 
         EarningsV1CreatedModel? ToCreatedModel(EarningsEntity? entity);
 

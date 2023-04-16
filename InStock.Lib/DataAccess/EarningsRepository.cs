@@ -139,7 +139,6 @@ namespace InStock.Lib.DataAccess
 		public void Update(EarningsEntity entity)
 		{
 			var sql = @"UPDATE dbo.Earnings SET 
-				StockId = @StockId,
 				[Date] = @Date,
 				[Order] = @Order
 			WHERE EarningsId = @EarningsId";
@@ -148,7 +147,6 @@ namespace InStock.Lib.DataAccess
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
-			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
 			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 

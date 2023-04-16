@@ -132,9 +132,8 @@ namespace InStock.Lib.Services
             //Years are meaningless here, so they will be minified on purpose.
             earnings.Date = GetYearAgnosticDate(earnings.Date);
 
+            //Not allowing the user to change the stock the earnings is associated with, therefore this must exist
             var stock = _repoStock.Using(x => x.Select(earnings.StockId));
-
-            if (stock is null) throw new StockNotFoundException(earnings.StockId);
 
             using (_repoEarnings)
             {
@@ -142,10 +141,8 @@ namespace InStock.Lib.Services
                 //Exclude the current Earnings row on purpose because it is being edited
                 var lstEarnings = _repoEarnings.SelectAll(earnings.StockId, earnings.EarningsId);
 
-                //Enforce the four entries here is not necessary since we are only doing a scalar edit
-
                 //Reject duplicate entries
-                CheckForDuplicates(lstEarnings, earnings, stock.Symbol);
+                CheckForDuplicates(lstEarnings, earnings, stock!.Symbol);
 
                 //Order cannot be enforced because it depends on the user to input the dates and order correctly.
                 _repoEarnings.Update(earnings);
