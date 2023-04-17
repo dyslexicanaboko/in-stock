@@ -10,6 +10,7 @@ CREATE TABLE [dbo].[Trade]
 [EndDate] [datetime2](0) NOT NULL,
 [Confirmation] VARCHAR(50) NULL, 
 [CreateOnUtc] [datetime2] (0) NOT NULL CONSTRAINT [DF_dbo.Trade_CreatedOnUtc] DEFAULT (sysutcdatetime()),
+[UpdatedOnUtc] [datetime2] (0) NULL,
 CONSTRAINT [PK_dbo.Trade_TradeId] PRIMARY KEY NONCLUSTERED ([TradeId]),
 CONSTRAINT [FK_dbo.Trade_dbo.Stock_StockId] FOREIGN KEY ([StockId]) REFERENCES [dbo].[Stock] ([StockId]),
 CONSTRAINT [FK_dbo.Trade_dbo.User_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([UserId]),
