@@ -15,7 +15,7 @@ namespace InStock.Lib.Services.Mappers
             entity.TradeId = model.TradeId;
             entity.UserId = model.UserId;
             entity.StockId = model.StockId;
-            entity.Type = model.Type;
+            entity.TradeTypeId = model.TradeTypeId;
             entity.Price = model.Price;
             entity.Quantity = model.Quantity;
             entity.StartDate = model.StartDate;
@@ -33,7 +33,7 @@ namespace InStock.Lib.Services.Mappers
             model.TradeId = entity.TradeId;
             model.UserId = entity.UserId;
             model.StockId = entity.StockId;
-            model.Type = entity.Type;
+            model.TradeTypeId = entity.TradeTypeId;
             model.Price = entity.Price;
             model.Quantity = entity.Quantity;
             model.StartDate = entity.StartDate;
@@ -51,7 +51,7 @@ namespace InStock.Lib.Services.Mappers
             entity.TradeId = target.TradeId;
             entity.UserId = target.UserId;
             entity.StockId = target.StockId;
-            entity.Type = target.Type;
+            entity.TradeTypeId = target.TradeTypeId;
             entity.Price = target.Price;
             entity.Quantity = target.Quantity;
             entity.StartDate = target.StartDate;
@@ -69,7 +69,7 @@ namespace InStock.Lib.Services.Mappers
             model.TradeId = target.TradeId;
             model.UserId = target.UserId;
             model.StockId = target.StockId;
-            model.Type = target.Type;
+            model.TradeTypeId = target.TradeTypeId;
             model.Price = target.Price;
             model.Quantity = target.Quantity;
             model.StartDate = target.StartDate;
@@ -85,7 +85,7 @@ namespace InStock.Lib.Services.Mappers
 
             var entity = new TradeEntity();
             entity.StockId = model.StockId;
-            entity.Type = model.Type;
+            entity.TradeTypeId = model.TradeTypeId;
             entity.Price = model.Price;
             entity.Quantity = model.Quantity;
             entity.StartDate = model.StartDate;

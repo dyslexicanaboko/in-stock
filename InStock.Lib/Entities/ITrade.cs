@@ -8,7 +8,7 @@ namespace InStock.Lib.Entities
 
         int StockId { get; set; }
 
-        bool Type { get; set; }
+        int TradeTypeId { get; set; }
 
         decimal Price { get; set; }
 
