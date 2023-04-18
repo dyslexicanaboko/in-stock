@@ -149,7 +149,8 @@ namespace InStock.Lib.DataAccess
 			var sql = @"UPDATE dbo.Stock SET 
 				Symbol = @Symbol,
 				Name = @Name,
-				Notes = @Notes
+				Notes = @Notes,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE StockId = @StockId";
 
 			var p = new DynamicParameters();
@@ -164,7 +165,8 @@ namespace InStock.Lib.DataAccess
 		public void UpdateNotes(int stockId, string? notes)
 		{
 			var sql = @"UPDATE dbo.Stock SET 
-				Notes = @notes
+				Notes = @notes,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE StockId = @stockId";
 
 			var p = new DynamicParameters();

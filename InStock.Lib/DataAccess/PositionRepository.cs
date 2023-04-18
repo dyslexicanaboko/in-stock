@@ -134,6 +134,7 @@ namespace InStock.Lib.DataAccess
 				DateClosed = @DateClosed,
 				Price = @Price,
 				Quantity = @Quantity
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE PositionId = @PositionId";
 
 			using var connection = new SqlConnection(ConnectionString);

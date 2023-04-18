@@ -141,6 +141,7 @@ namespace InStock.Lib.DataAccess
 			var sql = @"UPDATE dbo.Earnings SET 
 				[Date] = @Date,
 				[Order] = @Order
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE EarningsId = @EarningsId";
 
 			using var connection = new SqlConnection(ConnectionString);
