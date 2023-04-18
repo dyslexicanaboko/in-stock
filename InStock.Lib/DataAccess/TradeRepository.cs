@@ -9,10 +9,10 @@ namespace InStock.Lib.DataAccess
 	public class TradeRepository
 		: BaseRepository, ITradeRepository
 	{
-        public TradeRepository()
-        {
-            
-        }
+		public TradeRepository()
+		{
+			
+		}
 
 		public TradeRepository(IAppConfiguration configuration)
 			: base(configuration)
