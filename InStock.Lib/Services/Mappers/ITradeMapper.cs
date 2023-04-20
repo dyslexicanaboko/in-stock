@@ -7,9 +7,14 @@ namespace InStock.Lib.Services.Mappers;
 public interface ITradeMapper
 {
     TradeEntity? ToEntity(TradeModel? model);
+    
     TradeEntity? ToEntity(ITrade? target);
-    TradeEntity? ToEntity(TradeV1CreateModel? model);
+    
+    TradeEntity? ToEntity(int userId, TradeV1CreateModel? model);
+    
     TradeModel? ToModel(TradeEntity? entity);
+    
     TradeModel? ToModel(ITrade? target);
+    
     IList<TradeModel> ToModel(IList<TradeEntity>? target);
 }

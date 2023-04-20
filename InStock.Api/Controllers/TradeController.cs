@@ -51,12 +51,10 @@ namespace InStock.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ITrade))]
         public async Task<ActionResult<TradeModel>> Post([FromBody] TradeV1CreateModel model)
         {
-            var entity = _mapper.ToEntity(model);
+            //TODO: Need to get the UserId from the header or something?
+            var entity = _mapper.ToEntity(UserId, model);
 
             Guard.IsNotNull(entity);
-
-            //TODO: Need to get the UserId from the header or something?
-            entity.UserId = UserId;
 
             await Task.FromResult(_service.Add(entity));
 

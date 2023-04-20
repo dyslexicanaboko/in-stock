@@ -57,7 +57,6 @@ namespace InStock.Api
 
                 //Set interface generic types
                 var iRepoRoot = iRepo.MakeGenericType(entity);
-                var iMapRoot = iMap.MakeGenericType(iShared, entity, model);
 
                 //Written out example
                 //services.AddTransient<IRepository<EarningsEntity>, EarningsRepository>();
@@ -66,7 +65,14 @@ namespace InStock.Api
                 //Reflection equivalent
                 services.AddScoped(iRepository, repository);
                 services.AddScoped(iRepoRoot, repository);
-                services.AddScoped(iMapRoot, mapper);
+
+                //Temporarily skipping trade until I can get rid of the other mappers I don't want anymore
+                if (root != "Trade")
+                {
+                    var iMapRoot = iMap.MakeGenericType(iShared, entity, model);
+
+                    services.AddScoped(iMapRoot, mapper);
+                }
 
                 if (iMapper != null)
                 {
