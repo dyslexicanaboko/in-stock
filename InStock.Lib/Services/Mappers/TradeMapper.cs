@@ -17,6 +17,24 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
+        public TradeV1PatchModel? ToPatchModel(TradeEntity? entity)
+        {
+            if (entity == null) return null;
+
+            var model = new TradeV1PatchModel(entity);
+
+            return model;
+        }
+        
+        public TradeEntity? ToEntity(int tradeId, int stockId, TradeV1PatchModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new TradeEntity(tradeId, stockId, model);
+
+            return entity;
+        }
+
         public TradeModel? ToModel(TradeEntity? entity)
         {
             if (entity == null) return null;

@@ -47,6 +47,17 @@ namespace InStock.Lib.Entities
             TradeTypeId = model.TradeTypeId;
         }
 
+        public TradeEntity(int tradeId, int stockId, TradeV1PatchModel model)
+        {
+            TradeId = tradeId;
+            StockId = stockId;
+            Price = model.Price;
+            Quantity = model.Quantity;
+            ExecutionDate = model.ExecutionDate;
+            Confirmation = model.Confirmation;
+            TradeTypeId = model.TradeTypeId;
+        }
+
         public int TradeId { get; set; }
 
         public int UserId { get; set; }

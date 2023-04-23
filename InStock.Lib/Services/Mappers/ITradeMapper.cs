@@ -13,6 +13,10 @@ public interface ITradeMapper
     
     TradeEntity? ToEntity(int userId, TradeV1CreateModel? model);
     
+    TradeV1PatchModel? ToPatchModel(TradeEntity? entity);
+    
+    TradeEntity? ToEntity(int tradeId, int stockId, TradeV1PatchModel? model);
+
     TradeModel? ToModel(TradeEntity? entity);
     
     TradeModel? ToModel(ITrade? target);

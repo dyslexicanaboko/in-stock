@@ -73,6 +73,40 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
+		public IEnumerable<TradeEntity> SelectAll(int stockId, int? exceptTradeId = null)
+		{
+			var sql = @"
+			SELECT
+				TradeId,
+				UserId,
+				StockId,
+				TradeTypeId,
+				Price,
+				Quantity,
+				ExecutionDate,
+				CreateOnUtc,
+				Confirmation
+			FROM dbo.Trade e
+			WHERE e.StockId = @stockId";
+
+			var parameters = new DynamicParameters();
+			parameters.AddDynamicParams(new { stockId });
+
+
+			if (exceptTradeId.HasValue)
+			{
+				sql += " AND e.TradeId <> @exceptTradeId";
+
+				parameters.AddDynamicParams(new { exceptTradeId });
+			}
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<TradeEntity>(sql, parameters).ToList();
+
+			return lst;
+		}
+
 		public IEnumerable<TradeEntity> SelectAll()
 		{
 			var sql = @"
@@ -133,27 +167,22 @@ namespace InStock.Lib.DataAccess
 		public void Update(TradeEntity entity)
 		{
 			var sql = @"UPDATE dbo.Trade SET 
-				UserId = @UserId,
-				StockId = @StockId,
 				TradeTypeId = @TradeTypeId,
 				Price = @Price,
 				Quantity = @Quantity,
 				ExecutionDate = @ExecutionDate,
-				CreateOnUtc = @CreateOnUtc,
-				Confirmation = @Confirmation
+				Confirmation = @Confirmation,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE TradeId = @TradeId";
 
 			using var connection = new SqlConnection(ConnectionString);
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@TradeId", dbType: DbType.Int32, value: entity.TradeId);
-			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@TradeTypeId", dbType: DbType.Int32, value: entity.TradeTypeId);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 			p.Add(name: "@ExecutionDate", dbType: DbType.DateTime2, value: entity.ExecutionDate, scale: 0);
-			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
 			connection.Execute(sql, p);

@@ -95,7 +95,7 @@ namespace InStock.Api.Controllers
             return Ok(m);
         }
 
-        // PATCH api/earnings/5
+        // PATCH api/positions/5
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Patch(int id, [FromBody] JsonPatchDocument<PositionV1PatchModel> patchDoc)
@@ -112,7 +112,7 @@ namespace InStock.Api.Controllers
             patchDoc.ApplyTo(model);
 
             //Back to entity so it can be updated
-            var entity = _mapper.ToEntity(db!.PositionId, db!.StockId, model);
+            var entity = _mapper.ToEntity(db!.PositionId, db.StockId, model);
 
             _service.Edit(entity);
 

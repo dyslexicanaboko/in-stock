@@ -112,7 +112,7 @@ namespace InStock.Lib.Services
             }
         }
 
-        private void CheckForDuplicates(IList<PositionEntity> existingPositions, PositionEntity position, string symbol)
+        private static void CheckForDuplicates(IEnumerable<PositionEntity> existingPositions, PositionEntity position, string symbol)
         {
             var dup = existingPositions.Any(x => x == position);
 

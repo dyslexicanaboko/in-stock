@@ -83,6 +83,35 @@ namespace InStock.Lib.Services
             return results;
         }
 
+        public void Edit(TradeEntity trade)
+        {
+            Guard.IsNotNull(trade);
+
+            //Not allowing the user to change the stock the trade is associated with, therefore this must exist
+            var stock = _repoStock.Using(x => x.Select(trade.StockId));
+
+            using (_repoTrade)
+            {
+                //To enforce uniqueness, all trade must be returned so a compare can be performed
+                //Exclude the current Trade row on purpose because it is being edited
+                var lstTrade = _repoTrade.SelectAll(trade.StockId, trade.TradeId);
+
+                //Reject duplicate entries
+                CheckForDuplicates(lstTrade, trade, stock!.Symbol);
+
+                _repoTrade.Update(trade);
+            }
+        }
+
+        private static void CheckForDuplicates(IEnumerable<TradeEntity> existingTrades, TradeEntity trade, string symbol)
+        {
+            var dup = existingTrades.Any(x => x == trade);
+
+            if (!dup) return;
+
+            throw new TradeExistsAlreadyException(symbol, trade);
+        }
+
         private TradeEntity Add(string symbol, TradeEntity? trade)
         {
             Guard.IsNotNull(trade);

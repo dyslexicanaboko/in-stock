@@ -13,6 +13,8 @@ public interface ITradeService
     
     IList<AddTradeResult> Add(IList<TradeEntity>? trade);
 
+    void Edit(TradeEntity trade);
+
     void Delete(int tradeId);
     
     void Delete(int userId, string symbol);
