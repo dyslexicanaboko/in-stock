@@ -1,10 +1,14 @@
 using InStock.Lib.Entities;
-using System.Reflection;
 
 namespace InStock.Lib.Models.Client
 {
     public class TradeV1CreateModel
     {
+        public TradeV1CreateModel()
+        {
+            //Default constructor needed for POST
+        }
+
         public TradeV1CreateModel(ITrade entity)
         {
             StockId = entity.StockId;
@@ -15,16 +19,16 @@ namespace InStock.Lib.Models.Client
             TradeTypeId = entity.TradeTypeId;
         }
 
-        public int StockId { get; }
+        public int StockId { get; set; }
 
-        public int TradeTypeId { get; }
+        public int TradeTypeId { get; set; }
 
-        public decimal Price { get; }
+        public decimal Price { get; set; }
 
-        public decimal Quantity { get; }
+        public decimal Quantity { get; set; }
 
-        public DateTime ExecutionDate { get; }
+        public DateTime ExecutionDate { get; set; }
 
-        public string? Confirmation { get; }
+        public string? Confirmation { get; set; }
     }
 }
