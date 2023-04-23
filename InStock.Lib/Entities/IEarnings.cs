@@ -2,12 +2,12 @@ namespace InStock.Lib.Entities
 {
     public interface IEarnings
     {
-        int EarningsId { get; set; }
+        int EarningsId { get; }
 
-        int StockId { get; set; }
+        int StockId { get; }
 
-        DateTime Date { get; set; }
+        DateTime Date { get; }
 
-        int Order { get; set; }
+        int Order { get; }
     }
 }

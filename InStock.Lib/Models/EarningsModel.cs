@@ -4,14 +4,31 @@ namespace InStock.Lib.Models
 {
     public class EarningsModel : IEarnings
     {
-        public int EarningsId { get; set; }
+        public EarningsModel(IEarnings model)
+        {
+            EarningsId = model.EarningsId;
+            StockId = model.StockId;
+            Date = model.Date;
+            Order = model.Order;
+        }
 
-        public int StockId { get; set; }
+        public EarningsModel(EarningsEntity entity)
+        {
+            EarningsId = entity.EarningsId;
+            StockId = entity.StockId;
+            Date = entity.Date;
+            Order = entity.Order;
+            CreateOnUtc = entity.CreateOnUtc;
+        }
 
-        public DateTime Date { get; set; }
+        public int EarningsId { get; }
 
-        public int Order { get; set; }
+        public int StockId { get; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime Date { get; }
+
+        public int Order { get; }
+
+        public DateTime CreateOnUtc { get; }
     }
 }
