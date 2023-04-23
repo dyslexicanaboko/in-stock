@@ -13,7 +13,7 @@ namespace InStock.Lib.Services.Mappers
         
         EarningsEntity? ToEntity(IEarnings? target);
 
-        EarningsEntity? ToEntity(EarningsV1PatchModel? model);
+        EarningsEntity? ToEntity(int stockId, EarningsV1PatchModel? model);
 
         EarningsModel? ToModel(EarningsEntity? entity);
         

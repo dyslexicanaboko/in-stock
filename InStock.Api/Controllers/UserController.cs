@@ -54,5 +54,7 @@ namespace InStock.Api.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = m!.UserId }, m);
         }
+
+        //No PATCH or DELETE endpoints for now on purpose
     }
 }

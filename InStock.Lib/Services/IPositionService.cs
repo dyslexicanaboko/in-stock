@@ -13,6 +13,8 @@ public interface IPositionService
 
     IList<AddPositionResult> Add(IList<PositionEntity>? positions);
 
+    void Edit(PositionEntity position);
+
     void Delete(int positionId);
     
     void Delete(int userId, string symbol);

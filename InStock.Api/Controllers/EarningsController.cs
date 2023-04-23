@@ -110,8 +110,7 @@ namespace InStock.Api.Controllers
             patchDoc.ApplyTo(model);
 
             //Back to entity so it can be updated
-            var entity = _mapper.ToEntity(model);
-            entity!.StockId = db!.StockId;
+            var entity = _mapper.ToEntity(db!.StockId, model);
 
             _service.Edit(entity);
 

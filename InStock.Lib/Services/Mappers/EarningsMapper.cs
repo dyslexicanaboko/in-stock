@@ -62,11 +62,11 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
-        public EarningsEntity? ToEntity(EarningsV1PatchModel? model)
+        public EarningsEntity? ToEntity(int stockId, EarningsV1PatchModel? model)
         {
             if (model == null) return null;
 
-            var entity = new EarningsEntity(model);
+            var entity = new EarningsEntity(stockId, model);
 
             return entity;
         }

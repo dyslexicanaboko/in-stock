@@ -27,8 +27,9 @@ namespace InStock.Lib.Entities
             CreateOnUtc = model.CreateOnUtc;
         }
 
-        public EarningsEntity(EarningsV1PatchModel model)
+        public EarningsEntity(int stockId, EarningsV1PatchModel model)
         {
+            StockId = stockId;
             EarningsId = model.EarningsId;
             Date = model.Date;
             Order = model.Order;

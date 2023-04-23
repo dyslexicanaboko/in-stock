@@ -140,7 +140,7 @@ namespace InStock.Lib.DataAccess
 		{
 			var sql = @"UPDATE dbo.Earnings SET 
 				[Date] = @Date,
-				[Order] = @Order
+				[Order] = @Order,
 				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE EarningsId = @EarningsId";
 

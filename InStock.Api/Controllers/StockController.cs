@@ -70,5 +70,9 @@ namespace InStock.Api.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = m!.StockId }, m);
         }
+
+        //On the fence about having a DELETE endpoint because it's a serious operation
+        //So long as the stock is a real thing, then it can exist indefinitely.
+        //There are edge cases such as a company dissolving where the symbol no longer exists.
     }
 }

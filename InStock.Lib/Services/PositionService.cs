@@ -91,7 +91,36 @@ namespace InStock.Lib.Services
 
             return results;
         }
-        
+
+        public void Edit(PositionEntity position)
+        {
+            Guard.IsNotNull(position);
+
+            //Not allowing the user to change the stock the position is associated with, therefore this must exist
+            var stock = _repoStock.Using(x => x.Select(position.StockId));
+
+            using (_repoPosition)
+            {
+                //To enforce uniqueness, all position must be returned so a compare can be performed
+                //Exclude the current Position row on purpose because it is being edited
+                var lstPosition = _repoPosition.SelectAll(position.StockId, position.PositionId);
+
+                //Reject duplicate entries
+                CheckForDuplicates(lstPosition, position, stock!.Symbol);
+
+                _repoPosition.Update(position);
+            }
+        }
+
+        private void CheckForDuplicates(IList<PositionEntity> existingPositions, PositionEntity position, string symbol)
+        {
+            var dup = existingPositions.Any(x => x == position);
+
+            if (!dup) return;
+
+            throw new PositionExistsAlreadyException(symbol, position);
+        }
+
         private PositionEntity Add(string symbol, PositionEntity? position)
         {
             Guard.IsNotNull(position);

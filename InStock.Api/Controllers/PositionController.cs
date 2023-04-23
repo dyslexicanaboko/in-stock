@@ -4,6 +4,7 @@ using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InStock.Api.Controllers
@@ -92,6 +93,30 @@ namespace InStock.Api.Controllers
 
             //If there is nothing then a 200 is fine
             return Ok(m);
+        }
+
+        // PATCH api/earnings/5
+        [HttpPatch("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult Patch(int id, [FromBody] JsonPatchDocument<PositionV1PatchModel> patchDoc)
+        {
+            //TODO: Need more sophisticated patching that only updates what has changed
+            var db = _service.GetPosition(id);
+
+            //Preload with existing DB values
+            var model = _mapper.ToPatchModel(db);
+
+            Guard.IsNotNull(model);
+
+            //Apply patch doc to model to overwrite what changed only
+            patchDoc.ApplyTo(model);
+
+            //Back to entity so it can be updated
+            var entity = _mapper.ToEntity(db!.PositionId, db!.StockId, model);
+
+            _service.Edit(entity);
+
+            return NoContent();
         }
 
         // DELETE api/position/5

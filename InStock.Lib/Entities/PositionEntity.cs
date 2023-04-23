@@ -44,6 +44,16 @@ namespace InStock.Lib.Entities
             Quantity = model.Quantity;
         }
 
+        public PositionEntity(int positionId, int stockId, PositionV1PatchModel model)
+        {
+            PositionId = positionId;
+            StockId = stockId;
+            DateOpened = model.DateOpened;
+            DateClosed = model.DateClosed;
+            Price = model.Price;
+            Quantity = model.Quantity;
+        }
+
         public int PositionId { get; set; }
 
         public int UserId { get; set; }

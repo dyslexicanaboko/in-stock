@@ -57,5 +57,8 @@ namespace InStock.Api.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = m.QuoteId }, m);
         }
+
+        //PATCH and DELETE is not supported for Quotes.
+        //Quotes can only be created and retrieved.
     }
 }

@@ -26,4 +26,8 @@ public interface IPositionMapper
     IList<PositionModel> ToModel(IList<PositionEntity>? target);
 
     IList<PositionEntity> ToEntity(int userId, IList<PositionV1CreateModel>? target);
+    
+    PositionV1PatchModel? ToPatchModel(PositionEntity? entity);
+
+    PositionEntity? ToEntity(int positionId, int stockId, PositionV1PatchModel? model);
 }

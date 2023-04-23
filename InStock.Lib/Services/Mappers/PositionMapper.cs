@@ -90,6 +90,24 @@ namespace InStock.Lib.Services.Mappers
             return m;
         }
 
+        public PositionV1PatchModel? ToPatchModel(PositionEntity? entity)
+        {
+            if (entity == null) return null;
+
+            var model = new PositionV1PatchModel(entity);
+
+            return model;
+        }
+
+        public PositionEntity? ToEntity(int positionId, int stockId, PositionV1PatchModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new PositionEntity(positionId, stockId, model);
+
+            return entity;
+        }
+
         public IList<PositionModel> ToModel(IList<PositionEntity>? target) => ToList(target, ToModel);
         
         public IList<PositionEntity> ToEntity(int userId, IList<PositionV1CreateModel>? target) => ToList(userId, target, ToEntity);

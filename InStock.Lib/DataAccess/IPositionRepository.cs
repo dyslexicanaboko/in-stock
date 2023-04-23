@@ -7,6 +7,8 @@ namespace InStock.Lib.DataAccess
     {
         IEnumerable<PositionEntity> Select(int userId, string symbol);
 
+        IList<PositionEntity> SelectAll(int stockId, int? exceptPositionId = null);
+
         void Delete(int positionId);
         
         void Delete(int userId, string symbol);
