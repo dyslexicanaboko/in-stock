@@ -5,7 +5,7 @@ namespace InStock.Lib.Models.Client
     public class EarningsV1FailedCreateModel
         : EarningsV1CreateModel
     {
-        public EarningsV1FailedCreateModel(EarningsEntity entity)
+        public EarningsV1FailedCreateModel(IEarnings entity)
             : base(entity)
         {
             

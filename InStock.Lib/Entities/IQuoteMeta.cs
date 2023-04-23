@@ -2,10 +2,10 @@ namespace InStock.Lib.Entities
 {
     public interface IQuoteMeta
     {
-        DateTime Date { get; set; }
+        DateTime Date { get; }
 
-        double Price { get; set; }
+        double Price { get; }
 
-        long Volume { get; set; }
+        long Volume { get; }
     }
 }

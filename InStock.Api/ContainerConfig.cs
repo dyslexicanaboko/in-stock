@@ -41,7 +41,7 @@ namespace InStock.Api
         {
             var ns = "InStock.Lib";
             var iRepo = typeof(IRepository<>);
-            var iMap = typeof(IMapper<,,>);
+            //var iMap = typeof(IMapper<,,>);
 
             foreach (var root in classRoots)
             {
@@ -67,12 +67,12 @@ namespace InStock.Api
                 services.AddScoped(iRepoRoot, repository);
 
                 //Temporarily skipping trade until I can get rid of the other mappers I don't want anymore
-                if (root != "Trade")
-                {
-                    var iMapRoot = iMap.MakeGenericType(iShared, entity, model);
+                //if (root != "Trade")
+                //{
+                //    var iMapRoot = iMap.MakeGenericType(iShared, entity, model);
 
-                    services.AddScoped(iMapRoot, mapper);
-                }
+                //    services.AddScoped(iMapRoot, mapper);
+                //}
 
                 if (iMapper != null)
                 {

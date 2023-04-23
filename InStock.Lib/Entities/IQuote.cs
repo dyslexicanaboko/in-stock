@@ -3,8 +3,8 @@ namespace InStock.Lib.Entities
     public interface IQuote
         : IQuoteMeta
     {
-        int QuoteId { get; set; }
+        int QuoteId { get; }
 
-        int StockId { get; set; }
+        int StockId { get; }
     }
 }

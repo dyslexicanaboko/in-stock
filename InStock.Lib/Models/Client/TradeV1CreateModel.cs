@@ -6,7 +6,7 @@ namespace InStock.Lib.Models.Client
     {
         public TradeV1CreateModel()
         {
-            //Default constructor needed for POST
+            //Required for controller
         }
 
         public TradeV1CreateModel(ITrade entity)

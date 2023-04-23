@@ -9,8 +9,8 @@ namespace InStock.Lib.Models.Client
             Failure = failure;
         }
 
-        public IList<PositionModel> Success { get; set; }
+        public IList<PositionModel> Success { get; }
         
-        public IList<PositionV1FailedCreateModel> Failure { get; set; }
+        public IList<PositionV1FailedCreateModel> Failure { get; }
     }
 }

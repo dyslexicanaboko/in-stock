@@ -5,7 +5,7 @@ namespace InStock.Lib.Models.Client
     public class PositionV1FailedCreateModel
         : PositionV1CreateModel
     {
-        public PositionV1FailedCreateModel(PositionEntity entity)
+        public PositionV1FailedCreateModel(IPosition entity)
             : base(entity)
         {
             

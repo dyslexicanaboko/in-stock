@@ -2,6 +2,11 @@
 {
     public class QuoteV1CreatedModel
     {
+        public QuoteV1CreatedModel()
+        {
+            //Required for controller
+        }
+
         public int QuoteId { get; set; }
 
         public int StockId { get; set; }

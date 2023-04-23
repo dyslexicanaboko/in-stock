@@ -6,7 +6,7 @@ namespace InStock.Lib.Models.Client
     {
         public EarningsV1PatchModel()
         {
-            
+            //Required for controller
         }
 
         public EarningsV1PatchModel(EarningsEntity entity)

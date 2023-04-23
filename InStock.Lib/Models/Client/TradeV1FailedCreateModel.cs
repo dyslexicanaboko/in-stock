@@ -5,7 +5,7 @@ namespace InStock.Lib.Models.Client
     public class TradeV1FailedCreateModel
         : TradeV1CreateModel
     {
-        public TradeV1FailedCreateModel(TradeEntity entity)
+        public TradeV1FailedCreateModel(ITrade entity)
             : base(entity)
         {
             

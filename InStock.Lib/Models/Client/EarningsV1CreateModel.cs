@@ -6,7 +6,7 @@ namespace InStock.Lib.Models.Client
     {
         public EarningsV1CreateModel()
         {
-            
+            //Required for controller
         }
 
         public EarningsV1CreateModel(IEarnings earnings)

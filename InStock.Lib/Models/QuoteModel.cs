@@ -4,16 +4,35 @@ namespace InStock.Lib.Models
 {
     public class QuoteModel : IQuote
     {
-        public int QuoteId { get; set; }
+        public QuoteModel(QuoteEntity entity)
+        {
+            QuoteId = entity.QuoteId;
+            StockId = entity.StockId;
+            Date = entity.Date;
+            Price = entity.Price;
+            Volume = entity.Volume;
+            CreateOnUtc = entity.CreateOnUtc;
+        }
 
-        public int StockId { get; set; }
+        public QuoteModel(IQuote target)
+        {
+            QuoteId = target.QuoteId;
+            StockId = target.StockId;
+            Date = target.Date;
+            Price = target.Price;
+            Volume = target.Volume;
+        }
 
-        public DateTime Date { get; set; }
+        public int QuoteId { get; }
 
-        public double Price { get; set; }
+        public int StockId { get; }
 
-        public long Volume { get; set; }
+        public DateTime Date { get; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public double Price { get; }
+
+        public long Volume { get; }
+
+        public DateTime CreateOnUtc { get; }
     }
 }

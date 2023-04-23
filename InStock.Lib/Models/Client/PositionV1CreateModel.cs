@@ -6,7 +6,7 @@ namespace InStock.Lib.Models.Client
     {
         public PositionV1CreateModel()
         {
-
+            //Required for controller
         }
 
         public PositionV1CreateModel(IPosition entity)

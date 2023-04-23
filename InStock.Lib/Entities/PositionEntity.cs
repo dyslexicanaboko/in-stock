@@ -1,9 +1,49 @@
+using InStock.Lib.Models;
+using InStock.Lib.Models.Client;
+
 namespace InStock.Lib.Entities
 {
 
     public class PositionEntity 
         : IPosition, IEquatable<PositionEntity>
     {
+        public PositionEntity()
+        {
+            
+        }
+
+        public PositionEntity(PositionModel model)
+        {
+            PositionId = model.PositionId;
+            UserId = model.UserId;
+            StockId = model.StockId;
+            DateOpened = model.DateOpened;
+            DateClosed = model.DateClosed;
+            Price = model.Price;
+            Quantity = model.Quantity;
+        }
+
+        public PositionEntity(IPosition target)
+        {
+            PositionId = target.PositionId;
+            UserId = target.UserId;
+            StockId = target.StockId;
+            DateOpened = target.DateOpened;
+            DateClosed = target.DateClosed;
+            Price = target.Price;
+            Quantity = target.Quantity;
+        }
+
+        public PositionEntity(int userId, PositionV1CreateModel model)
+        {
+            UserId = userId;
+            StockId = model.StockId;
+            DateOpened = model.DateOpened;
+            DateClosed = model.DateClosed;
+            Price = model.Price;
+            Quantity = model.Quantity;
+        }
+
         public int PositionId { get; set; }
 
         public int UserId { get; set; }

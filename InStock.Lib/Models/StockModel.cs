@@ -4,28 +4,31 @@ namespace InStock.Lib.Models
 {
     public class StockModel : IStock
     {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public StockModel()
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        {
-
-        }
-
         public StockModel(IStock target)
         {
+            StockId = target.StockId;
             Symbol = target.Symbol;
-
             Name = target.Name;
+            Notes = target.Notes;
         }
-        
-        public int StockId { get; set; }
 
-        public string Symbol { get; set; }
+        public StockModel(StockEntity entity)
+        {
+            StockId = entity.StockId;
+            Symbol = entity.Symbol;
+            Name = entity.Name;
+            Notes = entity.Notes;
+            CreateOnUtc = entity.CreateOnUtc;
+        }
 
-        public string Name { get; set; }
+        public int StockId { get; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public string Symbol { get; }
 
-        public string? Notes { get; set; }
+        public string Name { get; }
+
+        public DateTime CreateOnUtc { get; }
+
+        public string? Notes { get; }
     }
 }
