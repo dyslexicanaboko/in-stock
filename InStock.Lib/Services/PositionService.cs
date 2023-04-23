@@ -93,6 +93,7 @@ namespace InStock.Lib.Services
 
                 results.Add(r);
             }
+
             return results;
         }
 

@@ -10,9 +10,7 @@ namespace InStock.Lib.Models.Client
 
         public decimal Quantity { get; set; }
 
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
+        public DateTime ExecutionDate { get; set; }
 
         public string? Confirmation { get; set; }
     }

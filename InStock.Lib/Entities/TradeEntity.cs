@@ -4,7 +4,8 @@ using InStock.Lib.Models.Client;
 namespace InStock.Lib.Entities
 {
 
-    public class TradeEntity : ITrade
+    public class TradeEntity 
+        : ITrade, IEquatable<TradeEntity>
     {
         public TradeEntity()
         {
@@ -18,8 +19,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            StartDate = model.StartDate;
-            EndDate = model.EndDate;
+            ExecutionDate = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeTypeId;
         }
@@ -31,8 +31,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            StartDate = model.StartDate;
-            EndDate = model.EndDate;
+            ExecutionDate = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeType.TradeTypeId;
         }
@@ -43,8 +42,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            StartDate = model.StartDate;
-            EndDate = model.EndDate;
+            ExecutionDate = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeTypeId;
         }
@@ -67,12 +65,66 @@ namespace InStock.Lib.Entities
 
         public decimal Quantity { get; set; }
 
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
+        public DateTime ExecutionDate { get; set; }
 
         public string? Confirmation { get; set; }
 
         public DateTime CreateOnUtc { get; set; }
+
+        public override bool Equals(object? obj) => Equals(obj as TradeEntity);
+
+
+        public bool Equals(TradeEntity? other)
+        {
+            //Check if the right hand argument is null
+            if (other is null)
+            {
+                return false;
+            }
+
+            // Optimization for a common success case. If these are the same object, then they are equal.
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            // If run-time types are not exactly the same, return false.
+            if (GetType() != other.GetType())
+            {
+                return false;
+            }
+
+            var areEqual =
+                UserId == other.UserId &&
+                StockId == other.StockId &&
+                TradeTypeId == other.TradeTypeId &&
+                ExecutionDate == other.ExecutionDate &&
+                Price == other.Price &&
+                Quantity == other.Quantity;
+
+            return areEqual;
+        }
+
+        public override int GetHashCode()
+        {
+            var hc =
+                UserId.GetHashCode() +
+                StockId.GetHashCode() +
+                TradeTypeId.GetHashCode() +
+                ExecutionDate.GetHashCode() +
+                Price.GetHashCode() +
+                Quantity.GetHashCode();
+
+            return hc;
+        }
+
+        public static bool operator ==(TradeEntity? lhs, TradeEntity? rhs)
+        {
+            if (lhs is not null) return lhs.Equals(rhs);
+
+            return rhs is null;
+        }
+
+        public static bool operator !=(TradeEntity lhs, TradeEntity rhs) => !(lhs == rhs);
     }
 }

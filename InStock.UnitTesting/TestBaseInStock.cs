@@ -41,19 +41,7 @@ namespace InStock.UnitTesting
 
             return new StockQuoteModel(TodayUtc, e.Symbol, e.Name, 0.0001, 3);
         }
-
-        protected List<PositionEntity> GetSomePositions(int count = 3)
-        {
-            var lst = new List<PositionEntity>(count);
-
-            for (var i = 1; i <= count; i++)
-            {
-                lst.Add(GetSomePosition(i));
-            }
-
-            return lst;
-        }
-
+        
         protected PositionEntity GetSomePosition(int increment = 1)
         {
             Guard.IsGreaterThan(increment, 0, nameof(increment));
@@ -67,6 +55,46 @@ namespace InStock.UnitTesting
                 Quantity = increment,
                 DateOpened = TodayUtc.AddDays(-increment)
             };
+        }
+
+        protected List<PositionEntity> GetSomePositions(int count = 3)
+        {
+            var lst = new List<PositionEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomePosition(i));
+            }
+
+            return lst;
+        }
+
+        protected TradeEntity GetSomeTrade(int increment = 1, TradeType tradeType = TradeType.Buy)
+        {
+            Guard.IsGreaterThan(increment, 0, nameof(increment));
+
+            return new TradeEntity
+            {
+                TradeId = increment,
+                StockId = SomeStockId,
+                UserId = SomeUserId,
+                TradeType = tradeType,
+                Price = increment,
+                Quantity = increment,
+                ExecutionDate = TodayUtc.AddDays(-increment)
+            };
+        }
+
+        protected List<TradeEntity> GetSomeTrades(int count = 3)
+        {
+            var lst = new List<TradeEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomeTrade(i));
+            }
+
+            return lst;
         }
 
         protected IList<EarningsEntity> GetMultipleEarnings(int count)

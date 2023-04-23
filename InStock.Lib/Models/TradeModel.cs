@@ -12,8 +12,7 @@ namespace InStock.Lib.Models
             StockId = entity.StockId;
             Price = entity.Price;
             Quantity = entity.Quantity;
-            StartDate = entity.StartDate;
-            EndDate = entity.EndDate;
+            ExecutionDate = entity.ExecutionDate;
             Confirmation = entity.Confirmation;
 
             TradeType = new TradeTypeV1Model(entity.TradeTypeId);
@@ -26,8 +25,7 @@ namespace InStock.Lib.Models
             StockId = entity.StockId;
             Price = entity.Price;
             Quantity = entity.Quantity;
-            StartDate = entity.StartDate;
-            EndDate = entity.EndDate;
+            ExecutionDate = entity.ExecutionDate;
             Confirmation = entity.Confirmation;
 
             TradeType = new TradeTypeV1Model(entity.TradeType);
@@ -43,9 +41,7 @@ namespace InStock.Lib.Models
 
         public decimal Quantity { get; set; }
 
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
+        public DateTime ExecutionDate { get; set; }
 
         public string? Confirmation { get; set; }
 

@@ -18,6 +18,6 @@ namespace InStock.Lib.Models.Client
 
         public int TradeTypeId => Convert.ToInt32(_tradeType);
 
-        public string Description => Convert.ToString(_tradeType);
+        public string Description => Convert.ToString(_tradeType)!;
     }
 }

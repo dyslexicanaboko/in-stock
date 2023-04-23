@@ -30,8 +30,7 @@ namespace InStock.Lib.DataAccess
 				TradeTypeId,
 				Price,
 				Quantity,
-				StartDate,
-				EndDate,
+				ExecutionDate,
 				CreateOnUtc,
 				Confirmation
 			FROM dbo.Trade
@@ -58,8 +57,7 @@ namespace InStock.Lib.DataAccess
 				t.TradeTypeId,
 				t.Price,
 				t.Quantity,
-				t.StartDate,
-				t.EndDate,
+				t.ExecutionDate,
 				t.CreateOnUtc,
 				t.Confirmation
 			FROM dbo.Stock s
@@ -85,8 +83,7 @@ namespace InStock.Lib.DataAccess
 				TradeTypeId,
 				Price,
 				Quantity,
-				StartDate,
-				EndDate,
+				ExecutionDate,
 				CreateOnUtc,
 				Confirmation
 			FROM dbo.Trade";
@@ -106,8 +103,7 @@ namespace InStock.Lib.DataAccess
 				TradeTypeId,
 				Price,
 				Quantity,
-				StartDate,
-				EndDate,
+				ExecutionDate,
 				Confirmation
 			) VALUES (
 				@UserId,
@@ -115,8 +111,7 @@ namespace InStock.Lib.DataAccess
 				@TradeTypeId,
 				@Price,
 				@Quantity,
-				@StartDate,
-				@EndDate,
+				@ExecutionDate,
 				@Confirmation);
 
 			SELECT SCOPE_IDENTITY() AS PK;";
@@ -129,8 +124,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@TradeTypeId", dbType: DbType.Int32, value: entity.TradeTypeId);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-			p.Add(name: "@StartDate", dbType: DbType.DateTime2, value: entity.StartDate, scale: 0);
-			p.Add(name: "@EndDate", dbType: DbType.DateTime2, value: entity.EndDate, scale: 0);
+			p.Add(name: "@ExecutionDate", dbType: DbType.DateTime2, value: entity.ExecutionDate, scale: 0);
 			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
 			return connection.ExecuteScalar<int>(sql, entity);
@@ -144,8 +138,7 @@ namespace InStock.Lib.DataAccess
 				TradeTypeId = @TradeTypeId,
 				Price = @Price,
 				Quantity = @Quantity,
-				StartDate = @StartDate,
-				EndDate = @EndDate,
+				ExecutionDate = @ExecutionDate,
 				CreateOnUtc = @CreateOnUtc,
 				Confirmation = @Confirmation
 			WHERE TradeId = @TradeId";
@@ -159,8 +152,7 @@ namespace InStock.Lib.DataAccess
 			p.Add(name: "@TradeTypeId", dbType: DbType.Int32, value: entity.TradeTypeId);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
-			p.Add(name: "@StartDate", dbType: DbType.DateTime2, value: entity.StartDate, scale: 0);
-			p.Add(name: "@EndDate", dbType: DbType.DateTime2, value: entity.EndDate, scale: 0);
+			p.Add(name: "@ExecutionDate", dbType: DbType.DateTime2, value: entity.ExecutionDate, scale: 0);
 			p.Add(name: "@CreateOnUtc", dbType: DbType.DateTime2, value: entity.CreateOnUtc, scale: 0);
 			p.Add(name: "@Confirmation", dbType: DbType.AnsiString, value: entity.Confirmation, size: 50);
 
