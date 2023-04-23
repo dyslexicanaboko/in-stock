@@ -12,5 +12,16 @@
 
             return lst!;
         }
+
+        protected IList<TEntity> ToList<TModel, TEntity>(int userId, IList<TModel>? target, Func<int, TModel?, TEntity?> mapper)
+            where TEntity : class, new()
+            where TModel : class //Model will not have an empty constructor on purpose
+        {
+            if (target == null || !target.Any()) return new List<TEntity>();
+
+            var lst = target.Select(x => mapper(userId, x)).ToList();
+
+            return lst!;
+        }
     }
 }

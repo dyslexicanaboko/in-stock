@@ -2,9 +2,7 @@
 using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
-using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
-using InStock.Lib.Services.Mappers;
 
 namespace InStock.Lib.Services
 {
@@ -12,18 +10,15 @@ namespace InStock.Lib.Services
     {
         private readonly IPositionRepository _repoPosition;
         private readonly IStockRepository _repoStock;
-        private readonly IPositionMapper _mapper;
 
         public PositionService(
             IPositionRepository repoPosition,
-            IStockRepository repoStock,
-            IPositionMapper mapper)
+            IStockRepository repoStock)
         {
             _repoPosition = repoPosition;
 
             _repoStock = repoStock;
 
-            _mapper = mapper;
         }
 
         public PositionEntity? GetPosition(int id)
@@ -96,24 +91,7 @@ namespace InStock.Lib.Services
 
             return results;
         }
-
-        public PositionV1CreateMultipleModel TranslateToModel(IList<AddPositionResult> results)
-        {
-            var success = results
-                .Where(x => x.IsSuccessful)
-                .Select(x => _mapper.ToModel(x.Position))
-                .ToList();
-            
-            var failure = results
-                .Where(x => !x.IsSuccessful)
-                .Select(x => _mapper.ToFailedCreateModel(x))
-                .ToList();
-
-            var m = new PositionV1CreateMultipleModel(success, failure);
-
-            return m;
-        }
-
+        
         private PositionEntity Add(string symbol, PositionEntity? position)
         {
             Guard.IsNotNull(position);

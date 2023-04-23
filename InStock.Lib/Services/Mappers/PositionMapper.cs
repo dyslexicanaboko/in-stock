@@ -2,7 +2,6 @@ using InStock.Lib.Entities;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
-using static Dapper.SqlMapper;
 
 namespace InStock.Lib.Services.Mappers
 {
@@ -93,11 +92,12 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public PositionEntity? ToEntity(PositionV1CreateModel? model)
+        public PositionEntity? ToEntity(int userId, PositionV1CreateModel? model)
         {
             if (model == null) return null;
 
             var entity = new PositionEntity();
+            entity.UserId = userId;
             entity.StockId = model.StockId;
             entity.DateOpened = model.DateOpened;
             entity.DateClosed = model.DateClosed;
@@ -107,8 +107,25 @@ namespace InStock.Lib.Services.Mappers
             return entity;
         }
 
+        public PositionV1CreateMultipleModel ToModel(IList<AddPositionResult> results)
+        {
+            var success = results
+                .Where(x => x.IsSuccessful)
+                .Select(x => ToModel(x.Position))
+                .ToList();
+
+            var failure = results
+                .Where(x => !x.IsSuccessful)
+                .Select(ToFailedCreateModel)
+                .ToList();
+
+            var m = new PositionV1CreateMultipleModel(success, failure);
+
+            return m;
+        }
+
         public IList<PositionModel> ToModel(IList<PositionEntity>? target) => ToList(target, ToModel);
         
-        public IList<PositionEntity> ToEntity(IList<PositionV1CreateModel>? target) => ToList(target, ToEntity);
+        public IList<PositionEntity> ToEntity(int userId, IList<PositionV1CreateModel>? target) => ToList(userId, target, ToEntity);
     }
 }

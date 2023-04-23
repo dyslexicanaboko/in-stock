@@ -11,7 +11,7 @@ public interface IPositionMapper
     
     PositionEntity? ToEntity(IPosition? target);
     
-    PositionEntity? ToEntity(PositionV1CreateModel? model);
+    PositionEntity? ToEntity(int userId, PositionV1CreateModel? model);
     
     PositionModel? ToModel(PositionEntity? entity);
     
@@ -21,7 +21,9 @@ public interface IPositionMapper
 
     PositionModel? ToModel(IPosition? target);
 
+    PositionV1CreateMultipleModel ToModel(IList<AddPositionResult> results);
+
     IList<PositionModel> ToModel(IList<PositionEntity>? target);
-    
-    IList<PositionEntity> ToEntity(IList<PositionV1CreateModel>? target);
+
+    IList<PositionEntity> ToEntity(int userId, IList<PositionV1CreateModel>? target);
 }

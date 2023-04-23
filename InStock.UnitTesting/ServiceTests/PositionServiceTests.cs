@@ -23,7 +23,7 @@ namespace InStock.UnitTesting.ServiceTests
 
             _repoPosition = A.Fake<IPositionRepository>();
 
-            _service = new PositionService(_repoPosition, _repoStock, new PositionMapper());
+            _service = new PositionService(_repoPosition, _repoStock);
         }
 
         [Test]

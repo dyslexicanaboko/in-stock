@@ -1,17 +1,30 @@
+using InStock.Lib.Entities;
+using System.Reflection;
+
 namespace InStock.Lib.Models.Client
 {
     public class TradeV1CreateModel
     {
-        public int StockId { get; set; }
+        public TradeV1CreateModel(ITrade entity)
+        {
+            StockId = entity.StockId;
+            Price = entity.Price;
+            Quantity = entity.Quantity;
+            ExecutionDate = entity.ExecutionDate;
+            Confirmation = entity.Confirmation;
+            TradeTypeId = entity.TradeTypeId;
+        }
 
-        public int TradeTypeId { get; set; }
+        public int StockId { get; }
 
-        public decimal Price { get; set; }
+        public int TradeTypeId { get; }
 
-        public decimal Quantity { get; set; }
+        public decimal Price { get; }
 
-        public DateTime ExecutionDate { get; set; }
+        public decimal Quantity { get; }
 
-        public string? Confirmation { get; set; }
+        public DateTime ExecutionDate { get; }
+
+        public string? Confirmation { get; }
     }
 }

@@ -51,12 +51,9 @@ namespace InStock.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
         public async Task<ActionResult<PositionModel>> Post([FromBody] PositionV1CreateModel model)
         {
-            var entity = _mapper.ToEntity(model);
+            var entity = _mapper.ToEntity(UserId, model);
             
             Guard.IsNotNull(entity);
-
-            //TODO: Need to get the UserId from the header or something?
-            entity.UserId = UserId;
 
             var lst = new List<PositionEntity> { entity };
 
@@ -72,21 +69,19 @@ namespace InStock.Api.Controllers
         // POST api/position/multiple
         [HttpPost("multiple")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
-        public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] model)
+        public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] models)
         {
-            var entity = _mapper.ToEntity(model);
+            //TODO: Need to get the UserId from the header or something?
+            var entity = _mapper.ToEntity(UserId, models);
 
             Guard.IsNotNull(entity);
             Guard.IsNotEmpty(entity);
 
             var lst = entity.ToList();
 
-            //TODO: Need to get the UserId from the header or something?
-            lst.ForEach(x => x.UserId = UserId);
-
             var results = await Task.FromResult(_service.Add(lst));
 
-            var m = _service.TranslateToModel(results);
+            var m = _mapper.ToModel(results);
 
             //Ignoring the URI for this because this doesn't conform to rigid REST standards
             //If there is at least one success then return a 201
