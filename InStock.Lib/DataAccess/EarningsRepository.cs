@@ -9,10 +9,10 @@ namespace InStock.Lib.DataAccess
 	public class EarningsRepository
 		: BaseRepository, IEarningsRepository
 	{
-        public EarningsRepository()
-        {
-            
-        }
+		public EarningsRepository()
+		{
+			
+		}
 
 		public EarningsRepository(IAppConfiguration configuration)
 			: base(configuration)
@@ -64,6 +64,36 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
+		public IList<EarningsEntity> SelectAll(int stockId, int? exceptEarningsId = null)
+		{
+			var sql = @"
+			SELECT
+				e.EarningsId,
+				e.StockId,
+				e.[Date],
+				e.[Order],
+				e.CreateOnUtc
+			FROM dbo.Earnings e
+			WHERE e.StockId = @stockId";
+
+			var parameters = new DynamicParameters();
+			parameters.AddDynamicParams(new { stockId });
+
+
+			if (exceptEarningsId.HasValue)
+			{
+				sql += " AND e.EarningsId <> @exceptEarningsId";
+
+				parameters.AddDynamicParams(new { exceptEarningsId });
+			}
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<EarningsEntity>(sql, parameters).ToList();
+
+			return lst;
+		}
+
 		public IEnumerable<EarningsEntity> SelectAll()
 		{
 			var sql = @"
@@ -109,16 +139,15 @@ namespace InStock.Lib.DataAccess
 		public void Update(EarningsEntity entity)
 		{
 			var sql = @"UPDATE dbo.Earnings SET 
-				StockId = @StockId,
 				[Date] = @Date,
-				[Order] = @Order
+				[Order] = @Order,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE EarningsId = @EarningsId";
 
 			using var connection = new SqlConnection(ConnectionString);
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@EarningsId", dbType: DbType.Int32, value: entity.EarningsId);
-			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@Date", dbType: DbType.Date, value: entity.Date);
 			p.Add(name: "@Order", dbType: DbType.Int32, value: entity.Order);
 

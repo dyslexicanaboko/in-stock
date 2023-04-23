@@ -5,14 +5,13 @@ using InStock.Lib.Models.Client;
 namespace InStock.Lib.Services.Mappers
 {
     public class UserMapper
-        : MapperBase, IMapper<IUser, UserEntity, UserModel>, IUserMapper
+        : MapperBase, IUserMapper
     {
         public UserEntity? ToEntity(UserModel? model)
         {
             if (model == null) return null;
 
             var entity = new UserEntity(model);
-            entity.CreateOnUtc = model.CreateOnUtc;
 
             return entity;
         }
@@ -22,7 +21,6 @@ namespace InStock.Lib.Services.Mappers
             if (entity == null) return null;
 
             var model = new UserModel(entity);
-            model.CreateOnUtc = entity.CreateOnUtc;
 
             return model;
         }

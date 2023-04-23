@@ -5,6 +5,7 @@ CREATE TABLE [dbo].[Earnings]
 [Date] [date] NOT NULL,
 [Order] [int] NOT NULL,
 [CreateOnUtc] [datetime2] (0) NOT NULL CONSTRAINT [DF_dbo.Earnings_CreatedOnUtc] DEFAULT (sysutcdatetime()),
+[UpdatedOnUtc] [datetime2] (0) NULL,
 CONSTRAINT [PK_dbo.Earnings_EarningsId] PRIMARY KEY NONCLUSTERED ([EarningsId]),
 CONSTRAINT [FK_dbo.Earnings_dbo.Stock_StockId] FOREIGN KEY ([StockId]) REFERENCES [dbo].[Stock] ([StockId]),
 CONSTRAINT [UK_dbo.Earnings_Order] UNIQUE NONCLUSTERED ([StockId], [Order]),

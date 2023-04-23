@@ -8,6 +8,7 @@ CREATE TABLE [dbo].[Position]
 [Price] [decimal] (10, 2) NOT NULL,
 [Quantity] [decimal] (10, 4) NOT NULL,
 [CreateOnUtc] [datetime2] (0) NOT NULL CONSTRAINT [DF_dbo.Position_CreatedOnUtc] DEFAULT (sysutcdatetime()),
+[UpdatedOnUtc] [datetime2] (0) NULL,
 CONSTRAINT [PK_dbo.Position_PositionId] PRIMARY KEY NONCLUSTERED ([PositionId]),
 CONSTRAINT [FK_dbo.Position_dbo.Stock_StockId] FOREIGN KEY ([StockId]) REFERENCES [dbo].[Stock] ([StockId]),
 CONSTRAINT [FK_dbo.Position_dbo.User_UserId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([UserId]),

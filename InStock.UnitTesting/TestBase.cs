@@ -141,5 +141,8 @@ namespace InStock.UnitTesting
             //Assert
             Assert.IsFalse(areEqual);
         }
+
+        protected IList<T> AsList<T>(T element)
+            => new List<T> { element };
     }
 }

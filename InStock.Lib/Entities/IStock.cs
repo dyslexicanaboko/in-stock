@@ -2,12 +2,12 @@ namespace InStock.Lib.Entities
 {
     public interface IStock
     {
-        int StockId { get; set; }
+        int StockId { get; }
 
-        string Symbol { get; set; }
+        string Symbol { get; }
 
-        string Name { get; set; }
+        string Name { get; }
 
-        string? Notes { get; set; }
+        string? Notes { get; }
     }
 }

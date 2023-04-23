@@ -1,4 +1,6 @@
-﻿using InStock.Lib.Services;
+﻿using System.Data;
+using Dapper;
+using InStock.Lib.Services;
 using Microsoft.Data.SqlClient;
 
 namespace InStock.Lib.DataAccess
@@ -71,6 +73,22 @@ namespace InStock.Lib.DataAccess
             //The close and/or dispose method more than likely handle the closing if the connection is open
             Connection.Close();
             Connection.Dispose();
+        }
+        
+        protected SqlMapper.ICustomQueryParameter GetTvpIntegerList(IList<int> integerList)
+        {
+            var dt = new DataTable("IntegerList");
+            dt.Columns.Add("IntValue", typeof(int));
+
+            foreach (var i in integerList)
+            {
+                var dr = dt.NewRow();
+                dr["IntValue"] = i;
+
+                dt.Rows.Add(dr);
+            }
+
+            return dt.AsTableValuedParameter("dbo.IntegerList");
         }
 
         #region Not sure I will use any of this

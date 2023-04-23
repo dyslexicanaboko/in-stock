@@ -71,8 +71,10 @@
     <Folder Include="InStock.Database\" />
     <Folder Include="InStock.Database\" />
     <Folder Include="InStock.Database\" />
-    <Folder Include="InStock.Database\" />
     <Folder Include="Properties" />
+    <Folder Include="dbo\Types" />
+    <Folder Include="dbo\Types\User-Defined Table Types" />
+    <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\dbo.Earnings.sql" />
@@ -81,5 +83,14 @@
     <Build Include="dbo\Tables\dbo.Stock.sql" />
     <Build Include="dbo\Tables\dbo.Trade.sql" />
     <Build Include="dbo\Tables\dbo.User.sql" />
+    <Build Include="dbo\Types\User-Defined Table Types\IntegerList.sql" />
+    <Build Include="dbo\Tables\dbo.TradeType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="InStock.Database.publish.xml" />
+    <None Include="Scripts\Seed-dbo.TradeType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="PostDeployment.sql" />
   </ItemGroup>
 </Project>

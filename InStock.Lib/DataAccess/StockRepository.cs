@@ -29,7 +29,7 @@ namespace InStock.Lib.DataAccess
 				CreateOnUtc,
 				Notes
 			FROM dbo.Stock
-			WHERE StockId = @StockId";
+			WHERE StockId = @stockId";
 
 			var lst = GetConnection().Query<StockEntity>(sql, new { StockId = stockId }, Transaction).ToList();
 
@@ -61,6 +61,29 @@ namespace InStock.Lib.DataAccess
 			return entity;
 		}
 
+		public StockEntity? SelectByEarningsId(int earningsId)
+		{
+			var sql = @"
+			SELECT
+				s.StockId,
+				s.Symbol,
+				s.Name,
+				s.CreateOnUtc,
+				s.Notes
+			FROM dbo.Stock s
+				INNER JOIN dbo.Earnings e
+					ON s.StockId = e.StockId
+			WHERE EarningsId = @earningsId";
+
+			var lst = GetConnection().Query<StockEntity>(sql, new { earningsId }, Transaction).ToList();
+
+			if (!lst.Any()) return null;
+
+			var entity = lst.Single();
+
+			return entity;
+		}
+
 		public IEnumerable<StockEntity> SelectAll()
 		{
 			var sql = @"
@@ -77,6 +100,28 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
+		public IEnumerable<StockEntity> Select(IList<int> stockIds)
+		{
+			var tvp = GetTvpIntegerList(stockIds);
+
+			var sql = @"
+			SELECT
+				s.StockId,
+				s.Symbol,
+				s.Name,
+				s.CreateOnUtc,
+				s.Notes
+			FROM dbo.Stock s
+				INNER JOIN @tvp t
+					ON s.StockId = t.IntValue";
+
+			var lst = GetConnection().Query<StockEntity>(
+				sql, 
+				new { tvp }, 
+				transaction: Transaction).ToList();
+
+			return lst;
+		}
 		
 		public int Insert(StockEntity entity)
 		{
@@ -104,7 +149,8 @@ namespace InStock.Lib.DataAccess
 			var sql = @"UPDATE dbo.Stock SET 
 				Symbol = @Symbol,
 				Name = @Name,
-				Notes = @Notes
+				Notes = @Notes,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE StockId = @StockId";
 
 			var p = new DynamicParameters();
@@ -119,7 +165,8 @@ namespace InStock.Lib.DataAccess
 		public void UpdateNotes(int stockId, string? notes)
 		{
 			var sql = @"UPDATE dbo.Stock SET 
-				Notes = @notes
+				Notes = @notes,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE StockId = @stockId";
 
 			var p = new DynamicParameters();

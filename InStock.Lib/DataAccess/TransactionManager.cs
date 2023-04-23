@@ -1,4 +1,6 @@
-﻿namespace InStock.Lib.DataAccess
+﻿using InStock.Lib.Services;
+
+namespace InStock.Lib.DataAccess
 {
     public class TransactionManager
         : BaseRepository, ITransactionManager
@@ -8,13 +10,14 @@
         //NOTE: I hate this giant eye sore, but I am going to leave it for now until I can fix it
         //I couldn't unit test properly because I was using concrete implementations
         public TransactionManager(
+            IAppConfiguration configuration,
             IEarningsRepository earningsRepository,
             IPositionRepository positionRepository,
             IQuoteRepository quoteRepository,
             IStockRepository stockRepository,
             ITradeRepository tradeRepository,
             IUserRepository userRepository)
-            : base()
+            : base(configuration)
         {
             _repositories = new Dictionary<string, object>
             {

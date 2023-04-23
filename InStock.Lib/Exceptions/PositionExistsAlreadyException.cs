@@ -3,10 +3,8 @@
 namespace InStock.Lib.Exceptions
 {
     public class PositionExistsAlreadyException
-        : Exception
+        : EntityExistsAlreadyException
     {
-        private static readonly string N = Environment.NewLine;
-
         public PositionExistsAlreadyException(string symbol, PositionEntity position)
             : base(GetMessage(symbol, position))
         {

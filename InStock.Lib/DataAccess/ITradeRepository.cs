@@ -6,6 +6,8 @@ namespace InStock.Lib.DataAccess
         : IRepository<TradeEntity>
     {
         IEnumerable<TradeEntity> Select(int userId, string symbol);
+        
+        IEnumerable<TradeEntity> SelectAll(int stockId, int? exceptTradeId = null);
 
         void Delete(int tradeId);
 

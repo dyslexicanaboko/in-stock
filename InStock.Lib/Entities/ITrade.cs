@@ -2,22 +2,20 @@ namespace InStock.Lib.Entities
 {
     public interface ITrade
     {
-        int TradeId { get; set; }
+        int TradeId { get; }
 
-        int UserId { get; set; }
+        int UserId { get; }
 
-        int StockId { get; set; }
+        int StockId { get; }
 
-        bool Type { get; set; }
+        int TradeTypeId { get; }
 
-        decimal Price { get; set; }
+        decimal Price { get; }
 
-        decimal Quantity { get; set; }
+        decimal Quantity { get; }
 
-        DateTime StartDate { get; set; }
+        DateTime ExecutionDate { get; }
 
-        DateTime EndDate { get; set; }
-
-        string? Confirmation { get; set; }
+        string? Confirmation { get; }
     }
 }

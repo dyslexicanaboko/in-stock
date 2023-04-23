@@ -1,26 +1,36 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
+using InStock.Lib.Models.Results;
 
 namespace InStock.Lib.Services.Mappers
 {
     public class TradeMapper
-        : MapperBase, IMapper<ITrade, TradeEntity, TradeModel>, ITradeMapper
+        : MapperBase, ITradeMapper
     {
         public TradeEntity? ToEntity(TradeModel? model)
         {
             if (model == null) return null;
             
-            var entity = new TradeEntity();
-            entity.TradeId = model.TradeId;
-            entity.UserId = model.UserId;
-            entity.StockId = model.StockId;
-            entity.Type = model.Type;
-            entity.Price = model.Price;
-            entity.Quantity = model.Quantity;
-            entity.StartDate = model.StartDate;
-            entity.EndDate = model.EndDate;
-            entity.Confirmation = model.Confirmation;
+            var entity = new TradeEntity(model);
+
+            return entity;
+        }
+
+        public TradeV1PatchModel? ToPatchModel(TradeEntity? entity)
+        {
+            if (entity == null) return null;
+
+            var model = new TradeV1PatchModel(entity);
+
+            return model;
+        }
+        
+        public TradeEntity? ToEntity(int tradeId, int stockId, TradeV1PatchModel? model)
+        {
+            if (model == null) return null;
+
+            var entity = new TradeEntity(tradeId, stockId, model);
 
             return entity;
         }
@@ -29,16 +39,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (entity == null) return null;
             
-            var model = new TradeModel();
-            model.TradeId = entity.TradeId;
-            model.UserId = entity.UserId;
-            model.StockId = entity.StockId;
-            model.Type = entity.Type;
-            model.Price = entity.Price;
-            model.Quantity = entity.Quantity;
-            model.StartDate = entity.StartDate;
-            model.EndDate = entity.EndDate;
-            model.Confirmation = entity.Confirmation;
+            var model = new TradeModel(entity);
 
             return model;
         }
@@ -47,16 +48,7 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var entity = new TradeEntity();
-            entity.TradeId = target.TradeId;
-            entity.UserId = target.UserId;
-            entity.StockId = target.StockId;
-            entity.Type = target.Type;
-            entity.Price = target.Price;
-            entity.Quantity = target.Quantity;
-            entity.StartDate = target.StartDate;
-            entity.EndDate = target.EndDate;
-            entity.Confirmation = target.Confirmation;
+            var entity = new TradeEntity(target);
 
             return entity;
         }
@@ -65,36 +57,50 @@ namespace InStock.Lib.Services.Mappers
         {
             if (target == null) return null;
             
-            var model = new TradeModel();
-            model.TradeId = target.TradeId;
-            model.UserId = target.UserId;
-            model.StockId = target.StockId;
-            model.Type = target.Type;
-            model.Price = target.Price;
-            model.Quantity = target.Quantity;
-            model.StartDate = target.StartDate;
-            model.EndDate = target.EndDate;
-            model.Confirmation = target.Confirmation;
-
+            var model = new TradeModel(target);
+            
             return model;
         }
 
-        public TradeEntity? ToEntity(TradeV1CreateModel? model)
+        public TradeEntity? ToEntity(int userId, TradeV1CreateModel? model)
         {
             if (model == null) return null;
 
-            var entity = new TradeEntity();
-            entity.StockId = model.StockId;
-            entity.Type = model.Type;
-            entity.Price = model.Price;
-            entity.Quantity = model.Quantity;
-            entity.StartDate = model.StartDate;
-            entity.EndDate = model.EndDate;
-            entity.Confirmation = model.Confirmation;
+            var entity = new TradeEntity(userId, model);
 
             return entity;
         }
 
+        public TradeV1FailedCreateModel? ToFailedCreateModel(AddTradeResult? result)
+        {
+            if (result == null) return null;
+
+            var model = new TradeV1FailedCreateModel(result.Trade);
+            model.FailureCode = 100; //This needs to be set correctly
+            model.FailureReason = result.GetErrorMessage();
+
+            return model;
+        }
+
+        public TradeV1CreateMultipleModel ToModel(IList<AddTradeResult> results)
+        {
+            var success = results
+                .Where(x => x.IsSuccessful)
+                .Select(x => ToModel(x.Trade))
+                .ToList();
+
+            var failure = results
+                .Where(x => !x.IsSuccessful)
+                .Select(ToFailedCreateModel)
+                .ToList();
+
+            var m = new TradeV1CreateMultipleModel(success, failure);
+
+            return m;
+        }
+
         public IList<TradeModel> ToModel(IList<TradeEntity>? target) => ToList(target, ToModel);
+
+        public IList<TradeEntity> ToEntity(int userId, IList<TradeV1CreateModel>? target) => ToList(userId, target, ToEntity);
     }
 }

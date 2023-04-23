@@ -1,24 +1,22 @@
+using InStock.Lib.Entities;
+
 namespace InStock.Lib.Models.Client
 {
     public class PositionV1CreateModel
     {
         public PositionV1CreateModel()
         {
-
+            //Required for controller
         }
 
-        //public PositionV1CreateModel(int stockId, DateTime dateOpened, DateTime? dateClosed, decimal price, decimal quantity)
-        //{
-        //    StockId = stockId;
-
-        //    DateOpened = dateOpened;
-
-        //    DateClosed = dateClosed;
-
-        //    Price = price;
-
-        //    Quantity = quantity;
-        //}
+        public PositionV1CreateModel(IPosition entity)
+        {
+            StockId = entity.StockId;
+            DateOpened = entity.DateOpened;
+            DateClosed = entity.DateClosed;
+            Price = entity.Price;
+            Quantity = entity.Quantity;
+        }
 
         public int StockId { get; set; }
 

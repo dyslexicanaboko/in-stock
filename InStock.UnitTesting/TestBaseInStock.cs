@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
 
 namespace InStock.UnitTesting
@@ -40,6 +41,21 @@ namespace InStock.UnitTesting
 
             return new StockQuoteModel(TodayUtc, e.Symbol, e.Name, 0.0001, 3);
         }
+        
+        protected PositionEntity GetSomePosition(int increment = 1)
+        {
+            Guard.IsGreaterThan(increment, 0, nameof(increment));
+
+            return new PositionEntity
+            {
+                PositionId = increment,
+                StockId = SomeStockId,
+                UserId = SomeUserId,
+                Price = increment,
+                Quantity = increment,
+                DateOpened = TodayUtc.AddDays(-increment)
+            };
+        }
 
         protected List<PositionEntity> GetSomePositions(int count = 3)
         {
@@ -53,18 +69,54 @@ namespace InStock.UnitTesting
             return lst;
         }
 
-        protected PositionEntity GetSomePosition(int increment = 1)
+        protected TradeEntity GetSomeTrade(int increment = 1, TradeType tradeType = TradeType.Buy)
         {
             Guard.IsGreaterThan(increment, 0, nameof(increment));
 
-            return new PositionEntity
+            return new TradeEntity
             {
-                PositionId = increment,
+                TradeId = increment,
                 StockId = SomeStockId,
                 UserId = SomeUserId,
+                TradeType = tradeType,
                 Price = increment,
                 Quantity = increment,
-                DateOpened = TodayUtc.AddDays(-increment)
+                ExecutionDate = TodayUtc.AddDays(-increment)
+            };
+        }
+
+        protected List<TradeEntity> GetSomeTrades(int count = 3)
+        {
+            var lst = new List<TradeEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomeTrade(i));
+            }
+
+            return lst;
+        }
+
+        protected IList<EarningsEntity> GetMultipleEarnings(int count)
+        {
+            var lst = new List<EarningsEntity>(count);
+
+            for (var i = 1; i <= count; i++)
+            {
+                lst.Add(GetSomeEarnings(i));
+            }
+
+            return lst;
+        }
+
+        protected EarningsEntity GetSomeEarnings(int increment = 1)
+        {
+            return new EarningsEntity
+            {
+                EarningsId = increment,
+                StockId = SomeStockId,
+                Date = EarningsService.GetYearAgnosticDate(new DateTime(1, 1, increment)),
+                Order = increment
             };
         }
     }

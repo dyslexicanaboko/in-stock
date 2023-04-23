@@ -9,10 +9,10 @@ namespace InStock.Lib.DataAccess
 	public class PositionRepository
 		: BaseRepository, IPositionRepository
 	{
-        public PositionRepository()
-        {
-            
-        }
+		public PositionRepository()
+		{
+			
+		}
 
 		public PositionRepository(IAppConfiguration configuration)
 			: base(configuration)
@@ -92,7 +92,40 @@ namespace InStock.Lib.DataAccess
 			return lst;
 		}
 
-		
+		public IList<PositionEntity> SelectAll(int stockId, int? exceptPositionId = null)
+		{
+			var sql = @"
+			SELECT
+				PositionId,
+				UserId,
+				StockId,
+				DateOpened,
+				DateClosed,
+				Price,
+				Quantity,
+				CreateOnUtc
+			FROM dbo.Position e
+			WHERE e.StockId = @stockId";
+
+			var parameters = new DynamicParameters();
+			parameters.AddDynamicParams(new { stockId });
+
+
+			if (exceptPositionId.HasValue)
+			{
+				sql += " AND e.PositionId <> @exceptPositionId";
+
+				parameters.AddDynamicParams(new { exceptPositionId });
+			}
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<PositionEntity>(sql, parameters).ToList();
+
+			return lst;
+		}
+
+
 		public int Insert(PositionEntity entity)
 		{
 			var sql = @"INSERT INTO dbo.Position (
@@ -128,19 +161,18 @@ namespace InStock.Lib.DataAccess
 		public void Update(PositionEntity entity)
 		{
 			var sql = @"UPDATE dbo.Position SET 
-				UserId = @UserId,
 				StockId = @StockId,
 				DateOpened = @DateOpened,
 				DateClosed = @DateClosed,
 				Price = @Price,
-				Quantity = @Quantity
+				Quantity = @Quantity,
+				UpdatedOnUtc = SYSUTCDATETIME()
 			WHERE PositionId = @PositionId";
 
 			using var connection = new SqlConnection(ConnectionString);
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
-			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
 			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
 			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
