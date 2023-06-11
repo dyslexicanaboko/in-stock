@@ -1,8 +1,11 @@
 ﻿namespace InStock.Lib.Exceptions
 {
     public class MaxEntriesException
-        : Exception
+        : BaseException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.MaxEntries;
+
+
         public MaxEntriesException(string symbol, string subject, int max)
             : base(GetMessage(symbol, subject, max))
         {

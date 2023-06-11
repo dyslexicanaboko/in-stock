@@ -1,8 +1,11 @@
 ﻿namespace InStock.Lib.Exceptions
 {
     public class StockNotFoundException
-        : Exception
+        : NotFoundBaseException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.StockNotFound;
+
+
         public StockNotFoundException(string symbol)
             : base(GetMessage(symbol))
         {

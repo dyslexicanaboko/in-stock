@@ -5,6 +5,9 @@ namespace InStock.Lib.Exceptions
     public class PositionExistsAlreadyException
         : EntityExistsAlreadyException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.PositionExistsAlready;
+
+
         public PositionExistsAlreadyException(string symbol, PositionEntity position)
             : base(GetMessage(symbol, position))
         {

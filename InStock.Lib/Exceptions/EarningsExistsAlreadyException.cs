@@ -5,6 +5,8 @@ namespace InStock.Lib.Exceptions
     public class EarningsExistsAlreadyException
         : EntityExistsAlreadyException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.EarningsExistsAlready;
+
         public enum Part
         {
             Date,

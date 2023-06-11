@@ -5,6 +5,9 @@ namespace InStock.Lib.Exceptions
     public class TradeExistsAlreadyException
         : EntityExistsAlreadyException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.TradeExistsAlready;
+
+
         public TradeExistsAlreadyException(string symbol, TradeEntity trade)
             : base(GetMessage(symbol, trade))
         {

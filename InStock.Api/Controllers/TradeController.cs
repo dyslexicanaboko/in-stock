@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
@@ -32,6 +33,8 @@ namespace InStock.Api.Controllers
         public ActionResult<ITrade> Get(int id)
         {
             var entity = _service.GetTrade(id);
+
+            if (entity == null) throw new TradeNotFoundException(id);
 
             return Ok(_mapper.ToModel(entity));
         }
