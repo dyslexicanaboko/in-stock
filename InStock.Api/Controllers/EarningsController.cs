@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
@@ -49,6 +50,9 @@ namespace InStock.Api.Controllers
         // POST api/earnings
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IEarnings))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<EarningsModel>> Post([FromBody] EarningsV1CreateModel model)
         {
             var entity = _mapper.ToEntity(model);
@@ -69,6 +73,9 @@ namespace InStock.Api.Controllers
         // POST api/position/multiple
         [HttpPost("multiple")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<EarningsV1CreateMultipleModel>> Post([FromBody] EarningsV1CreateModel[] model)
         {
             var entity = _mapper.ToEntity(model);
@@ -96,6 +103,9 @@ namespace InStock.Api.Controllers
         // PATCH api/earnings/5
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Patch(int id, [FromBody] JsonPatchDocument<EarningsV1PatchModel> patchDoc)
         {
             //TODO: Need more sophisticated patching that only updates what has changed
@@ -104,7 +114,7 @@ namespace InStock.Api.Controllers
             //Preload with existing DB values
             var model = _mapper.ToPatchModel(db);
 
-            Guard.IsNotNull(model);
+            if (model == null) throw NotFoundExceptions.Earnings(id);
 
             //Apply patch doc to model to overwrite what changed only
             patchDoc.ApplyTo(model);
@@ -130,6 +140,8 @@ namespace InStock.Api.Controllers
         // DELETE api/earnings/MSFT/symbol
         [HttpDelete("{symbol}/symbol")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Delete(string symbol)
         {
             _service.Delete(symbol);

@@ -1,6 +1,6 @@
 ﻿namespace InStock.Lib.Exceptions
 {
-    public abstract class NotFoundBaseException
+    public class NotFoundBaseException
         : BaseException
     {
         public override int ErrorCode { get; set; } = 40400;
@@ -10,7 +10,7 @@
 
         }
 
-        protected NotFoundBaseException(string message)
+        public NotFoundBaseException(string message)
             : base(message)
         {
 

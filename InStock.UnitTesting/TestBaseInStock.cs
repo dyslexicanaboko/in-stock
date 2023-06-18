@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Diagnostics;
+using FakeItEasy;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
+using NUnit.Framework;
 
 namespace InStock.UnitTesting
 {
@@ -118,6 +121,52 @@ namespace InStock.UnitTesting
                 Date = EarningsService.GetYearAgnosticDate(new DateTime(1, 1, increment)),
                 Order = increment
             };
+        }
+
+        protected void AssertThrowsStockIdNotFoundException(TestDelegate testMethod)
+            => AssertThrowsNotFoundException(testMethod, ErrorCodes.NotFound.StockId);
+
+        protected void AssertThrowsSymbolNotFoundException(TestDelegate testMethod)
+            => AssertThrowsNotFoundException(testMethod, ErrorCodes.NotFound.Symbol);
+        
+        private void AssertThrowsNotFoundException(TestDelegate testMethod, int errorCode)
+        {
+            var ex = Assert.Throws<NotFoundBaseException>(testMethod);
+         
+            Assert.AreEqual(errorCode, ex.ErrorCode, "Unexpected error code.");
+        }
+
+        protected Task AssertThrowsStockIdNotFoundExceptionAsync(AsyncTestDelegate testMethod)
+            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockId);
+
+        protected Task AssertThrowsStockSymbolNotFoundExceptionAsync(AsyncTestDelegate testMethod)
+            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockSymbol);
+
+        protected Task AssertThrowsSymbolNotFoundExceptionAsync(AsyncTestDelegate testMethod)
+            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.Symbol);
+
+        private Task AssertThrowsNotFoundExceptionAsync(AsyncTestDelegate testMethod, int errorCode)
+        {
+            var ex = Assert.ThrowsAsync<NotFoundBaseException>(testMethod);
+
+            Assert.AreEqual(errorCode, ex.ErrorCode, "Unexpected error code.");
+
+            return Task.CompletedTask;
+        }
+
+        protected void AssertIsStockIdNotFoundException(Exception ex)
+            => AssertIsNotFoundException(ex, ErrorCodes.NotFound.StockId);
+
+        protected void AssertIsSymbolNotFoundException(Exception ex)
+            => AssertIsNotFoundException(ex, ErrorCodes.NotFound.Symbol);
+
+        private void AssertIsNotFoundException(Exception ex, int errorCode)
+        {
+            Assert.IsInstanceOf<NotFoundBaseException>(ex);
+
+            var nfbe = (NotFoundBaseException)ex;
+
+            Assert.AreEqual(errorCode, nfbe.ErrorCode, "Unexpected error code.");
         }
     }
 }

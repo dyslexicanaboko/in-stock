@@ -48,16 +48,14 @@ namespace InStock.UnitTesting.ServiceTests
         }
 
         [Test]
-        public Task Add_WhenStockDoesNotExist_ThenStockNotFoundExceptionIsThrown()
+        public async Task Add_WhenStockDoesNotExist_ThenStockNotFoundExceptionIsThrown()
         {
             //Arrange
             A.CallTo(() => _repoStock.Select(A<string>._)).Returns(null);
 
-            
-            //Act/Assert
-            Assert.ThrowsAsync<StockNotFoundException>(() => _service.Add(SomeSymbol));
 
-            return Task.CompletedTask;
+            //Act/Assert
+            await AssertThrowsStockSymbolNotFoundExceptionAsync(() => _service.Add(SomeSymbol));
         }
 
         [Test]
@@ -69,7 +67,7 @@ namespace InStock.UnitTesting.ServiceTests
             A.CallTo(() => _stockQuoteApi.GetQuote(A<string>._)).Returns((StockQuoteModel?)null);
 
             //Act/Assert
-            Assert.ThrowsAsync<SymbolNotFoundException>(() => _service.Add(SomeSymbol));
+            AssertThrowsSymbolNotFoundExceptionAsync(() => _service.Add(SomeSymbol));
 
             return Task.CompletedTask;
         }

@@ -88,7 +88,7 @@ namespace InStock.UnitTesting.ServiceTests
             var a = actual.Single();
 
             Assert.IsFalse(a.IsSuccessful);
-            Assert.IsTrue(a.Exception is StockNotFoundException);
+            AssertIsStockIdNotFoundException(a.Exception);
 
             A.CallTo(() => _repoTrade.Insert(A<TradeEntity>._))
                 .MustNotHaveHappened();
@@ -102,7 +102,7 @@ namespace InStock.UnitTesting.ServiceTests
 
             //Act
 
-            Assert.Throws<SymbolNotFoundException>(() => _service.Delete(SomeUserId, SomeSymbol));
+            AssertThrowsSymbolNotFoundException(() => _service.Delete(SomeUserId, SomeSymbol));
             
             //Assert
             A.CallTo(() => _repoTrade.Delete(A<int>._, A<string>._))

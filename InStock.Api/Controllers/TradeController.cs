@@ -30,11 +30,12 @@ namespace InStock.Api.Controllers
         // GET api/trade/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ITrade))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<ITrade> Get(int id)
         {
             var entity = _service.GetTrade(id);
 
-            if (entity == null) throw new TradeNotFoundException(id);
+            if (entity == null) throw NotFoundExceptions.Trade(id);
 
             return Ok(_mapper.ToModel(entity));
         }
@@ -53,6 +54,9 @@ namespace InStock.Api.Controllers
         // POST api/trade
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ITrade))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<TradeModel>> Post([FromBody] TradeV1CreateModel model)
         {
             var entity = _mapper.ToEntity(UserId, model);
@@ -73,6 +77,8 @@ namespace InStock.Api.Controllers
         // POST api/trade/multiple
         [HttpPost("multiple")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TradeV1CreateMultipleModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<TradeV1CreateMultipleModel>> Post([FromBody] TradeV1CreateModel[] model)
         {
             var entity = _mapper.ToEntity(UserId, model);
@@ -103,6 +109,9 @@ namespace InStock.Api.Controllers
         // PATCH api/trades/5
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Patch(int id, [FromBody] JsonPatchDocument<TradeV1PatchModel> patchDoc)
         {
             //TODO: Need more sophisticated patching that only updates what has changed
@@ -111,7 +120,7 @@ namespace InStock.Api.Controllers
             //Preload with existing DB values
             var model = _mapper.ToPatchModel(db);
 
-            Guard.IsNotNull(model);
+            if (model == null) throw NotFoundExceptions.Trade(id);
 
             //Apply patch doc to model to overwrite what changed only
             patchDoc.ApplyTo(model);
@@ -137,6 +146,8 @@ namespace InStock.Api.Controllers
         // DELETE api/trade/MSFT/symbol
         [HttpDelete("{symbol}/symbol")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Delete(string symbol)
         {
             //TODO: Need to get the UserId from the header or something?

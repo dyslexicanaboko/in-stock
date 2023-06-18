@@ -5,7 +5,7 @@ namespace InStock.Lib.Exceptions
     public class EarningsExistsAlreadyException
         : EntityExistsAlreadyException
     {
-        public override int ErrorCode { get; set; } = ErrorCodes.EarningsExistsAlready;
+        public override int ErrorCode { get; set; } = ErrorCodes.Errors.EarningsExistsAlready;
 
         public enum Part
         {
@@ -22,7 +22,7 @@ namespace InStock.Lib.Exceptions
         private static string GetMessage(string symbol, EarningsEntity earnings, Part part)
         {
             var str =
-                $"An earnings entry with symbol \"{symbol}\" already exists with the following parameters:" +
+                $"An earnings entry with symbol `{symbol}` already exists with the following parameters:" +
                 $"{N}StockId: {earnings.StockId}, " +
                 (part == Part.Date ? $"{N}Date: {earnings.Date}, " : $"{N}Order: {earnings.Order}, ") +
                 $"{N}Please revise your entry.";

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
@@ -50,6 +51,9 @@ namespace InStock.Api.Controllers
         // POST api/position
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<PositionModel>> Post([FromBody] PositionV1CreateModel model)
         {
             var entity = _mapper.ToEntity(UserId, model);
@@ -70,6 +74,9 @@ namespace InStock.Api.Controllers
         // POST api/position/multiple
         [HttpPost("multiple")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] models)
         {
             //TODO: Need to get the UserId from the header or something?
@@ -98,6 +105,9 @@ namespace InStock.Api.Controllers
         // PATCH api/positions/5
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Patch(int id, [FromBody] JsonPatchDocument<PositionV1PatchModel> patchDoc)
         {
             //TODO: Need more sophisticated patching that only updates what has changed
@@ -106,7 +116,7 @@ namespace InStock.Api.Controllers
             //Preload with existing DB values
             var model = _mapper.ToPatchModel(db);
 
-            Guard.IsNotNull(model);
+            if (model == null) throw NotFoundExceptions.Position(id);
 
             //Apply patch doc to model to overwrite what changed only
             patchDoc.ApplyTo(model);

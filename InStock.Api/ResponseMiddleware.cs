@@ -32,7 +32,7 @@ namespace InStock.Api
             //TODO: catch Exception - Unhandled exception, which requires logging
         }
 
-        private Task Respond(HttpContext context, HttpStatusCode httpStatusCode, BaseException ex)
+        private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, BaseException ex)
         {
             var model = new ErrorModel()
             {
@@ -45,7 +45,7 @@ namespace InStock.Api
             return Respond(context, httpStatusCode, jsonResponse);
         }
 
-        private async Task Respond(HttpContext context, HttpStatusCode httpStatusCode, string jsonResponse)
+        private static async Task Respond(HttpContext context, HttpStatusCode httpStatusCode, string jsonResponse)
         {
             context.Response.StatusCode = (int)httpStatusCode;
             context.Response.ContentType = "application/json";
