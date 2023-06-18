@@ -1,4 +1,5 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
@@ -27,9 +28,12 @@ namespace InStock.Api.Controllers
         // GET api/stock/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IStock))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IStock> Get(int id)
         {
             var entity = _service.GetStock(id);
+
+            if (entity == null) throw NotFoundExceptions.Stock(id);
 
             return Ok(_mapper.ToModel(entity));
         }
@@ -37,16 +41,20 @@ namespace InStock.Api.Controllers
         // GET api/stock/5
         [HttpGet("{symbol}/symbol")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IStock))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IStock> Get(string symbol)
         {
             var entity = _service.GetStock(symbol);
 
+            if (entity == null) throw NotFoundExceptions.Stock(symbol);
+            
             return Ok(_mapper.ToModel(entity));
         }
 
         // PATCH api/stock/5
         [HttpPatch("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult Patch(int id, [FromBody] JsonPatchDocument<StockV1PatchModel> patchDoc)
         {
             var model = new StockV1PatchModel();
@@ -62,6 +70,9 @@ namespace InStock.Api.Controllers
         // POST api/stock
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IStock))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<StockV1CreatedModel>> Post([FromBody] SymbolV1Model model)
         {
             var entity = await _service.Add(model.Symbol);

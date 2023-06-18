@@ -1,8 +1,10 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using YahooQuotesApi;
 
 namespace InStock.Api.Controllers
 {
@@ -26,22 +28,25 @@ namespace InStock.Api.Controllers
         // GET api/quote/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IQuote))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IQuote> Get(int id)
         {
             var entity = _service.GetQuote(id);
 
+            if (entity == null) throw NotFoundExceptions.Quote(id);
+
             return Ok(_mapper.ToModel(entity));
         }
 
-        // GET api/quote/5
+        // GET api/quote/MSFT
         [HttpGet("{symbol}/symbol")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IQuote))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IQuote> Get(string symbol)
         {
             var entity = _service.GetQuote(symbol);
 
-            //TODO: The stock not found message sucks, need to make it more clear
-            if (entity == null) return NotFound();
+            if (entity == null) throw NotFoundExceptions.Quote(symbol);
 
             return Ok(_mapper.ToModel(entity));
         }
@@ -49,6 +54,9 @@ namespace InStock.Api.Controllers
         // POST api/quote
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IQuote))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<QuoteV1CreatedModel>> Post([FromBody] SymbolV1Model model)
         {
             var entity = await _service.Add(model.Symbol);

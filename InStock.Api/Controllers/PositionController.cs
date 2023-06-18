@@ -30,9 +30,12 @@ namespace InStock.Api.Controllers
         // GET api/position/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IPosition))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IPosition> Get(int id)
         {
             var entity = _service.GetPosition(id);
+
+            if (entity == null) throw NotFoundExceptions.Position(id);
 
             return Ok(_mapper.ToModel(entity));
         }
@@ -142,6 +145,8 @@ namespace InStock.Api.Controllers
         // DELETE api/position/MSFT/symbol
         [HttpDelete("{symbol}/symbol")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public ActionResult Delete(string symbol)
         {
             //TODO: Need to get the UserId from the header or something?

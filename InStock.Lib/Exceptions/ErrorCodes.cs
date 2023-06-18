@@ -11,12 +11,15 @@
         //HTTP 404xx Not Found - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
         public static class NotFound
         {
-            public const int StockId = 40401;
-            public const int StockSymbol = 40402;
+            public const int StockById = 40401;
+            public const int StockBySymbol = 40402;
             public const int Symbol = 40403;
             public const int Trade = 40404;
             public const int Earnings = 40405;
             public const int Position = 40406;
+            public const int QuoteById = 40407;
+            public const int QuoteBySymbol = 40408;
+            public const int User = 40409;
         }
 
         //HTTP 500xx Internal Server Error - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500

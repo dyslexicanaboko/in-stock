@@ -1,4 +1,5 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
@@ -26,9 +27,12 @@ namespace InStock.Api.Controllers
         // GET api/user/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IUser))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IUser> Get(int id)
         {
             var entity = _service.GetUser(id);
+
+            if (entity == null) throw NotFoundExceptions.User(id);
 
             return Ok(_mapper.ToModel(entity));
         }
@@ -46,6 +50,8 @@ namespace InStock.Api.Controllers
         // POST api/user
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IUser))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+        //TODO: This requires 403 0x202306172302
         public async Task<ActionResult<UserV1CreatedModel>> Post([FromBody] UserV1CreateModel model)
         {
             var entity = await Task.FromResult(_service.Add(_mapper.ToEntity(model)));

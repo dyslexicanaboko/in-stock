@@ -124,7 +124,7 @@ namespace InStock.UnitTesting
         }
 
         protected void AssertThrowsStockIdNotFoundException(TestDelegate testMethod)
-            => AssertThrowsNotFoundException(testMethod, ErrorCodes.NotFound.StockId);
+            => AssertThrowsNotFoundException(testMethod, ErrorCodes.NotFound.StockById);
 
         protected void AssertThrowsSymbolNotFoundException(TestDelegate testMethod)
             => AssertThrowsNotFoundException(testMethod, ErrorCodes.NotFound.Symbol);
@@ -137,10 +137,10 @@ namespace InStock.UnitTesting
         }
 
         protected Task AssertThrowsStockIdNotFoundExceptionAsync(AsyncTestDelegate testMethod)
-            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockId);
+            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockById);
 
         protected Task AssertThrowsStockSymbolNotFoundExceptionAsync(AsyncTestDelegate testMethod)
-            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockSymbol);
+            => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.StockBySymbol);
 
         protected Task AssertThrowsSymbolNotFoundExceptionAsync(AsyncTestDelegate testMethod)
             => AssertThrowsNotFoundExceptionAsync(testMethod, ErrorCodes.NotFound.Symbol);
@@ -155,7 +155,7 @@ namespace InStock.UnitTesting
         }
 
         protected void AssertIsStockIdNotFoundException(Exception ex)
-            => AssertIsNotFoundException(ex, ErrorCodes.NotFound.StockId);
+            => AssertIsNotFoundException(ex, ErrorCodes.NotFound.StockById);
 
         protected void AssertIsSymbolNotFoundException(Exception ex)
             => AssertIsNotFoundException(ex, ErrorCodes.NotFound.Symbol);

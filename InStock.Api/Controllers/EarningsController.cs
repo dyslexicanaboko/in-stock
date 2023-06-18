@@ -30,9 +30,12 @@ namespace InStock.Api.Controllers
         // GET api/earnings/5
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEarnings))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
         public ActionResult<IEarnings> Get(int id)
         {
             var entity = _service.GetEarnings(id);
+
+            if (entity == null) throw NotFoundExceptions.Earnings(id);
 
             return Ok(_mapper.ToModel(entity));
         }
