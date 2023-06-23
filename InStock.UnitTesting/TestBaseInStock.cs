@@ -131,7 +131,7 @@ namespace InStock.UnitTesting
         
         private void AssertThrowsNotFoundException(TestDelegate testMethod, int errorCode)
         {
-            var ex = Assert.Throws<NotFoundBaseException>(testMethod);
+            var ex = Assert.Throws<NotFoundException>(testMethod);
          
             Assert.AreEqual(errorCode, ex.ErrorCode, "Unexpected error code.");
         }
@@ -147,7 +147,7 @@ namespace InStock.UnitTesting
 
         private Task AssertThrowsNotFoundExceptionAsync(AsyncTestDelegate testMethod, int errorCode)
         {
-            var ex = Assert.ThrowsAsync<NotFoundBaseException>(testMethod);
+            var ex = Assert.ThrowsAsync<NotFoundException>(testMethod);
 
             Assert.AreEqual(errorCode, ex.ErrorCode, "Unexpected error code.");
 
@@ -162,9 +162,9 @@ namespace InStock.UnitTesting
 
         private void AssertIsNotFoundException(Exception ex, int errorCode)
         {
-            Assert.IsInstanceOf<NotFoundBaseException>(ex);
+            Assert.IsInstanceOf<NotFoundException>(ex);
 
-            var nfbe = (NotFoundBaseException)ex;
+            var nfbe = (NotFoundException)ex;
 
             Assert.AreEqual(errorCode, nfbe.ErrorCode, "Unexpected error code.");
         }

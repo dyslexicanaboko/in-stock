@@ -5,6 +5,7 @@ using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
 using InStock.Lib.Services.Mappers;
+using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
@@ -34,9 +35,9 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
-        public IList<EarningsEntity>? GetEarnings(string symbol)
+        public IList<EarningsEntity> GetEarnings(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            CommonValidations.IsSymbolValid(symbol);
 
             if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 
@@ -149,7 +150,7 @@ namespace InStock.Lib.Services
             }
         }
 
-        private void CheckForDuplicates(IList<EarningsEntity> existingEarnings, EarningsEntity earnings, string symbol)
+        private static void CheckForDuplicates(IList<EarningsEntity> existingEarnings, EarningsEntity earnings, string symbol)
         {
             var dupDate = existingEarnings.Any(x => x.Date == earnings.Date);
             var dupOrder = existingEarnings.Any(x => x.Order == earnings.Order);
@@ -170,7 +171,7 @@ namespace InStock.Lib.Services
 
         public void Delete(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            CommonValidations.IsSymbolValid(symbol);
 
             if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 

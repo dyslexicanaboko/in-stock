@@ -1,12 +1,11 @@
 ﻿using InStock.Lib.DataAccess;
-using InStock.Lib.Services.ApiClient;
-using InStock.Lib.Services.Mappers;
-using System.Reflection;
 using InStock.Lib.Services;
+using InStock.Lib.Services.ApiClient;
+using System.Reflection;
 
 namespace InStock.Api
 {
-    public static class ContainerConfig
+  public static class ContainerConfig
     {
         public static void Configure(IHostBuilder host)
         {

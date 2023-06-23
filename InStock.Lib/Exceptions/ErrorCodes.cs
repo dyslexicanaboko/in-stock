@@ -4,6 +4,10 @@
     {
         //HTTP 400xx Bad Request - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
         //For when the arguments supplied are invalid
+        public static class BadRequest
+        {
+          public const int Symbol = 40001;
+        }
 
         //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
         //When the user does not have permission to do what they are trying to do
