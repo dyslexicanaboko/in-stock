@@ -7,60 +7,61 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InStock.Api.Controllers
 {
-    [Route("api/users")]
-    [ApiController]
-    public class UserController
-        : BaseApiSecureController
+  [Route("api/users")]
+  [ApiController]
+  public class UserController
+    : BaseApiSecureController
+  {
+    private readonly IUserMapper _mapper;
+
+    private readonly IUserService _service;
+
+    public UserController(
+      IUserService service,
+      IUserMapper mapper)
     {
-        private readonly IUserService _service;
-        private readonly IUserMapper _mapper;
+      _service = service;
 
-        public UserController(
-            IUserService service,
-            IUserMapper mapper)
-        {
-            _service = service;
-
-            _mapper = mapper;
-        }
-
-        // GET api/user/5
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IUser))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
-        public ActionResult<IUser> Get(int id)
-        {
-            var entity = _service.GetUser(id);
-
-            if (entity == null) throw NotFoundExceptions.User(id);
-
-            return Ok(_mapper.ToModel(entity));
-        }
-
-        // GET api/user/MSFT/symbol
-        [HttpGet()]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IUser>))]
-        public ActionResult<IList<IUser>> GetAll()
-        {
-            var lst = _service.GetAllUsers();
-
-            return Ok(_mapper.ToModel(lst));
-        }
-
-        // POST api/user
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IUser))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
-        //TODO: This requires 403 0x202306172302
-        public async Task<ActionResult<UserV1CreatedModel>> Post([FromBody] UserV1CreateModel model)
-        {
-            var entity = await Task.FromResult(_service.Add(_mapper.ToEntity(model)));
-
-            var m = _mapper.ToCreatedModel(entity);
-
-            return CreatedAtAction(nameof(Get), new { id = m!.UserId }, m);
-        }
-
-        //No PATCH or DELETE endpoints for now on purpose
+      _mapper = mapper;
     }
+
+    // GET api/user/5
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IUser))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+    public ActionResult<IUser> Get(int id)
+    {
+      var entity = _service.GetUser(id);
+
+      if (entity == null) throw NotFoundExceptions.User(id);
+
+      return Ok(_mapper.ToModel(entity));
+    }
+
+    // GET api/user/MSFT/symbol
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IUser>))]
+    public ActionResult<IList<IUser>> GetAll()
+    {
+      var lst = _service.GetAllUsers();
+
+      return Ok(_mapper.ToModel(lst));
+    }
+
+    // POST api/user
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IUser))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+    public async Task<ActionResult<UserV1CreatedModel>> Post([FromBody] UserV1CreateModel model)
+    {
+      var entity = await Task.FromResult(_service.Add(_mapper.ToEntity(model)));
+
+      var m = _mapper.ToCreatedModel(entity);
+
+      return CreatedAtAction(nameof(Get), new { id = m!.UserId }, m);
+    }
+
+    //No PATCH or DELETE endpoints for now on purpose
+  }
 }

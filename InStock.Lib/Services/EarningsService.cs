@@ -51,9 +51,9 @@ namespace InStock.Lib.Services
 
         public IList<AddEarningsResult> Add(IList<EarningsEntity>? multipleEarnings)
         {
-            Guard.IsNotNull(multipleEarnings);
+            CommonValidations.IsNotNull(multipleEarnings, nameof(multipleEarnings));
 
-            var stockIds = multipleEarnings.Select(x => x.StockId).Distinct().ToList();
+            var stockIds = multipleEarnings!.Select(x => x.StockId).Distinct().ToList();
 
             //Get all stocks to prove they exist and order them by Stock Id so that the positions
             //are processed in stock order (grouped by stockId)
@@ -62,7 +62,7 @@ namespace InStock.Lib.Services
                 .OrderBy(x => x.StockId)
                 .ToList();
 
-            var multipleEarningsSorted = multipleEarnings.OrderBy(x => x.StockId).ToList();
+            var multipleEarningsSorted = multipleEarnings!.OrderBy(x => x.StockId).ToList();
 
             //Years are meaningless here, so they will be minified on purpose.
             multipleEarningsSorted.ForEach(x => x.Date = GetYearAgnosticDate(x.Date));
@@ -128,10 +128,10 @@ namespace InStock.Lib.Services
 
         public void Edit(EarningsEntity? earnings)
         {
-            Guard.IsNotNull(earnings);
+            CommonValidations.IsNotNull(earnings, nameof(earnings));
 
             //Years are meaningless here, so they will be minified on purpose.
-            earnings.Date = GetYearAgnosticDate(earnings.Date);
+            earnings!.Date = GetYearAgnosticDate(earnings.Date);
 
             //Not allowing the user to change the stock the earnings is associated with, therefore this must exist
             var stock = _repoStock.Using(x => x.Select(earnings.StockId));

@@ -14,6 +14,14 @@ namespace InStock.Lib.Validation
         "Symbol cannot be null, blank or white space.",
         BadRequest.Symbol);
 
+    public static InvalidArgumentException? IsNotNull<T>(T? value, string argument, bool raiseException = true)
+      => GetInvalidArgumentException(
+        () => Guard.IsNotNull(value),
+        raiseException,
+        argument,
+        "The provided argument cannot be null.",
+        BadRequest.Null);
+
     private static InvalidArgumentException? GetInvalidArgumentException(
       Action validationTest,
       bool raiseException,

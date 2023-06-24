@@ -2,11 +2,11 @@
 
 namespace InStock.Api.Controllers
 {
-    //TODO: Have to secure this controller
-    [ApiController]
-    public abstract class BaseApiSecureController
-        : ControllerBase
-    {
-        protected int UserId = 1; //TODO: This needs to be set correctly
-    }
+  //TODO: Have to secure this controller
+  [ApiController]
+  public abstract class BaseApiSecureController
+    : ControllerBase
+  {
+    protected int UserId = 1; //TODO: This needs to be set correctly 0x202306232308
+  }
 }

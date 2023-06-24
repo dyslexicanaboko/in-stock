@@ -7,6 +7,7 @@
         public static class BadRequest
         {
           public const int Symbol = 40001;
+          public const int Null = 40002;
         }
 
         //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
