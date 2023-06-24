@@ -1,4 +1,6 @@
-﻿namespace InStock.Lib.Exceptions
+﻿using FluentValidation.Results;
+
+namespace InStock.Lib.Exceptions
 {
   public sealed class InvalidArgumentException
     : BaseException
@@ -9,6 +11,15 @@
       Argument = argument;
 
       ErrorCode = errorCode;
+    }
+
+    public InvalidArgumentException(ValidationFailure validationFailure)
+      : base(validationFailure.ErrorMessage)
+    {
+      Argument = validationFailure.PropertyName;
+      
+      //This is an assumption I will never use non-numeric error codes
+      ErrorCode = Convert.ToInt32(validationFailure.ErrorCode);
     }
 
     public string Argument { get; set; }

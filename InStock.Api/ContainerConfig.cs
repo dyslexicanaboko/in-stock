@@ -1,6 +1,7 @@
 ﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
+using InStock.Lib.Validation;
 using System.Reflection;
 
 namespace InStock.Api
@@ -15,6 +16,9 @@ namespace InStock.Api
                 services.AddScoped<ITransactionManager, TransactionManager>();
                 services.AddSingleton<IDateTimeService, DateTimeService>();
                 services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
+
+                //TODO: Figure out how to abstract this so it auto-registers
+                services.AddScoped<IPositionValidation, PositionValidation>();
 
                 var asm = Assembly.Load("InStock.Lib");
                 var types = asm.GetTypes();

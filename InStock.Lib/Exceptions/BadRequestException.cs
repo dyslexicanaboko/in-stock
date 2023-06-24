@@ -1,4 +1,6 @@
-﻿namespace InStock.Lib.Exceptions
+﻿using FluentValidation.Results;
+
+namespace InStock.Lib.Exceptions
 {
   public class BadRequestException
     : BaseException
@@ -13,9 +15,21 @@
       InvalidArguments.Add(exception);
     }
 
+    public BadRequestException(IEnumerable<InvalidArgumentException> exception)
+      : this()
+    {
+      InvalidArguments.AddRange(exception);
+    }
+
+    public BadRequestException(IEnumerable<ValidationFailure> validationFailures)
+      : this()
+    {
+      InvalidArguments.AddRange(validationFailures.Select(x => new InvalidArgumentException(x)));
+    }
+
     /// <inheritdoc />
     public override int ErrorCode { get; set; } = 40000;
 
-    public IList<InvalidArgumentException> InvalidArguments { get; set; } = new List<InvalidArgumentException>();
+    public List<InvalidArgumentException> InvalidArguments { get; set; } = new ();
   }
 }

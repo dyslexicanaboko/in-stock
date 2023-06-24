@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.DataAccess;
+﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
@@ -9,7 +8,7 @@ using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
-    public class EarningsService : IEarningsService
+  public class EarningsService : IEarningsService
     {
         public const int MaxEntries = 4;
         private readonly IEarningsRepository _repoEarnings;
@@ -37,7 +36,7 @@ namespace InStock.Lib.Services
 
         public IList<EarningsEntity> GetEarnings(string symbol)
         {
-            CommonValidations.IsSymbolValid(symbol);
+            Validations.IsSymbolValid(symbol);
 
             if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 
@@ -51,9 +50,9 @@ namespace InStock.Lib.Services
 
         public IList<AddEarningsResult> Add(IList<EarningsEntity>? multipleEarnings)
         {
-            CommonValidations.IsNotNull(multipleEarnings, nameof(multipleEarnings));
+            Validations.IsNotNull(multipleEarnings, nameof(multipleEarnings));
 
-            var stockIds = multipleEarnings!.Select(x => x.StockId).Distinct().ToList();
+            var stockIds = multipleEarnings.Select(x => x.StockId).Distinct().ToList();
 
             //Get all stocks to prove they exist and order them by Stock Id so that the positions
             //are processed in stock order (grouped by stockId)
@@ -62,7 +61,7 @@ namespace InStock.Lib.Services
                 .OrderBy(x => x.StockId)
                 .ToList();
 
-            var multipleEarningsSorted = multipleEarnings!.OrderBy(x => x.StockId).ToList();
+            var multipleEarningsSorted = multipleEarnings.OrderBy(x => x.StockId).ToList();
 
             //Years are meaningless here, so they will be minified on purpose.
             multipleEarningsSorted.ForEach(x => x.Date = GetYearAgnosticDate(x.Date));
@@ -128,7 +127,7 @@ namespace InStock.Lib.Services
 
         public void Edit(EarningsEntity? earnings)
         {
-            CommonValidations.IsNotNull(earnings, nameof(earnings));
+            Validations.IsNotNull(earnings, nameof(earnings));
 
             //Years are meaningless here, so they will be minified on purpose.
             earnings!.Date = GetYearAgnosticDate(earnings.Date);
@@ -171,7 +170,7 @@ namespace InStock.Lib.Services
 
         public void Delete(string symbol)
         {
-            CommonValidations.IsSymbolValid(symbol);
+            Validations.IsSymbolValid(symbol);
 
             if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 
