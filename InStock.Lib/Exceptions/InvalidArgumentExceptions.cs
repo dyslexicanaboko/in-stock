@@ -14,6 +14,9 @@ namespace InStock.Lib.Exceptions
     public static InvalidArgumentException Null(string argument)
       => new(argument, "The provided argument cannot be null.", BR.Null);
 
+    public static InvalidArgumentException Empty(string argument)
+      => new(argument, "The provided argument cannot be empty.", BR.Empty);
+
     public static InvalidArgumentException NotGreaterThanZero(string argument)
       => new(argument, "The provided argument must be greater than zero.", BR.NotGreaterThanZero);
 

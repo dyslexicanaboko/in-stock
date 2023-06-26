@@ -151,12 +151,7 @@ namespace InStock.Lib.Services
 
     private PositionEntity Add(string symbol, PositionEntity? position)
     {
-      //TODO: Abstract this concept? Null check, validate, test, throw
-      Validations.IsNotNull(position, nameof(position));
-      
-      var result = _validation.Validate(position);
-
-      if (!result.IsValid) throw new BadRequestException(result.Errors);
+      Validations.IsValid(_validation, position, nameof(position));
       
       using (_repoPosition)
       {

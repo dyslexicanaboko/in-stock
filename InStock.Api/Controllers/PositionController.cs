@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.Entities;
+﻿using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
+using InStock.Lib.Validation;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +62,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _mapper.ToEntity(UserId, model);
 
-      Guard.IsNotNull(entity);
+      Validations.IsNotNull(entity, nameof(model));
 
       var lst = new List<PositionEntity> { entity };
 
@@ -84,12 +84,12 @@ namespace InStock.Api.Controllers
     public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] models)
     {
       //TODO: Need to get the UserId from the header or something? 0x202306232308
-      var entity = _mapper.ToEntity(UserId, models);
+      var entities = _mapper.ToEntity(UserId, models);
 
-      Guard.IsNotNull(entity);
-      Guard.IsNotEmpty(entity);
+      Validations.IsNotNull(entities, nameof(models));
+      Validations.IsNotEmpty(entities, nameof(models));
 
-      var lst = entity.ToList();
+      var lst = entities.ToList();
 
       var results = await Task.FromResult(_service.Add(lst));
 

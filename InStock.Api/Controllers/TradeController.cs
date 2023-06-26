@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.Entities;
+﻿using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using InStock.Lib.Services.Mappers;
+using InStock.Lib.Validation;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +62,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _mapper.ToEntity(UserId, model);
 
-      Guard.IsNotNull(entity);
+      Validations.IsNotNull(entity, nameof(model));
 
       var lst = new List<TradeEntity> { entity };
 
@@ -80,14 +80,14 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TradeV1CreateMultipleModel))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
-    public async Task<ActionResult<TradeV1CreateMultipleModel>> Post([FromBody] TradeV1CreateModel[] model)
+    public async Task<ActionResult<TradeV1CreateMultipleModel>> Post([FromBody] TradeV1CreateModel[] models)
     {
-      var entity = _mapper.ToEntity(UserId, model);
+      var entities = _mapper.ToEntity(UserId, models);
 
-      Guard.IsNotNull(entity);
-      Guard.IsNotEmpty(entity);
+      Validations.IsNotNull(entities, nameof(models));
+      Validations.IsNotEmpty(entities, nameof(models));
 
-      var lst = entity.ToList();
+      var lst = entities.ToList();
 
       //TODO: Need to get the UserId from the header or something? 0x202306232308
       lst.ForEach(x => x.UserId = UserId);

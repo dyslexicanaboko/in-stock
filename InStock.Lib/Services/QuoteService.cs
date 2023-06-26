@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.DataAccess;
+﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Services.ApiClient;
+using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
-    public class QuoteService : IQuoteService
+  public class QuoteService : IQuoteService
     {
         private readonly IStockRepository _repoStock;
         private readonly IQuoteRepository _repoQuote;
@@ -24,18 +24,18 @@ namespace InStock.Lib.Services
             _stockQuoteApi = stockQuoteApi;
         }
 
-        public QuoteEntity? GetQuote(int id)
+        public QuoteEntity? GetQuote(int quoteId)
         {
-            Guard.IsGreaterThan(id, 0, nameof(id));
+            Validations.IsGreaterThanZero(quoteId, nameof(quoteId));
 
-            var dbEntity = _repoQuote.Using(x => x.Select(id));
+            var dbEntity = _repoQuote.Using(x => x.Select(quoteId));
 
             return dbEntity;
         }
 
         public QuoteEntity? GetQuote(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            Validations.IsSymbolValid(symbol);
             
             var dbEntity = _repoQuote.Using(x => x.Select(symbol));
 
@@ -44,7 +44,7 @@ namespace InStock.Lib.Services
 
         public QuoteEntity? GetRecentQuote(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            Validations.IsSymbolValid(symbol);
             
             //This is hard coded for now until I figure out how to deal with it properly
             var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, DateTime.UtcNow, 5));
@@ -54,7 +54,7 @@ namespace InStock.Lib.Services
 
         public async Task<QuoteEntity> Add(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            Validations.IsSymbolValid(symbol);
             
             var stock = _repoStock.Using(x => x.Select(symbol));
 

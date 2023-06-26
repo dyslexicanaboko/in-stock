@@ -17,6 +17,8 @@
       public const int NotGreaterThanDateTimeMin = 40005;
 
       public const int EndDateLessThanStartDate = 40006;
+     
+      public const int Empty = 40007;
     }
 
     //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403

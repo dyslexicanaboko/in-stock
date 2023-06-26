@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Diagnostics;
+using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using static Dapper.SqlMapper;
 using static InStock.Lib.Exceptions.InvalidArgumentExceptions;
 
 namespace InStock.Lib.Validation
@@ -30,6 +32,15 @@ namespace InStock.Lib.Validation
         Null(argument));
 #pragma warning restore CS8777
 
+    public static InvalidArgumentException? IsNotEmpty<T>(
+      ICollection<T> collection,
+      string argument,
+      bool raiseException = true)
+      => TestArgument(
+        () => Guard.IsNotEmpty(collection),
+        raiseException,
+        Null(argument));
+
     public static InvalidArgumentException? IsGreaterThanZero(int value, string argument, bool raiseException = true)
       => TestArgument(
         () => Guard.IsGreaterThan(value, 0),
@@ -53,6 +64,15 @@ namespace InStock.Lib.Validation
       if (!lst.Any()) return;
 
       throw new BadRequestException(lst!);
+    }
+
+    public static void IsValid<TEntity>(IFluentValidation<TEntity> validation, [NotNull]TEntity? entity, string entityName)
+    {
+      IsNotNull(entity, entityName);
+
+      var result = validation.Validate(entity);
+
+      if (!result.IsValid) throw new BadRequestException(result.Errors);
     }
 
     private static InvalidArgumentException? TestArgument(

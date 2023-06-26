@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using InStock.Lib.Entities;
 using static InStock.Lib.Exceptions.InvalidArgumentExceptions;
 
 namespace InStock.Lib.Validation
 {
   public interface IPositionValidation
+    : IFluentValidation<PositionEntity>
   {
-    ValidationResult Validate(PositionEntity instance);
   }
 
   public class PositionValidation

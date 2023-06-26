@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.DataAccess;
+﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
+using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
-    public class UserService : IUserService
+  public class UserService : IUserService
     {
         private readonly IUserRepository _repoUser;
 
@@ -30,7 +30,7 @@ namespace InStock.Lib.Services
 
         public UserEntity Add(UserEntity? user)
         {
-            Guard.IsNotNull(user);
+            Validations.IsNotNull(user, nameof(user));
 
             user.UserId = _repoUser.Using(x => x.Insert(user));
 
