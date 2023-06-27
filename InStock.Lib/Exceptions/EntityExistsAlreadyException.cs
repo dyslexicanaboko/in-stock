@@ -1,9 +1,9 @@
 ﻿namespace InStock.Lib.Exceptions
 {
     public abstract class EntityExistsAlreadyException
-        : Exception
+        : BaseException
     {
-        protected static readonly string N = Environment.NewLine;
+        public override int ErrorCode { get; set; } = ErrorCodes.Errors.EntityExistsAlready;
 
         protected EntityExistsAlreadyException(string message)
             : base(message)

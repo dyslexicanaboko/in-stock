@@ -8,7 +8,7 @@ namespace InStock.Lib.Services
         
         Task<QuoteEntity> Add(StockEntity stock);
         
-        QuoteEntity? GetQuote(int id);
+        QuoteEntity? GetQuote(int quoteId);
         
         QuoteEntity? GetQuote(string symbol);
 

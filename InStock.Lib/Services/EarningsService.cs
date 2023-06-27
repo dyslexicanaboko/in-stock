@@ -1,14 +1,14 @@
-﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.DataAccess;
+﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
 using InStock.Lib.Services.Mappers;
+using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
-    public class EarningsService : IEarningsService
+  public class EarningsService : IEarningsService
     {
         public const int MaxEntries = 4;
         private readonly IEarningsRepository _repoEarnings;
@@ -34,11 +34,11 @@ namespace InStock.Lib.Services
             return dbEntity;
         }
 
-        public IList<EarningsEntity>? GetEarnings(string symbol)
+        public IList<EarningsEntity> GetEarnings(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            Validations.IsSymbolValid(symbol);
 
-            if (_repoStock.Using(x => x.Select(symbol)) is null) throw new SymbolNotFoundException(symbol);
+            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 
             var dbEntity = _repoEarnings.Using(x => x.Select(symbol));
 
@@ -50,7 +50,7 @@ namespace InStock.Lib.Services
 
         public IList<AddEarningsResult> Add(IList<EarningsEntity>? multipleEarnings)
         {
-            Guard.IsNotNull(multipleEarnings);
+            Validations.IsNotNull(multipleEarnings, nameof(multipleEarnings));
 
             var stockIds = multipleEarnings.Select(x => x.StockId).Distinct().ToList();
 
@@ -81,7 +81,7 @@ namespace InStock.Lib.Services
 
                         //Stock must exist before attempting to make positions with it
                         if (s == null)
-                            throw new StockNotFoundException(e.StockId);
+                            throw NotFoundExceptions.Stock(e.StockId);
 
                         //To enforce uniqueness, all earnings must be returned so a compare can be performed
                         List<EarningsEntity> lstEarnings;
@@ -127,10 +127,10 @@ namespace InStock.Lib.Services
 
         public void Edit(EarningsEntity? earnings)
         {
-            Guard.IsNotNull(earnings);
+            Validations.IsNotNull(earnings, nameof(earnings));
 
             //Years are meaningless here, so they will be minified on purpose.
-            earnings.Date = GetYearAgnosticDate(earnings.Date);
+            earnings!.Date = GetYearAgnosticDate(earnings.Date);
 
             //Not allowing the user to change the stock the earnings is associated with, therefore this must exist
             var stock = _repoStock.Using(x => x.Select(earnings.StockId));
@@ -149,7 +149,7 @@ namespace InStock.Lib.Services
             }
         }
 
-        private void CheckForDuplicates(IList<EarningsEntity> existingEarnings, EarningsEntity earnings, string symbol)
+        private static void CheckForDuplicates(IList<EarningsEntity> existingEarnings, EarningsEntity earnings, string symbol)
         {
             var dupDate = existingEarnings.Any(x => x.Date == earnings.Date);
             var dupOrder = existingEarnings.Any(x => x.Order == earnings.Order);
@@ -170,9 +170,9 @@ namespace InStock.Lib.Services
 
         public void Delete(string symbol)
         {
-            Guard.IsNotNullOrWhiteSpace(symbol, nameof(symbol));
+            Validations.IsSymbolValid(symbol);
 
-            if (_repoStock.Using(x => x.Select(symbol)) is null) throw new SymbolNotFoundException(symbol);
+            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
 
             _repoEarnings.Using(x => x.Delete(symbol));
         }

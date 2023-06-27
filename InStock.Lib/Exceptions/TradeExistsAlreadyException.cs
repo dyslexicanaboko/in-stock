@@ -5,6 +5,9 @@ namespace InStock.Lib.Exceptions
     public class TradeExistsAlreadyException
         : EntityExistsAlreadyException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.Errors.TradeExistsAlready;
+
+
         public TradeExistsAlreadyException(string symbol, TradeEntity trade)
             : base(GetMessage(symbol, trade))
         {
@@ -14,7 +17,7 @@ namespace InStock.Lib.Exceptions
         private static string GetMessage(string symbol, TradeEntity trade)
         {
             var str = 
-                $"A position with symbol \"{symbol}\" already exists with the following parameters:" +
+                $"A position with symbol `{symbol}` already exists with the following parameters:" +
                 $"{N}UserId: {trade.UserId}, " +
                 $"{N}StockId: {trade.StockId}, " +
                 $"{N}TradeTypeId: {trade.TradeTypeId} ({trade.TradeType})," +

@@ -123,7 +123,7 @@ namespace InStock.UnitTesting.ServiceTests
             //Assert
             Assert.IsFalse(actual.IsSuccessful);
 
-            Assert.IsTrue(actual.Exception is StockNotFoundException);
+            AssertIsStockIdNotFoundException(actual.Exception);
 
             A.CallTo(() => _repoEarnings.Insert(A<EarningsEntity>._))
                 .MustNotHaveHappened();
@@ -158,7 +158,7 @@ namespace InStock.UnitTesting.ServiceTests
             A.CallTo(() => _repoStock.Select(A<string>._)).Returns(null);
 
             //Act
-            Assert.Throws<SymbolNotFoundException>(() => _service.Delete(SomeSymbol));
+            AssertThrowsSymbolNotFoundException(() => _service.Delete(SomeSymbol));
             
             //Assert
             A.CallTo(() => _repoEarnings.Delete(A<string>._))

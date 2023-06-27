@@ -5,6 +5,9 @@ namespace InStock.Lib.Exceptions
     public class PositionExistsAlreadyException
         : EntityExistsAlreadyException
     {
+        public override int ErrorCode { get; set; } = ErrorCodes.Errors.PositionExistsAlready;
+
+
         public PositionExistsAlreadyException(string symbol, PositionEntity position)
             : base(GetMessage(symbol, position))
         {
@@ -14,7 +17,7 @@ namespace InStock.Lib.Exceptions
         private static string GetMessage(string symbol, PositionEntity position)
         {
             var str = 
-                $"A position with symbol \"{symbol}\" already exists with the following parameters:" +
+                $"A position with symbol `{symbol}` already exists with the following parameters:" +
                 $"{N}UserId: {position.UserId}, " +
                 $"{N}StockId: {position.StockId}, " +
                 $"{N}DateOpened: {position.DateOpened}, " +

@@ -43,7 +43,7 @@ namespace InStock.Lib.Services
             {
                 var stock = _repoStock.Select(stockId);
 
-                if (stock == null) throw new StockNotFoundException(stockId);
+                if (stock == null) throw NotFoundExceptions.Stock(stockId);
 
                 _repoStock.UpdateNotes(stockId, notes);
             }
@@ -59,7 +59,7 @@ namespace InStock.Lib.Services
             var stockQuote = await _stockQuoteApi.GetQuote(symbol);
 
             //If the quote cannot be found raise exception I suppose?
-            if (stockQuote == null) throw new SymbolNotFoundException(symbol);
+            if (stockQuote == null) throw NotFoundExceptions.Symbol(symbol);
 
             var entity = new StockEntity
             {

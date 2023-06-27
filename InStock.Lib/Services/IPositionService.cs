@@ -5,7 +5,7 @@ namespace InStock.Lib.Services;
 
 public interface IPositionService
 {
-    PositionEntity? GetPosition(int id);
+    PositionEntity? GetPosition(int positionId);
     
     IList<PositionEntity> GetPosition(int userId, string symbol);
 

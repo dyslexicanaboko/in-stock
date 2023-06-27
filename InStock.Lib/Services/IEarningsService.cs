@@ -20,6 +20,6 @@ namespace InStock.Lib.Services
 
         EarningsV1CreateMultipleModel TranslateToModel(IList<AddEarningsResult> results);
 
-        IList<EarningsEntity>? GetEarnings(string symbol);
+        IList<EarningsEntity> GetEarnings(string symbol);
     }
 }
