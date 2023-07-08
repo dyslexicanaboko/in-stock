@@ -26,6 +26,8 @@ public static class NotFoundExceptions
   public static NotFoundException Trade(int id) => GetNotFound("Trade", id, NotFound.Trade);
 
   public static NotFoundException User(int id) => GetNotFound("User", id, NotFound.User);
+  
+  public static NotFoundException UserCredentials() => GetNotFound("User not found", NotFound.UserCredentials);
 
   private static NotFoundException GetNotFound(string subject, int id, int errorCode) => GetNotFound(
     $"{subject} with id `{id}` could not be found.",

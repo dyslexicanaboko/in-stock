@@ -19,6 +19,10 @@
       public const int EndDateLessThanStartDate = 40006;
      
       public const int Empty = 40007;
+
+      public const int PasswordDoesNotMatch = 40008;
+      
+      public const int UserUnauthorized = 40009;
     }
 
     //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
@@ -44,6 +48,8 @@
       public const int QuoteBySymbol = 40408;
 
       public const int User = 40409;
+      
+      public const int UserCredentials = 40410;
     }
 
     //HTTP 500xx Internal Server Error - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500

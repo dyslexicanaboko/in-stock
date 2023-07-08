@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using static Dapper.SqlMapper;
+using InStock.Lib.Services;
 using static InStock.Lib.Exceptions.InvalidArgumentExceptions;
 
 namespace InStock.Lib.Validation
@@ -16,7 +15,7 @@ namespace InStock.Lib.Validation
       => TestArgument(
         () => Guard.IsNotNullOrWhiteSpace(symbol),
         raiseException,
-        InvalidArgumentExceptions.Symbol);
+        Symbol);
 
     public static InvalidArgumentException? IsUserIdValid(int userId, bool raiseException = true)
       => TestArgument(
@@ -53,6 +52,18 @@ namespace InStock.Lib.Validation
         () => Guard.IsGreaterThanOrEqualTo(endDate, startDate),
         raiseException,
         EndDateLessThanStartDate(argument));
+
+    public static InvalidArgumentException? DoesPasswordMatch(string password, string correctHash, bool raiseException = true)
+      => TestArgument(
+        () => UserService.IsPasswordValid(password, correctHash),
+        raiseException, 
+        PasswordDoesNotMatch());
+
+    public static InvalidArgumentException? IsUserAllowed(bool isAllowed, bool raiseException = true)
+      => TestArgument(
+        () => Guard.IsTrue(isAllowed),
+        raiseException,
+        UserIsNotAllowed());
 
     public static void ThrowOnError(params Func<InvalidArgumentException?>[] tests)
     {
