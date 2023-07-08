@@ -9,5 +9,7 @@ namespace InStock.Lib.Services
         IList<UserEntity> GetAllUsers();
         
         UserEntity? GetUser(int id);
+
+        UserEntity Authenticate(string username, string password);
     }
 }

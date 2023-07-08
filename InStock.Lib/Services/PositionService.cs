@@ -81,7 +81,7 @@ namespace InStock.Lib.Services
 
           //Stock must exist before attempting to make positions with it
           if (s == null)
-            throw NotFoundExceptions.Stock(p.StockId);
+            throw NotFound.Stock(p.StockId);
 
           r.Position = Add(s.Symbol, p);
 
@@ -132,7 +132,7 @@ namespace InStock.Lib.Services
         () => Validations.IsUserIdValid(userId, false),
         () => Validations.IsSymbolValid(symbol, false));
 
-      if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
+      if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFound.Symbol(symbol);
 
       _repoPosition.Using(x => x.Delete(userId, symbol));
     }

@@ -25,7 +25,7 @@ namespace InStock.Api.Controllers
       _mapper = mapper;
     }
 
-    // GET api/user/5
+    // GET api/users/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IUser))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
@@ -33,12 +33,12 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetUser(id);
 
-      if (entity == null) throw NotFoundExceptions.User(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.User(id);
 
       return Ok(_mapper.ToModel(entity));
     }
 
-    // GET api/user/MSFT/symbol
+    // GET api/users
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IUser>))]
     public ActionResult<IList<IUser>> GetAll()
@@ -48,7 +48,7 @@ namespace InStock.Api.Controllers
       return Ok(_mapper.ToModel(lst));
     }
 
-    // POST api/user
+    // POST api/users
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IUser))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]

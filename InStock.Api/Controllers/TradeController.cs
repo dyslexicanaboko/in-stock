@@ -36,7 +36,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetTrade(id);
 
-      if (entity == null) throw NotFoundExceptions.Trade(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.Trade(id);
 
       return Ok(_mapper.ToModel(entity));
     }
@@ -46,7 +46,7 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<ITrade>))]
     public ActionResult<IList<ITrade>> Get(string symbol)
     {
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       var lst = _service.GetTrade(UserId, symbol);
 
       return Ok(_mapper.ToModel(lst));
@@ -89,7 +89,7 @@ namespace InStock.Api.Controllers
 
       var lst = entities.ToList();
 
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       lst.ForEach(x => x.UserId = UserId);
 
       var results = await Task.FromResult(_service.Add(lst));
@@ -121,7 +121,7 @@ namespace InStock.Api.Controllers
       //Preload with existing DB values
       var model = _mapper.ToPatchModel(db);
 
-      if (model == null) throw NotFoundExceptions.Trade(id);
+      if (model == null) throw Lib.Exceptions.NotFound.Trade(id);
 
       //Apply patch doc to model to overwrite what changed only
       patchDoc.ApplyTo(model);
@@ -151,7 +151,7 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
     public ActionResult Delete(string symbol)
     {
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       _service.Delete(UserId, symbol);
 
       return NoContent();

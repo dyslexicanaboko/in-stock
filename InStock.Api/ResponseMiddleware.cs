@@ -1,7 +1,7 @@
-﻿using System.Net;
-using InStock.Lib.Exceptions;
+﻿using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace InStock.Api
 {
@@ -28,6 +28,10 @@ namespace InStock.Api
       catch (NotFoundException ex)
       {
         await Respond(context, HttpStatusCode.NotFound, ex);
+      }
+      catch (UnauthorizedException ex)
+      {
+        await Respond(context, HttpStatusCode.Unauthorized, ex);
       }
       catch (BaseException ex)
       {

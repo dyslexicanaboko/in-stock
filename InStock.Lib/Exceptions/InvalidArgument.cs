@@ -2,7 +2,7 @@
 
 namespace InStock.Lib.Exceptions
 {
-  public static class InvalidArgumentExceptions
+  public static class InvalidArgument
   {
     public static InvalidArgumentException Symbol = new(
       "symbol",

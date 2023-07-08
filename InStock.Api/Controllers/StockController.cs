@@ -34,7 +34,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetStock(id);
 
-      if (entity == null) throw NotFoundExceptions.Stock(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.Stock(id);
 
       return Ok(_mapper.ToModel(entity));
     }
@@ -47,7 +47,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetStock(symbol);
 
-      if (entity == null) throw NotFoundExceptions.Stock(symbol);
+      if (entity == null) throw Lib.Exceptions.NotFound.Stock(symbol);
 
       return Ok(_mapper.ToModel(entity));
     }

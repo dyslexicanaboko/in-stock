@@ -1,16 +1,24 @@
+using System.Data;
 using Dapper;
 using InStock.Lib.Entities;
+using InStock.Lib.Services;
 using Microsoft.Data.SqlClient;
-using System.Data;
 
 namespace InStock.Lib.DataAccess
 {
 	public class UserRepository
 		: BaseRepository, IUserRepository
 	{
+		//Had to force this constructor on DI because it kept using the empty constructor instead
+		public UserRepository(IAppConfiguration configuration)
+			: base(configuration)
+		{
+			
+		}
+
 		public UserEntity? Select(int userId)
 		{
-			var sql = @"
+			const string sql = @"
 			SELECT
 				UserId,
 				Name,
@@ -19,8 +27,8 @@ namespace InStock.Lib.DataAccess
 			WHERE UserId = @UserId";
 
 			using var connection = new SqlConnection(ConnectionString);
-			
-            var lst = connection.Query<UserEntity>(sql, new { UserId = userId }).ToList();
+
+			var lst = connection.Query<UserEntity>(sql, new { UserId = userId }).ToList();
 
 			if (!lst.Any()) return null;
 
@@ -31,7 +39,7 @@ namespace InStock.Lib.DataAccess
 
 		public IEnumerable<UserEntity> SelectAll()
 		{
-			var sql = @"
+			const string sql = @"
 			SELECT
 				UserId,
 				Name,
@@ -39,16 +47,15 @@ namespace InStock.Lib.DataAccess
 			FROM dbo.[User]";
 
 			using var connection = new SqlConnection(ConnectionString);
-			
-            var lst = connection.Query<UserEntity>(sql).ToList();
+
+			var lst = connection.Query<UserEntity>(sql).ToList();
 
 			return lst;
 		}
 
-		
 		public int Insert(UserEntity entity)
 		{
-			var sql = @"INSERT INTO dbo.[User] (
+			const string sql = @"INSERT INTO dbo.[User] (
 				Name
 			) VALUES (
 				@Name);
@@ -56,27 +63,60 @@ namespace InStock.Lib.DataAccess
 			SELECT SCOPE_IDENTITY() AS PK;";
 
 			using var connection = new SqlConnection(ConnectionString);
-			
-            var p = new DynamicParameters();
-			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+
+			var p = new DynamicParameters();
+
+			p.Add(
+				"@Name",
+				dbType: DbType.String,
+				value: entity.Name,
+				size: 255);
 
 			return connection.ExecuteScalar<int>(sql, entity);
 		}
 
 		public void Update(UserEntity entity)
 		{
-			var sql = @"UPDATE dbo.[User] SET 
+			const string sql = @"UPDATE dbo.[User] SET 
 				Name = @Name,
 				CreateOnUtc = @CreateOnUtc
 			WHERE UserId = @UserId";
 
 			using var connection = new SqlConnection(ConnectionString);
-			
-            var p = new DynamicParameters();
-			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
-			p.Add(name: "@Name", dbType: DbType.String, value: entity.Name, size: 255);
+
+			var p = new DynamicParameters();
+			p.Add("@UserId", dbType: DbType.Int32, value: entity.UserId);
+
+			p.Add(
+				"@Name",
+				dbType: DbType.String,
+				value: entity.Name,
+				size: 255);
 
 			connection.Execute(sql, p);
+		}
+
+		public UserEntity? Select(string username)
+		{
+			const string sql = @"
+			SELECT
+				UserId,
+				Name,
+				Username,
+				Password,
+				IsAllowed
+			FROM dbo.[User]
+			WHERE Username = @username";
+
+			using var connection = new SqlConnection(ConnectionString);
+
+			var lst = connection.Query<UserEntity>(sql, new { username }).ToList();
+
+			if (!lst.Any()) return null;
+
+			var entity = lst.Single();
+
+			return entity;
 		}
 	}
 }

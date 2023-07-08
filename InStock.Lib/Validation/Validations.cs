@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Diagnostics;
-using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using static Dapper.SqlMapper;
-using static InStock.Lib.Exceptions.InvalidArgumentExceptions;
+using InStock.Lib.Services;
+using static InStock.Lib.Exceptions.InvalidArgument;
 
 namespace InStock.Lib.Validation
 {
@@ -16,7 +15,7 @@ namespace InStock.Lib.Validation
       => TestArgument(
         () => Guard.IsNotNullOrWhiteSpace(symbol),
         raiseException,
-        InvalidArgumentExceptions.Symbol);
+        Symbol);
 
     public static InvalidArgumentException? IsUserIdValid(int userId, bool raiseException = true)
       => TestArgument(

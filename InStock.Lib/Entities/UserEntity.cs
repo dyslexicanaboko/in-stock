@@ -33,6 +33,13 @@ namespace InStock.Lib.Entities
         public int UserId { get; set; }
 
         public string Name { get; set; }
+        
+        public bool IsAllowed { get; set; }
+
+        public string Username { get; set; }
+        
+        //This is only populated for create and for authorization
+        public string Password { get; set; }
 
         public DateTime CreateOnUtc { get; set; }
     }

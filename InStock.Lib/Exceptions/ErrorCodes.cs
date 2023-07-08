@@ -21,6 +21,15 @@
       public const int Empty = 40007;
     }
 
+    //HTTP 401xx Unauthorized - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+    //When the user does not have permission to be accessing the system period
+    public static class Unauthorized
+    {
+      public const int FailedAuthentication = 40101;
+      public const int NotAuthenticated = 40102;
+      public const int InvalidPassword = 40103;
+    }
+
     //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
     //When the user does not have permission to do what they are trying to do
 
@@ -44,6 +53,8 @@
       public const int QuoteBySymbol = 40408;
 
       public const int User = 40409;
+      
+      public const int UserCredentials = 40410;
     }
 
     //HTTP 500xx Internal Server Error - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500

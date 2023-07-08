@@ -69,7 +69,7 @@ namespace InStock.Lib.Services
 
           //Stock must exist before attempting to make trades with it
           if (s == null)
-            throw NotFoundExceptions.Stock(p.StockId);
+            throw NotFound.Stock(p.StockId);
 
           r.Trade = Add(s.Symbol, p);
 
@@ -118,7 +118,7 @@ namespace InStock.Lib.Services
         () => Validations.IsUserIdValid(userId),
         () => Validations.IsSymbolValid(symbol));
 
-      if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
+      if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFound.Symbol(symbol);
 
       _repoTrade.Using(x => x.Delete(userId, symbol));
     }
