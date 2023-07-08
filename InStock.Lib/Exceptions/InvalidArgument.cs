@@ -2,7 +2,7 @@
 
 namespace InStock.Lib.Exceptions
 {
-  public static class InvalidArgumentExceptions
+  public static class InvalidArgument
   {
     public static InvalidArgumentException Symbol = new(
       "symbol",
@@ -25,11 +25,5 @@ namespace InStock.Lib.Exceptions
 
     public static InvalidArgumentException EndDateLessThanStartDate(string argument)
       => new(argument, "The provided end date argument must be greater than its start date.", BR.EndDateLessThanStartDate);
-
-    public static InvalidArgumentException PasswordDoesNotMatch()
-      => new("password", "The provided username or password is incorrect.", BR.PasswordDoesNotMatch);
-
-    public static InvalidArgumentException UserIsNotAllowed()
-      => new("is allowed", "This user is unauthorized.", BR.UserUnauthorized);
   }
 }

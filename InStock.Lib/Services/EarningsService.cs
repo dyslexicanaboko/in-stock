@@ -38,7 +38,7 @@ namespace InStock.Lib.Services
         {
             Validations.IsSymbolValid(symbol);
 
-            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
+            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFound.Symbol(symbol);
 
             var dbEntity = _repoEarnings.Using(x => x.Select(symbol));
 
@@ -81,7 +81,7 @@ namespace InStock.Lib.Services
 
                         //Stock must exist before attempting to make positions with it
                         if (s == null)
-                            throw NotFoundExceptions.Stock(e.StockId);
+                            throw NotFound.Stock(e.StockId);
 
                         //To enforce uniqueness, all earnings must be returned so a compare can be performed
                         List<EarningsEntity> lstEarnings;
@@ -172,7 +172,7 @@ namespace InStock.Lib.Services
         {
             Validations.IsSymbolValid(symbol);
 
-            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFoundExceptions.Symbol(symbol);
+            if (_repoStock.Using(x => x.Select(symbol)) is null) throw NotFound.Symbol(symbol);
 
             _repoEarnings.Using(x => x.Delete(symbol));
         }

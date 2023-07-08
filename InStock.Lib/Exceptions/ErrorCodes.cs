@@ -19,10 +19,15 @@
       public const int EndDateLessThanStartDate = 40006;
      
       public const int Empty = 40007;
+    }
 
-      public const int PasswordDoesNotMatch = 40008;
-      
-      public const int UserUnauthorized = 40009;
+    //HTTP 401xx Unauthorized - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+    //When the user does not have permission to be accessing the system period
+    public static class Unauthorized
+    {
+      public const int FailedAuthentication = 40101;
+      public const int NotAuthenticated = 40102;
+      public const int InvalidPassword = 40103;
     }
 
     //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403

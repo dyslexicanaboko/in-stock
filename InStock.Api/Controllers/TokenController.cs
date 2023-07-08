@@ -1,4 +1,5 @@
-﻿using InStock.Lib.Models.Client;
+﻿using InStock.Lib;
+using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -33,7 +34,7 @@ namespace InStock.Api.Controllers
         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-        new Claim("UserId", user.UserId.ToString()),
+        new Claim(Constants.ClaimsUserId, user.UserId.ToString()),
         new Claim("Name", user.Name),
         new Claim("Username", user.Username),
         //new Claim("Email", user.Email)

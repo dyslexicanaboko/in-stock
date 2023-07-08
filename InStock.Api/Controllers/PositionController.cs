@@ -36,7 +36,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetPosition(id);
 
-      if (entity == null) throw NotFoundExceptions.Position(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.Position(id);
 
       return Ok(_mapper.ToModel(entity));
     }
@@ -46,7 +46,7 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPosition>))]
     public ActionResult<IList<IPosition>> Get(string symbol)
     {
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       var lst = _service.GetPosition(UserId, symbol);
 
       return Ok(_mapper.ToModel(lst));
@@ -83,7 +83,7 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
     public async Task<ActionResult<PositionV1CreateMultipleModel>> Post([FromBody] PositionV1CreateModel[] models)
     {
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       var entities = _mapper.ToEntity(UserId, models);
 
       Validations.IsNotNull(entities, nameof(models));
@@ -120,7 +120,7 @@ namespace InStock.Api.Controllers
       //Preload with existing DB values
       var model = _mapper.ToPatchModel(db);
 
-      if (model == null) throw NotFoundExceptions.Position(id);
+      if (model == null) throw Lib.Exceptions.NotFound.Position(id);
 
       //Apply patch doc to model to overwrite what changed only
       patchDoc.ApplyTo(model);
@@ -150,7 +150,7 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
     public ActionResult Delete(string symbol)
     {
-      //TODO: Need to get the UserId from the header or something? 0x202306232308
+      
       _service.Delete(UserId, symbol);
 
       return NoContent();

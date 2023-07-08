@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using InStock.Lib.Entities;
-using static InStock.Lib.Exceptions.InvalidArgumentExceptions;
+using static InStock.Lib.Exceptions.InvalidArgument;
 
 namespace InStock.Lib.Validation
 {

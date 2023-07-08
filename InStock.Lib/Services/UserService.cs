@@ -2,7 +2,7 @@
 using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Validation;
-using Crypto = BCrypt.Net.BCrypt; //Naming it so it's clear what is 3rd party
+using Crypto = BCrypt.Net.BCrypt; //Naming it so it's clear a 3rd party is being used
 
 namespace InStock.Lib.Services
 {
@@ -46,14 +46,13 @@ namespace InStock.Lib.Services
       if (entity == null)
       {
         //throw exception about user not being found
-        throw NotFoundExceptions.UserCredentials();
+        throw NotFound.UserCredentials();
       }
 
-      //TODO: Need to change this to a 401
-      //If user is found, but the account is disabled
-      Validations.IsUserAllowed(entity.IsAllowed);
+      //Explicitly denied access
+      if (!entity.IsAllowed) throw Unauthorized.FailedAuthentication();
 
-      Validations.DoesPasswordMatch(password, entity.Password);
+      if (!IsPasswordValid(password, entity.Password)) throw Unauthorized.InvalidPassword();
       
       //There is no conceivable scenario where the encrypted password is needed, just blank it out
       entity.Password = string.Empty;
@@ -71,7 +70,7 @@ namespace InStock.Lib.Services
       return hashedPassword;
     }
 
-    public static bool IsPasswordValid(string password, string correctHash)
+    private static bool IsPasswordValid(string password, string correctHash)
     {
       var isValid = Crypto.Verify(password, correctHash);
 

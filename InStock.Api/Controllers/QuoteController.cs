@@ -33,7 +33,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetQuote(id);
 
-      if (entity == null) throw NotFoundExceptions.Quote(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.Quote(id);
 
       return Ok(_mapper.ToModel(entity));
     }
@@ -46,7 +46,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetQuote(symbol);
 
-      if (entity == null) throw NotFoundExceptions.Quote(symbol);
+      if (entity == null) throw Lib.Exceptions.NotFound.Quote(symbol);
 
       return Ok(_mapper.ToModel(entity));
     }

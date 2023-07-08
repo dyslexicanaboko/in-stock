@@ -36,7 +36,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetEarnings(id);
 
-      if (entity == null) throw NotFoundExceptions.Earnings(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.Earnings(id);
 
       return Ok(_mapper.ToModel(entity));
     }
@@ -118,7 +118,7 @@ namespace InStock.Api.Controllers
       //Preload with existing DB values
       var model = _mapper.ToPatchModel(db);
 
-      if (model == null) throw NotFoundExceptions.Earnings(id);
+      if (model == null) throw Lib.Exceptions.NotFound.Earnings(id);
 
       //Apply patch doc to model to overwrite what changed only
       patchDoc.ApplyTo(model);

@@ -33,7 +33,7 @@ namespace InStock.Api.Controllers
     {
       var entity = _service.GetUser(id);
 
-      if (entity == null) throw NotFoundExceptions.User(id);
+      if (entity == null) throw Lib.Exceptions.NotFound.User(id);
 
       return Ok(_mapper.ToModel(entity));
     }

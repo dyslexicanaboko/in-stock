@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using InStock.Lib;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -9,18 +10,39 @@ namespace InStock.Api.Controllers
   public abstract class BaseApiSecureController
     : ControllerBase
   {
-    protected int UserId = 1; //TODO: This needs to be set correctly 0x202306232308
+    //REMINDER: You cannot access the HttpContext in the constructor so don't try it will be null.
 
-    protected BaseApiSecureController()
+    private int _userId;
+
+    protected int UserId
     {
-      //TODO: Throw exception if userId not found?
-      if (!HttpContext.Request.Headers.TryGetValue("Authorization", out var headerAuth)) return;
+      get
+      {
+        if (_userId == 0)
+        {
+          _userId = GetUserId();
+        }
 
-      var token = headerAuth.First().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+        return _userId;
+      }
+    }
+
+    protected int GetUserId()
+    {
+      if (!Request.Headers.TryGetValue("Authorization", out var headerAuth)) 
+        throw Lib.Exceptions.Unauthorized.NotAuthenticated();
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+      var token = headerAuth
+        .First()
+        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
       var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-      
-      UserId = Convert.ToInt32(jwt.Claims.Single(x => x.Value == "UserId"));
+
+      var claim = jwt.Claims.Single(x => x.Type == Constants.ClaimsUserId);
+
+      return Convert.ToInt32(claim.Value);
     }
   }
 }
