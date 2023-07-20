@@ -9,7 +9,7 @@ using System.Text;
 
 namespace InStock.Api.Controllers
 {
-  [Route("api/token")]
+  [Route("token")]
   [ApiController]
   public class TokenController : Controller
   {
