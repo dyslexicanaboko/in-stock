@@ -13,11 +13,11 @@ export default async function StockPage() {
   }
 
   return (<div><h1>Stock</h1>
-    <label>StockId</label><span>{stock.stockId}</span>
-    <label>Symbol</label><span>{stock.symbol}</span>
-    <label>Name</label><span>{stock.name}</span>
-    <label>Notes</label><span>{stock.notes}</span>
-    <label>Created On UTC</label><span>{stock.createOnUtc.toDateString()}</span>
+    <label>StockId</label>&nbsp;<span>{stock.stockId}</span><br/>
+    <label>Symbol</label>&nbsp;<span>{stock.symbol}</span><br/>
+    <label>Name</label>&nbsp;<span>{stock.name}</span><br/>
+    <label>Notes</label>&nbsp;<span>{stock.notes}</span><br/>
+    <label>Created On UTC</label>&nbsp;<span>{new Date(stock.createOnUtc).toISOString()}</span>
     </div>
   );
 }
@@ -43,7 +43,7 @@ const getStock = async () : Promise<Stock> => {
     redirect: 'follow'
   };
 
-  const response = await fetch("https://localhost:44304/api/stock/cake/symbol", request);
+  const response = await fetch("http://localhost:61478/api/stock/cake/symbol", request);
   
   console.log(response);
   
@@ -66,7 +66,7 @@ const getToken = async () : Promise<string> => {
     redirect: 'follow'
   };
 
-  const response = await fetch("https://localhost:44304/api/token", request);
+  const response = await fetch("http://localhost:61478/token", request);
   
   console.log(response);
 
