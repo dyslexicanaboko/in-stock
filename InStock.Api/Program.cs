@@ -35,6 +35,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.Logger.LogInformation("InStock API is running");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -49,6 +51,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<ResponseMiddleware>();
+app.UseMiddleware<ResponseMiddleware>(app.Logger);
 
 app.Run();
