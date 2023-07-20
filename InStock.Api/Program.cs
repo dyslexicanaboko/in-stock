@@ -44,7 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//Because Next.js sucks I am disabling https for now
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
