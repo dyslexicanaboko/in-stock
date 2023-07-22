@@ -5,3 +5,13 @@ export type Stock = {
   createOnUtc: Date;
   notes?: string;
 };
+
+export type SymbolV1Model = {
+  symbol: string;
+};
+
+export type StockV1CreatedModel = {
+  stockId: number;
+  symbol: string;
+  name: string;
+}

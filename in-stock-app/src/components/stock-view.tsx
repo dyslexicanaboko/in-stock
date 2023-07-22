@@ -1,20 +1,42 @@
-import { Stock } from "@/services/in-stock-types";
+import { Stock, StockV1CreatedModel } from "@/services/in-stock-types";
 
 //For now I am going to make this the default component for showing stock, I have no idea what I am doing
-export default function StockView(stock: Stock) {
+export default function StockView(stock: Stock | StockV1CreatedModel) {
+  let extraProps;
+
+  if ("notes" in stock) {
+    extraProps = (
+      <>
+        <div className="grid">
+          <label>Notes</label>
+          <span>{stock.notes}</span>
+        </div>
+        <div className="grid">
+          <label>Created On UTC</label>
+          <span>{new Date(stock.createOnUtc).toISOString()}</span>
+        </div>
+      </>
+    );
+  } else {
+    extraProps = <></>;
+  }
+
+  //TODO: Need to format this crap properly, not sure how just yet
   return (
     <>
-      <h1>Stock</h1>
-      <label>StockId</label>&nbsp;<span>{stock.stockId}</span>
-      <br />
-      <label>Symbol</label>&nbsp;<span>{stock.symbol}</span>
-      <br />
-      <label>Name</label>&nbsp;<span>{stock.name}</span>
-      <br />
-      <label>Notes</label>&nbsp;<span>{stock.notes}</span>
-      <br />
-      <label>Created On UTC</label>&nbsp;
-      <span>{new Date(stock.createOnUtc).toISOString()}</span>
+      <div className="grid">
+        <label>StockId</label>
+        <span>{stock.stockId}</span>
+      </div>
+      <div className="grid">
+        <label>Symbol</label>
+        <span>{stock.symbol}</span>
+      </div>
+      <div className="grid">
+        <label>Name</label>
+        <span>{stock.name}</span>
+      </div>
+      {extraProps}
     </>
   );
 }
