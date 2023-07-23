@@ -10,7 +10,7 @@ const stockController = (path?: string) : string => {
   return getUrl("api/stock/" + path);
 }
 
-export const getStock = async (symbol: string): Promise<Stock> => {
+export const getStockBySymbol = async (symbol: string): Promise<Stock> => {
   const token = await getToken();
 
   var headers = new Headers();
@@ -25,6 +25,27 @@ export const getStock = async (symbol: string): Promise<Stock> => {
 
   const response = await fetch(
     stockController(symbol + "/symbol"),
+    request
+  );
+
+  return response.json();
+};
+
+export const getStockById = async (id: number): Promise<Stock> => {
+  const token = await getToken();
+
+  var headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", "Bearer " + token);
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(
+    stockController(id.toString()),
     request
   );
 
@@ -55,6 +76,32 @@ export const createStock = async (symbol: string): Promise<StockV1CreatedModel> 
   );
 
   return response.json();
+};
+
+export const updateStock = async (id: number, notes?: string): Promise<void> => {
+  const token = await getToken();
+
+  const raw = JSON.stringify([{
+    "op": "replace",
+    "path": "/notes",
+    "value": notes
+  }]);
+
+  var headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", "Bearer " + token);
+
+  var request: RequestInit = {
+    method: "PATCH",
+    headers: headers,
+    body: raw,
+    redirect: "follow",
+  };
+
+  await fetch(
+    stockController(id.toString()),
+    request
+  );
 };
 
 export const getToken = async (): Promise<string> => {

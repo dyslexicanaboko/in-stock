@@ -14,4 +14,10 @@ export type StockV1CreatedModel = {
   stockId: number;
   symbol: string;
   name: string;
-}
+  notes?: string;
+};
+
+export type StockEdit = {
+  stockId: number;
+  notes?: string;
+};
