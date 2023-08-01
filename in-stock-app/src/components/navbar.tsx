@@ -1,4 +1,3 @@
-
 // https://reacthustle.com/blog/next-js-add-navbar-to-all-pages
 // https://picocss.com/docs/navs.html
 import React from "react";
@@ -11,6 +10,10 @@ const Navbar = () => {
         <li>Stock</li>
         <li>
             <Link href="/stock" className="secondary">Search</Link>
+        </li>
+        <li>Portfolio</li>
+        <li>
+            <Link href="/position" className="secondary">Positions</Link>
         </li>
       </ul>
       <ul>

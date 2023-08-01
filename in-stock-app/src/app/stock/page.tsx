@@ -1,8 +1,8 @@
 "use client";
 
 import StockView from "@/components/stock-view";
+import Waiting from "@/components/waiting";
 import {
-  getStockBySymbol,
   createStock,
   updateStock,
   getStockById,
@@ -20,24 +20,28 @@ export default function Page() {
   const [view, setView] = useState<JSX.Element>();
   const _model = useRef<StockEdit>();
 
-  const viewPleaseWait = () : void => setView(<button aria-busy="true">Please wait…</button>);
+  const viewPleaseWait = (): void =>
+    setView(<Waiting />);
 
-  const storeAsEditModel = useCallback((model: Stock | StockV1CreatedModel): void => {
-    const edit: StockEdit = {
-      stockId: model.stockId,
-      notes: model.notes,
-    };
+  const storeAsEditModel = useCallback(
+    (model: Stock | StockV1CreatedModel): void => {
+      const edit: StockEdit = {
+        stockId: model.stockId,
+        notes: model.notes,
+      };
 
-    _model.current = edit;
+      _model.current = edit;
 
-    console.log("State saved");
-    console.log(edit);
-  }, []);
+      console.log("State saved");
+      console.log(edit);
+    },
+    []
+  );
 
   const onChangeNotes = useCallback(
     (e: ChangeEvent<HTMLInputElement>): void => {
       setNotes(e.target.value);
-      
+
       console.log(e.target.value);
 
       const edit: StockEdit = {
@@ -72,7 +76,9 @@ export default function Page() {
                   onChange={onChangeNotes}
                 />
               </div>
-              <button onClick={() => handleUpdate(_model.current!)}>Save notes</button>
+              <button onClick={() => handleUpdate(_model.current!)}>
+                Save notes
+              </button>
             </>
           );
         });
@@ -100,7 +106,9 @@ export default function Page() {
               onChange={onChangeNotes}
             />
           </div>
-          <button onClick={() => handleUpdate(_model.current!)}>Save notes</button>
+          <button onClick={() => handleUpdate(_model.current!)}>
+            Save notes
+          </button>
         </>
       );
     });
@@ -108,14 +116,17 @@ export default function Page() {
     viewPleaseWait();
   }, [symbol, storeAsEditModel, onChangeNotes, handleUpdate]);
 
-  const onKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>): void => {
-    // 'keypress' event misbehaves on mobile so we track 'Enter' key via 'keydown' event
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      event.stopPropagation();
-      handleCreate();
-    }
-  }, [handleCreate]);
+  const onKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>): void => {
+      // 'keypress' event misbehaves on mobile so we track 'Enter' key via 'keydown' event
+      if (event.key === "Enter") {
+        event.preventDefault();
+        event.stopPropagation();
+        handleCreate();
+      }
+    },
+    [handleCreate]
+  );
 
   const emptyCreateForm = useCallback((): JSX.Element => {
     return (
@@ -123,10 +134,11 @@ export default function Page() {
         <article>
           <label>
             Search for stock by symbol
-            <input 
-              type="text" 
+            <input
+              type="text"
               onChange={(e) => setSymbol(e.target.value)}
-              onKeyDown={onKeyDown} />
+              onKeyDown={onKeyDown}
+            />
           </label>
           <button onClick={() => handleCreate()}>Lookup</button>
         </article>
