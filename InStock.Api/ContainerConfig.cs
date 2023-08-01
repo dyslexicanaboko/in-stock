@@ -33,6 +33,9 @@ namespace InStock.Api
               "Trade",
               "User");
 
+            services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+            services.AddScoped<IPortfolioService, PortfolioService>();
+
             //Dependency injection below
             //services.AddSingleton<IAppSettingsService, AppSettingsService>();
             //TODO: Find a way to automate this bootstrapping per mapper and repo

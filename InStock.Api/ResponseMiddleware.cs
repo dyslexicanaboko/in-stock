@@ -46,6 +46,8 @@ namespace InStock.Api
       catch (Exception ex)
       {
         _logger.LogError(ex, "Unhandled exception in response middleware.");
+
+        await Respond(context, HttpStatusCode.InternalServerError, new ErrorModel(ex));
       }
     }
 
@@ -53,15 +55,18 @@ namespace InStock.Api
     {
       var model = new ErrorModel(ex);
 
-      var jsonResponse = JsonConvert.SerializeObject(model);
-
-      return Respond(context, httpStatusCode, jsonResponse);
+      return Respond(context, httpStatusCode, model);
     }
 
     private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, BaseException ex)
     {
       var model = new ErrorModel(ex);
 
+      return Respond(context, httpStatusCode, model);
+    }
+
+    private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, ErrorModel model)
+    {
       var jsonResponse = JsonConvert.SerializeObject(model);
 
       return Respond(context, httpStatusCode, jsonResponse);

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Entities;
-using InStock.Lib.Exceptions;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
