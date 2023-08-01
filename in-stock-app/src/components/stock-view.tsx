@@ -25,7 +25,11 @@ export default function StockView(stock: Stock | StockV1CreatedModel, isEditable
   if (editable) {
     notes = <></>;
   } else {
-    notes = <span>{stock.notes}</span>;
+    notes = (
+      <div className="grid">
+        <label>Notes</label>
+        <span>{stock.notes}</span>
+      </div>);
   }
 
   //TODO: Need to format this crap properly, not sure how just yet
@@ -43,10 +47,7 @@ export default function StockView(stock: Stock | StockV1CreatedModel, isEditable
         <label>Name</label>
         <span>{stock.name}</span>
       </div>
-      <div className="grid">
-          <label>Notes</label>
-          {notes}
-        </div>
+      {notes}
       {extraProps}
     </>
   );
