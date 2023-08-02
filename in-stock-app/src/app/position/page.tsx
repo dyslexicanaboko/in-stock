@@ -1,43 +1,28 @@
 "use client";
 
-import StockView from "@/components/stock-view";
 import Waiting from "@/components/waiting";
 import {
-  createStock,
-  updateStock,
-  getStockById,
+  getPortfolio,
 } from "@/services/in-stock-api";
-import {
-  Stock,
-  StockEdit,
-  StockV1CreatedModel,
-} from "@/services/in-stock-types";
-import { ChangeEvent, useCallback, useState, useRef } from "react";
+//import { Stock, StockEdit } from "@/app/view-models/portfolio";
+import { PortfolioV1GetModel } from "@/services/in-stock-api-models";
+import { ChangeEvent, useCallback, useState, useRef, useEffect } from "react";
+import PortfolioView from "@/components/position-view";
 
 export default function Page() {
-  const [symbol, setSymbol] = useState("");
-  const [notes, setNotes] = useState("");
   const [view, setView] = useState<JSX.Element>();
-  const _model = useRef<StockEdit>();
 
-  const viewPleaseWait = (): void =>
-    setView(<Waiting />);
+  const viewPleaseWait = (): void => setView(<Waiting />);
 
-  setView((
-    <>
-      
-    </>
-  ));
+  useEffect(() => {
+    getPortfolio(1).then((models) => {
+      console.log(models);
+          
+      setView(PortfolioView(models));
+    });
+  }, []);
 
-  return view;
+  console.log("render?");
+
+  return view ? view : <Waiting />;
 }
-
-
-/*
- DateOpened
-,DateClosed
-,Price
-,Quantity
-,CreateOnUtc
-,UpdatedOnUtc
-*/

@@ -7,11 +7,8 @@ import {
   updateStock,
   getStockById,
 } from "@/services/in-stock-api";
-import {
-  Stock,
-  StockEdit,
-  StockV1CreatedModel,
-} from "@/services/in-stock-types";
+import { StockEdit } from "@/app/view-models/stock";
+import { Stock, StockV1CreatedModel } from "@/services/in-stock-api-models";
 import { ChangeEvent, useCallback, useState, useRef } from "react";
 
 export default function Page() {
@@ -20,8 +17,7 @@ export default function Page() {
   const [view, setView] = useState<JSX.Element>();
   const _model = useRef<StockEdit>();
 
-  const viewPleaseWait = (): void =>
-    setView(<Waiting />);
+  const viewPleaseWait = (): void => setView(<Waiting />);
 
   const storeAsEditModel = useCallback(
     (model: Stock | StockV1CreatedModel): void => {
