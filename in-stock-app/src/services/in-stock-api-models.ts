@@ -1,4 +1,15 @@
 //Should be StockV1GetModel, but API uses an Interface
+export type ErrorModel = {
+	Code: number,
+	Message: string,
+	Fields: InvalidArgumentModel[]
+}
+
+//https://stackoverflow.com/questions/41385059/possible-to-extend-types-in-typescript
+export interface InvalidArgumentModel extends ErrorModel {
+	Field: string
+}
+
 export type Stock = {
   stockId: number;
   symbol: string;

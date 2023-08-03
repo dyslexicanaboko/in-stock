@@ -1,35 +1,48 @@
-import { Stock, SymbolV1Model, StockV1CreatedModel, PortfolioV1GetModel } from "./in-stock-api-models";
+import { Login, LoginResult } from "@/app/view-models/login";
+import {
+  Stock,
+  SymbolV1Model,
+  StockV1CreatedModel,
+  PortfolioV1GetModel,
+  ErrorModel,
+} from "./in-stock-api-models";
+import jwt_decode from "jwt-decode"; //https://stackoverflow.com/questions/53835816/decode-jwt-token-react, https://github.com/auth0/jwt-decode
 
-const baseUrl : string = "http://localhost:61478";
+const baseUrl: string = "http://localhost:61478";
 
-const getUrl = (path: string) : string => baseUrl + "/" + path;
+const getUrl = (path: string): string => baseUrl + "/" + path;
 
-const stockController = (path?: string) : string => {
-  if(!path) {
+const stockController = (path?: string): string => {
+  if (!path) {
     path = "";
   }
 
   return getUrl("api/stock/" + path);
-}
+};
 
-const portfolioController = (path?: string) : string => {
-  if(!path) {
+const portfolioController = (path?: string): string => {
+  if (!path) {
     path = "";
   }
 
   return getUrl("api/portfolios/" + path);
-}
+};
 
-export const getToken = async (): Promise<string> => {
+const getHeaders = (): Headers => {
+  const token = getToken();
+
+  var headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", "Bearer " + token);
+
+  return headers;
+};
+
+export const login = async (login: Login): Promise<LoginResult> => {
   var headers = new Headers();
   headers.append("Content-Type", "application/json");
 
-  //TODO: This is temporary until I figure out the right way to store and recall this crap
-  //TODO: Need to work on expiration too
-  var raw = JSON.stringify({
-    username: "User1",
-    password: "emmC2YNvh%9LtNMHWo#T",
-  });
+  var raw = JSON.stringify(login);
 
   var request: RequestInit = {
     method: "POST",
@@ -40,16 +53,63 @@ export const getToken = async (): Promise<string> => {
 
   const response = await fetch(getUrl("token"), request);
 
-  //TODO: Need to decode the JWT to get the UserId out of it
-  return response.text();
+  if (response.ok) {
+    const jwt = await response.text();
+
+    localStorage.setItem("token", jwt);
+
+    var decoded:any = jwt_decode(jwt);
+
+    console.log(decoded);
+
+    localStorage.setItem("user-id", decoded.UserId);
+
+    //TODO: Should shave off a minute (or more), so that there is room for refresh
+    const expiration = new Date(parseInt(decoded.exp)*1000).toISOString();
+
+    localStorage.setItem("token-expiration", expiration);
+
+    return { isSuccess: true };
+  }
+
+  var errorModel : ErrorModel = await response.json();
+
+  return { isSuccess: false, error: errorModel.Message };
+};
+
+const getToken = (): string => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    //How to log people out?
+    console.log("logged out - token was null");
+
+    return "";
+  }
+
+  const expiration = localStorage.getItem("token-expiration");
+
+  if(!expiration) {
+    //How to log people out?
+    console.log("logged out - expiration was null");
+
+    return "";
+  }
+
+  const dtm = new Date(expiration);
+
+  if(dtm <= new Date()) {
+    //How to refresh tokens?
+    console.log("logged out - token expired");
+
+    return "";
+  }
+
+  return token;
 };
 
 export const getStockBySymbol = async (symbol: string): Promise<Stock> => {
-  const token = await getToken();
-
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + token);
+  const headers = getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -57,20 +117,13 @@ export const getStockBySymbol = async (symbol: string): Promise<Stock> => {
     redirect: "follow",
   };
 
-  const response = await fetch(
-    stockController(symbol + "/symbol"),
-    request
-  );
+  const response = await fetch(stockController(symbol + "/symbol"), request);
 
   return response.json();
 };
 
 export const getStockById = async (id: number): Promise<Stock> => {
-  const token = await getToken();
-
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + token);
+  const headers = getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -78,24 +131,19 @@ export const getStockById = async (id: number): Promise<Stock> => {
     redirect: "follow",
   };
 
-  const response = await fetch(
-    stockController(id.toString()),
-    request
-  );
+  const response = await fetch(stockController(id.toString()), request);
 
   return response.json();
 };
 
-export const createStock = async (symbol: string): Promise<StockV1CreatedModel> => {
-  const token = await getToken();
+export const createStock = async (
+  symbol: string
+): Promise<StockV1CreatedModel> => {
+  const headers = getHeaders();
 
-  const model : SymbolV1Model = { symbol: symbol }; 
+  const model: SymbolV1Model = { symbol: symbol };
 
   const raw = JSON.stringify(model);
-
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + token);
 
   var request: RequestInit = {
     method: "POST",
@@ -104,26 +152,24 @@ export const createStock = async (symbol: string): Promise<StockV1CreatedModel> 
     redirect: "follow",
   };
 
-  const response = await fetch(
-    stockController(),
-    request
-  );
+  const response = await fetch(stockController(), request);
 
   return response.json();
 };
 
-export const updateStock = async (id: number, notes?: string): Promise<void> => {
-  const token = await getToken();
+export const updateStock = async (
+  id: number,
+  notes?: string
+): Promise<void> => {
+  const headers = getHeaders();
 
-  const raw = JSON.stringify([{
-    "op": "replace",
-    "path": "/notes",
-    "value": notes
-  }]);
-
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + token);
+  const raw = JSON.stringify([
+    {
+      op: "replace",
+      path: "/notes",
+      value: notes,
+    },
+  ]);
 
   var request: RequestInit = {
     method: "PATCH",
@@ -132,18 +178,13 @@ export const updateStock = async (id: number, notes?: string): Promise<void> => 
     redirect: "follow",
   };
 
-  await fetch(
-    stockController(id.toString()),
-    request
-  );
+  await fetch(stockController(id.toString()), request);
 };
 
-export const getPortfolio = async (userId: number): Promise<PortfolioV1GetModel[]> => {
-  const token = await getToken();
-
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  headers.append("Authorization", "Bearer " + token);
+export const getPortfolio = async (
+  userId: number
+): Promise<PortfolioV1GetModel[]> => {
+  const headers = getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -151,10 +192,7 @@ export const getPortfolio = async (userId: number): Promise<PortfolioV1GetModel[
     redirect: "follow",
   };
 
-  const response = await fetch(
-    portfolioController(userId.toString()),
-    request
-  );
+  const response = await fetch(portfolioController(userId.toString()), request);
 
   return response.json();
 };

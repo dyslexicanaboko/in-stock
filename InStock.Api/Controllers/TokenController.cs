@@ -29,11 +29,13 @@ namespace InStock.Api.Controllers
 
       var user = _service.Authenticate(model.Username, model.Password);
 
+      var utcNow = DateTime.UtcNow;
+
       //create claims details based on the user information
       var claims = new[] {
         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+        new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString()),
         new Claim(Constants.ClaimsUserId, user.UserId.ToString()),
         new Claim("Name", user.Name),
         new Claim("Username", user.Username),
@@ -46,7 +48,7 @@ namespace InStock.Api.Controllers
         _configuration["Jwt:Issuer"],
         _configuration["Jwt:Audience"],
         claims,
-        expires: DateTime.UtcNow.AddMinutes(10),
+        expires: utcNow.AddMinutes(10),
         signingCredentials: signIn);
 
       return await Task.FromResult(Ok(new JwtSecurityTokenHandler().WriteToken(token)));
