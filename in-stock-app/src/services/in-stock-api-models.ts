@@ -21,7 +21,7 @@ export type StockV1CreatedModel = {
 export type PortfolioV1GetModel = {
 	stockId: number,
 	symbol: string,
-	ownedAsOf: Date,
+	acquiredOn: Date,
 	shares: number,
 	costBasis: number,
 	lowestHeld: number,
