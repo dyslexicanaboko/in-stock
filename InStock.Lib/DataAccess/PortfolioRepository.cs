@@ -20,7 +20,7 @@ namespace InStock.Lib.DataAccess
 			SELECT
 					s.StockId
 				 ,s.Symbol
-				 ,MIN(p.DateOpened) AS OwnedAsOf
+				 ,MIN(p.DateOpened) AS AcquiredOn
 				 ,SUM(p.Quantity) AS Shares
 				 ,SUM(p.Quantity * p.Price) AS CostBasis
 				 ,MIN(p.Price) AS LowestHeld

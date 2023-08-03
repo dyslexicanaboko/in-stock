@@ -49,7 +49,7 @@ namespace InStock.Lib.Services
 
         p.CurrentPrice = Convert.ToDecimal(quote.Price);
         p.CurrentValue = p.CurrentPrice * p.Shares;
-        p.DaysHeld = Convert.ToDecimal((dtm - p.OwnedAsOf).TotalDays);
+        p.DaysHeld = Convert.ToDecimal((dtm - p.AcquiredOn).TotalDays);
         p.TotalGain = p.CurrentValue - p.CostBasis;
         p.TotalGainPercentage = 1M - SafeDivide(p.TotalGain, p.CostBasis);
         p.GainRate = SafeDivide(p.TotalGain, p.DaysHeld);

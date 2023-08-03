@@ -6,7 +6,7 @@ public interface IPortfolioComposite
 
   string Symbol { get; set; }
 
-  DateTime OwnedAsOf { get; set; }
+  DateTime AcquiredOn { get; set; }
 
   decimal Shares { get; set; }
 
