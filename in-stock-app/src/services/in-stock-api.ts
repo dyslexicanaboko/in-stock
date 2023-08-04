@@ -1,16 +1,13 @@
-import { Login, LoginResult } from "@/app/view-models/login";
 import {
   Stock,
   SymbolV1Model,
   StockV1CreatedModel,
   PortfolioV1GetModel,
-  ErrorModel,
 } from "./in-stock-api-models";
-import jwt_decode from "jwt-decode"; //https://stackoverflow.com/questions/53835816/decode-jwt-token-react, https://github.com/auth0/jwt-decode
+import { BaseUrl } from "@/app/config";
+import { getToken } from "./user-info";
 
-const baseUrl: string = "http://localhost:61478";
-
-const getUrl = (path: string): string => baseUrl + "/" + path;
+const getUrl = (path: string): string => BaseUrl + "/" + path;
 
 const stockController = (path?: string): string => {
   if (!path) {
@@ -36,76 +33,6 @@ const getHeaders = (): Headers => {
   headers.append("Authorization", "Bearer " + token);
 
   return headers;
-};
-
-export const login = async (login: Login): Promise<LoginResult> => {
-  var headers = new Headers();
-  headers.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify(login);
-
-  var request: RequestInit = {
-    method: "POST",
-    headers: headers,
-    body: raw,
-    redirect: "follow",
-  };
-
-  const response = await fetch(getUrl("token"), request);
-
-  if (response.ok) {
-    const jwt = await response.text();
-
-    localStorage.setItem("token", jwt);
-
-    var decoded:any = jwt_decode(jwt);
-
-    console.log(decoded);
-
-    localStorage.setItem("user-id", decoded.UserId);
-
-    //TODO: Should shave off a minute (or more), so that there is room for refresh
-    const expiration = new Date(parseInt(decoded.exp)*1000).toISOString();
-
-    localStorage.setItem("token-expiration", expiration);
-
-    return { isSuccess: true };
-  }
-
-  var errorModel : ErrorModel = await response.json();
-
-  return { isSuccess: false, error: errorModel.Message };
-};
-
-const getToken = (): string => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    //How to log people out?
-    console.log("logged out - token was null");
-
-    return "";
-  }
-
-  const expiration = localStorage.getItem("token-expiration");
-
-  if(!expiration) {
-    //How to log people out?
-    console.log("logged out - expiration was null");
-
-    return "";
-  }
-
-  const dtm = new Date(expiration);
-
-  if(dtm <= new Date()) {
-    //How to refresh tokens?
-    console.log("logged out - token expired");
-
-    return "";
-  }
-
-  return token;
 };
 
 export const getStockBySymbol = async (symbol: string): Promise<Stock> => {

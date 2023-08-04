@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Login } from "./view-models/login";
-import { login as apiLogin } from "@/services/in-stock-api"
+import { login as apiLogin } from "@/services/user-info"
 import Waiting from "@/components/waiting";
 import Container from "@/components/container";
 import { useRouter } from 'next/navigation'
