@@ -2,29 +2,27 @@
 
 // https://reacthustle.com/blog/next-js-add-navbar-to-all-pages
 // https://picocss.com/docs/navs.html
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { isLoggedIn, logout } from "@/services/user-info";
 import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
-  let jsx: JSX.Element;
+  const jsx = useRef<JSX.Element>(<></>);
 
   const logoutHandler = () : void => {
-    setLoggedIn(false);
-
     logout();
 
-    router.push("/");
-  }
+    window.location.href = "/";
 
-  //TODO: Need to figure out how to refresh the navbar jsx when a user logs in and out.
-  if(loggedIn) {
-    jsx = <button onClick={() => logoutHandler()}>Logout</button>;
+    //router.push("/"); //This is what I want to use, but I can't because the Nav itself never knows when someone logged in or not
+  };
+
+  if(isLoggedIn()) {
+    jsx.current = <button onClick={() => logoutHandler()}>Logout</button>;
   } else {
-    jsx = <Link href="/" className="secondary">Login</Link>;
+    jsx.current = <Link href="/" className="secondary">Login</Link>;
   }
 
   return (
@@ -43,7 +41,7 @@ const Navbar = () => {
         <li><strong>In Stock</strong></li>
       </ul>
       <ul>
-        <li>{jsx}</li>
+        <li>{jsx.current}</li>
       </ul>
     </nav>
   );

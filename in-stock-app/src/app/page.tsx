@@ -44,8 +44,9 @@ export default function Home() {
         </Container>
       );
 
-      pause(1500).then(() => {
-        router.push("/portfolio");
+      pause(1000).then(() => {
+        window.location.href = "/portfolio";
+        //router.push("/portfolio"); //No way to notify Navbar that the user logged in, full refresh required
       });
     });
 
