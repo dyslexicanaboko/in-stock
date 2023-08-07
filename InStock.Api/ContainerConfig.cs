@@ -35,6 +35,8 @@ namespace InStock.Api
 
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             services.AddScoped<IPortfolioService, PortfolioService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<ITokenService, TokenService>();
 
             //Dependency injection below
             //services.AddSingleton<IAppSettingsService, AppSettingsService>();

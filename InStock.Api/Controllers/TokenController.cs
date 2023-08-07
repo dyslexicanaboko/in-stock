@@ -1,11 +1,6 @@
-﻿using InStock.Lib;
-using InStock.Lib.Models.Client;
+﻿using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace InStock.Api.Controllers
 {
@@ -13,45 +8,40 @@ namespace InStock.Api.Controllers
   [ApiController]
   public class TokenController : Controller
   {
-    private readonly IConfiguration _configuration;
-    private readonly IUserService _service;
+    private readonly ITokenService _service;
 
-    public TokenController(IConfiguration config, IUserService service)
+    public TokenController(ITokenService service)
     {
-      _configuration = config;
       _service = service;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(UserV1GetModel? model)
+    public async Task<IActionResult> Post(UserV1PostModel? model)
     {
       if (model is not { Username: { }, Password: { } }) return BadRequest();
 
-      var user = _service.Authenticate(model.Username, model.Password);
+      var token = _service.GetToken(model, GetIpAddress());
 
-      var utcNow = DateTime.UtcNow;
+      return await Task.FromResult(Ok(token));
+    }
 
-      //create claims details based on the user information
-      var claims = new[] {
-        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Iat, utcNow.ToString()),
-        new Claim(Constants.ClaimsUserId, user.UserId.ToString()),
-        new Claim("Name", user.Name),
-        new Claim("Username", user.Username),
-        //new Claim("Email", user.Email)
-      };
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Post(RefreshTokenV1PostModel? model)
+    {
+      if (model is not { Token: { } }) return BadRequest();
 
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-      var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-      var token = new JwtSecurityToken(
-        _configuration["Jwt:Issuer"],
-        _configuration["Jwt:Audience"],
-        claims,
-        expires: utcNow.AddMinutes(10),
-        signingCredentials: signIn);
+      var token = _service.GetToken(model, GetIpAddress());
 
-      return await Task.FromResult(Ok(new JwtSecurityTokenHandler().WriteToken(token)));
+      return await Task.FromResult(Ok(token));
+    }
+
+    private string GetIpAddress()
+    {
+      if (Request.Headers.ContainsKey("X-Forwarded-For")) return Convert.ToString(Request.Headers["X-Forwarded-For"]);
+
+      var ip = HttpContext.Connection.RemoteIpAddress;
+
+      return ip == null ? string.Empty : ip.MapToIPv4().ToString();
     }
   }
 }

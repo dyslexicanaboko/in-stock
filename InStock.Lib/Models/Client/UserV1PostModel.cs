@@ -1,6 +1,6 @@
 ﻿namespace InStock.Lib.Models.Client
 {
-  public class UserV1GetModel
+  public class UserV1PostModel
   {
     public string Username { get; set; }
 

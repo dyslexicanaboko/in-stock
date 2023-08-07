@@ -25,8 +25,8 @@ namespace InStock.Lib.DataAccess
 				 ,SUM(p.Quantity * p.Price) AS CostBasis
 				 ,MIN(p.Price) AS LowestHeld
 				 ,MAX(p.Price) AS HighestHeld
-				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, GETUTCDATE()) < 365, 1, 0)) AS Short
-				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, GETUTCDATE()) >= 365, 1, 0)) AS Long
+				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, SYSUTCDATETIME()) < 365, 1, 0)) AS Short
+				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, SYSUTCDATETIME()) >= 365, 1, 0)) AS Long
 			FROM dbo.Position p
 				INNER JOIN dbo.Stock s
 					ON s.StockId = p.StockId

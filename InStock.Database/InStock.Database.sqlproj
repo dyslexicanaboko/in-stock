@@ -85,6 +85,7 @@
     <Build Include="dbo\Tables\dbo.User.sql" />
     <Build Include="dbo\Types\User-Defined Table Types\IntegerList.sql" />
     <Build Include="dbo\Tables\dbo.TradeType.sql" />
+    <Build Include="dbo\Tables\RefreshToken.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="InStock.Database.publish.xml" />
