@@ -5,7 +5,7 @@ import {
   PortfolioV1GetModel,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
-import { getToken } from "./user-info";
+import { EmptyToken, getToken } from "./user-info";
 
 const getUrl = (path: string): string => BaseUrl + "/" + path;
 
@@ -25,8 +25,12 @@ const portfolioController = (path?: string): string => {
   return getUrl("api/portfolios/" + path);
 };
 
-const getHeaders = (): Headers => {
-  const token = getToken();
+const getHeaders = async (): Promise<Headers> => {
+  const token = await getToken();
+
+  if(token === EmptyToken) {
+    redirectToLoginPage();
+  }
 
   var headers = new Headers();
   headers.append("Content-Type", "application/json");
@@ -36,7 +40,7 @@ const getHeaders = (): Headers => {
 };
 
 export const getStockBySymbol = async (symbol: string): Promise<Stock> => {
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -50,7 +54,7 @@ export const getStockBySymbol = async (symbol: string): Promise<Stock> => {
 };
 
 export const getStockById = async (id: number): Promise<Stock> => {
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -66,7 +70,7 @@ export const getStockById = async (id: number): Promise<Stock> => {
 export const createStock = async (
   symbol: string
 ): Promise<StockV1CreatedModel> => {
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   const model: SymbolV1Model = { symbol: symbol };
 
@@ -88,7 +92,7 @@ export const updateStock = async (
   id: number,
   notes?: string
 ): Promise<void> => {
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   const raw = JSON.stringify([
     {
@@ -111,7 +115,7 @@ export const updateStock = async (
 export const getPortfolio = async (
   userId: number
 ): Promise<PortfolioV1GetModel[]> => {
-  const headers = getHeaders();
+  const headers = await getHeaders();
 
   var request: RequestInit = {
     method: "GET",
@@ -123,3 +127,7 @@ export const getPortfolio = async (
 
   return response.json();
 };
+function redirectToLoginPage() {
+  throw new Error("Function not implemented.");
+}
+

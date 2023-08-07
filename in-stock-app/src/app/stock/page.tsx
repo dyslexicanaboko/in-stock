@@ -10,6 +10,8 @@ import {
 import { StockEdit } from "@/app/view-models/stock";
 import { Stock, StockV1CreatedModel } from "@/services/in-stock-api-models";
 import { ChangeEvent, useCallback, useState, useRef } from "react";
+import Container from "@/components/container";
+import Link from "next/link";
 
 export default function Page() {
   const [symbol, setSymbol] = useState("");
@@ -50,6 +52,10 @@ export default function Page() {
     [_model]
   );
 
+  const getPositionsLink = (symbol: string): JSX.Element => (
+    <Link href={"/positions?symbol=" + symbol}>Edit position</Link>
+  );
+
   const handleUpdate = useCallback(
     (edit: StockEdit): void => {
       console.log("handleUpdate");
@@ -62,20 +68,23 @@ export default function Page() {
           const stock = StockView(model, true);
 
           setView(
-            <>
-              {stock}
-              <div className="grid">
-                <label>Notes</label>
-                <input
-                  type="text"
-                  defaultValue={model.notes}
-                  onChange={onChangeNotes}
-                />
-              </div>
-              <button onClick={() => handleUpdate(_model.current!)}>
-                Save notes
-              </button>
-            </>
+            <Container>
+              <article>
+                {stock}
+                <div className="grid">
+                  <label>Notes</label>
+                  <input
+                    type="text"
+                    defaultValue={model.notes}
+                    onChange={onChangeNotes}
+                  />
+                </div>
+                <button onClick={() => handleUpdate(_model.current!)}>
+                  Save notes
+                </button>
+                {getPositionsLink(model.symbol)}
+              </article>
+            </Container>
           );
         });
       });
@@ -92,20 +101,23 @@ export default function Page() {
       const stock = StockView(model, true);
 
       setView(
-        <>
-          {stock}
-          <div className="grid">
-            <label>Notes</label>
-            <input
-              type="text"
-              defaultValue={model.notes}
-              onChange={onChangeNotes}
-            />
-          </div>
-          <button onClick={() => handleUpdate(_model.current!)}>
-            Save notes
-          </button>
-        </>
+        <Container>
+          <article>
+            {stock}
+            <div className="grid">
+              <label>Notes</label>
+              <input
+                type="text"
+                defaultValue={model.notes}
+                onChange={onChangeNotes}
+              />
+            </div>
+            <button onClick={() => handleUpdate(_model.current!)}>
+              Save notes
+            </button>
+            {getPositionsLink(symbol)}
+          </article>
+        </Container>
       );
     });
 
@@ -126,7 +138,7 @@ export default function Page() {
 
   const emptyCreateForm = useCallback((): JSX.Element => {
     return (
-      <>
+      <Container>
         <article>
           <label>
             Search for stock by symbol
@@ -138,7 +150,7 @@ export default function Page() {
           </label>
           <button onClick={() => handleCreate()}>Lookup</button>
         </article>
-      </>
+      </Container>
     );
   }, [handleCreate, onKeyDown]);
 

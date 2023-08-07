@@ -1,4 +1,4 @@
-import { Stock } from "@/app/view-models/stock";
+import { Stock } from "@/services/in-stock-api-models";
 import { StockV1CreatedModel } from "@/services/in-stock-api-models";
 
 //For now I am going to make this the default component for showing stock, I have no idea what I am doing

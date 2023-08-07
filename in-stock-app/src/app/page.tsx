@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Login } from "./view-models/login";
+import { UserV1PostModel } from "./view-models/login";
 import { login as apiLogin } from "@/services/user-info"
 import Waiting from "@/components/waiting";
 import Container from "@/components/container";
@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   const router = useRouter();
   const [view, setView] = useState<JSX.Element>();
-  const [loginInfo, setLoginInfo] = useState<Login>({
+  const [loginInfo, setLoginInfo] = useState<UserV1PostModel>({
     username: "User1",
     password: "emmC2YNvh%9LtNMHWo#T",
   });

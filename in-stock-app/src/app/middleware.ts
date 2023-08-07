@@ -5,8 +5,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
  
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  const loggedIn = isLoggedIn();
+export async function middleware(request: NextRequest) {
+  const loggedIn = await isLoggedIn();
 
   if(!loggedIn) {
     //If not logged in, go home
