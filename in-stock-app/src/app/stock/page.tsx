@@ -9,15 +9,19 @@ import {
 } from "@/services/in-stock-api";
 import { StockEdit } from "@/app/view-models/stock";
 import { Stock, StockV1CreatedModel } from "@/services/in-stock-api-models";
-import { ChangeEvent, useCallback, useState, useRef } from "react";
+import { ChangeEvent, useCallback, useState, useRef, useEffect } from "react";
 import Container from "@/components/container";
 import Link from "next/link";
+import { useSearchParams } from 'next/navigation'
 
 export default function Page() {
   const [symbol, setSymbol] = useState("");
+  //const symbol = useRef("");
   const [notes, setNotes] = useState("");
   const [view, setView] = useState<JSX.Element>();
   const _model = useRef<StockEdit>();
+  const _qsp = useSearchParams();
+  const _qspRef = useRef("");
 
   const viewPleaseWait = (): void => setView(<Waiting />);
 
@@ -95,6 +99,8 @@ export default function Page() {
   );
 
   const handleCreate = useCallback((): void => {
+    console.log(`symbol: ${symbol}`);
+
     createStock(symbol).then((model) => {
       storeAsEditModel(model);
 
@@ -154,5 +160,19 @@ export default function Page() {
     );
   }, [handleCreate, onKeyDown]);
 
+  useEffect(() => {  
+    if(_qsp) {
+      const qspSymbol = _qsp.get("symbol");
+  
+      if(qspSymbol && _qspRef.current !== qspSymbol) {
+        _qspRef.current = qspSymbol;
+        
+        setSymbol(qspSymbol);
+  
+        handleCreate();
+      }
+    }
+  }, [_qsp, handleCreate]);
+  
   return view ? view : emptyCreateForm();
 }

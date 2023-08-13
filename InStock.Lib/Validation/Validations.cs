@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using InStock.Lib.Exceptions;
 using System.Diagnostics.CodeAnalysis;
-using InStock.Lib.Services;
 using static InStock.Lib.Exceptions.InvalidArgument;
 
 namespace InStock.Lib.Validation
@@ -52,6 +51,8 @@ namespace InStock.Lib.Validation
         () => Guard.IsGreaterThanOrEqualTo(endDate, startDate),
         raiseException,
         EndDateLessThanStartDate(argument));
+
+    public static BadRequestException IsMalformedModel() => new (MalformedModel());
 
     public static void ThrowOnError(params Func<InvalidArgumentException?>[] tests)
     {

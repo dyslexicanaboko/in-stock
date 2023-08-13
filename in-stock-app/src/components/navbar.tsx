@@ -6,6 +6,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { isLoggedIn, logout } from "@/services/user-info";
 import { useRouter } from "next/navigation";
+import { redirectToLoginPage } from "@/services/common";
 
 const Navbar = () => {
   const router = useRouter();
@@ -41,26 +42,29 @@ const Navbar = () => {
   const logoutHandler = (): void => {
     logout();
 
-    window.location.href = "/";
+    redirectToLoginPage();
 
     //router.push("/"); //This is what I want to use, but I can't because the Nav itself never knows when someone logged in or not
   };
 
-  isLoggedIn().then((loginStatus) => {
-    let button;
-
-    if (loginStatus) {
-      button = <button onClick={() => logoutHandler()}>Logout</button>;
-    } else {
-      button = (
-        <Link href="/" className="secondary">
-          Login
-        </Link>
-      );
-    }
-
-    setView(getView(button));
-  });
+  //TODO: A timer or something needs to be used to see if the user is still logged in otherwise the code inside the use effect will refresh constantly
+  useEffect(() => {
+    isLoggedIn().then((loginStatus) => {
+      let button;
+  
+      if (loginStatus) {
+        button = <button onClick={() => logoutHandler()}>Logout</button>;
+      } else {
+        button = (
+          <Link href="/" className="secondary">
+            Login
+          </Link>
+        );
+      }
+  
+      setView(getView(button));
+    });
+  }, []);
 
   return view ?? getView(<></>);
 };

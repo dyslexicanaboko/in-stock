@@ -11,6 +11,9 @@ namespace InStock.Lib.Exceptions
 
     public static InvalidArgumentException User = new("userId", "Invalid user.", BR.User);
 
+    public static InvalidArgumentException MalformedModel()
+      => new("model", "The provided model is malformed.", BR.MalformedModel);
+
     public static InvalidArgumentException Null(string argument)
       => new(argument, "The provided argument cannot be null.", BR.Null);
 

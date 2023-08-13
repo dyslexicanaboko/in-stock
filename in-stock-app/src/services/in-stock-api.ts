@@ -6,12 +6,13 @@ import {
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
+import { EmptyString, redirectToLoginPage } from "./common";
 
 const getUrl = (path: string): string => BaseUrl + "/" + path;
 
 const stockController = (path?: string): string => {
   if (!path) {
-    path = "";
+    path = EmptyString;
   }
 
   return getUrl("api/stock/" + path);
@@ -19,7 +20,7 @@ const stockController = (path?: string): string => {
 
 const portfolioController = (path?: string): string => {
   if (!path) {
-    path = "";
+    path = EmptyString;
   }
 
   return getUrl("api/portfolios/" + path);
@@ -127,7 +128,3 @@ export const getPortfolio = async (
 
   return response.json();
 };
-function redirectToLoginPage() {
-  throw new Error("Function not implemented.");
-}
-

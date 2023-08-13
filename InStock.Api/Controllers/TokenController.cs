@@ -1,5 +1,6 @@
 ﻿using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
+using InStock.Lib.Validation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InStock.Api.Controllers
@@ -18,7 +19,7 @@ namespace InStock.Api.Controllers
     [HttpPost]
     public async Task<IActionResult> Post(UserV1PostModel? model)
     {
-      if (model is not { Username: { }, Password: { } }) return BadRequest();
+      if (model is not { Username: { }, Password: { } }) throw Validations.IsMalformedModel();
 
       var token = _service.GetToken(model, GetIpAddress());
 
@@ -28,7 +29,7 @@ namespace InStock.Api.Controllers
     [HttpPost("refresh")]
     public async Task<IActionResult> Post(RefreshTokenV1PostModel? model)
     {
-      if (model is not { Token: { } }) return BadRequest();
+      if (model is not { Token: { } }) throw Validations.IsMalformedModel();
 
       var token = _service.GetToken(model, GetIpAddress());
 

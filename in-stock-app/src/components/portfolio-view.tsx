@@ -5,6 +5,7 @@ import {
   formatCurrency as fc,
   formatPercent as fp
 } from "@/services/string-formats";
+import Link from "next/link";
 
 //TODO: All of the data fields need to be formatted nicely
 export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
@@ -33,10 +34,12 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
         </thead>
         <tbody>
           {portfolio.map((position, key) => {
+            const symbol = position.symbol.toUpperCase();
+            
             return (
               <tr key={key}>
                 <td>{position.stockId}</td>
-                <td>{position.symbol.toUpperCase()}</td>
+                <td><Link href={"/stock?symbol=" + symbol}>{symbol}</Link></td>
                 <td>{fd(position.acquiredOn)}</td>
                 <td>{fn(position.shares, 2)}</td>
                 <td>{fc(position.costBasis)}</td>

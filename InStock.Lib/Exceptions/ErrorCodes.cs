@@ -19,6 +19,8 @@
       public const int EndDateLessThanStartDate = 40006;
      
       public const int Empty = 40007;
+      
+      public const int MalformedModel = 40008;
     }
 
     //HTTP 401xx Unauthorized - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401

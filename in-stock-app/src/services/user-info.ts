@@ -7,22 +7,24 @@ import {
 import { BaseUrl } from "@/app/config";
 import { ErrorModel } from "./in-stock-api-models";
 
+let _refreshAttempts = 0;
+const MaxRefreshAttempts = 5;
 const KeyToken = "token";
 const KeyTokenExpiration = "token-expiration";
 const KeyRefreshToken = "refresh-token";
 const KeyUserId = "user-id";
 export const EmptyToken = "";
 
-export const redirectToLoginPage = (): void => {
-  window.location.href = "/";
-};
-
 export const login = async (login: UserV1PostModel): Promise<LoginResult> =>
   await fetchLogin("/token", login);
 
 const attemptReLogin = async (
   refreshToken: RefreshTokenV1PostModel
-): Promise<LoginResult> => await fetchLogin("/token/refresh", refreshToken);
+): Promise<LoginResult> => {
+  _refreshAttempts++;
+
+  return await fetchLogin("/token/refresh", refreshToken);
+}
 
 const fetchLogin = async (
   path: string,
@@ -85,7 +87,14 @@ export const getToken = async (): Promise<string> => {
       return EmptyToken;
     }
 
-    const model: RefreshTokenV1PostModel = { refreshToken: refreshToken };
+    //Stop run-away train situations
+    if(_refreshAttempts >= MaxRefreshAttempts) {
+      console.error("Max refresh attempts reached.");
+
+      return EmptyToken;
+    } 
+
+    const model: RefreshTokenV1PostModel = { token: refreshToken };
 
     const result = await attemptReLogin(model);
 

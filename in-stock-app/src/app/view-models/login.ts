@@ -9,5 +9,5 @@ export type LoginResult = {
 };
 
 export type RefreshTokenV1PostModel = {
-  refreshToken: string;
+  token: string;
 };

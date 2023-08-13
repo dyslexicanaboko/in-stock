@@ -1,5 +1,6 @@
 ﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
+using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -34,13 +35,18 @@ namespace InStock.Lib.Services
 
     public string GetToken(RefreshTokenV1PostModel model, string ipAddress)
     {
-      //TODO: Hit the DB one time - lookup user by token
+      //Hit the DB one time - lookup user by refresh-token
       var refreshToken = _refreshTokenRepository.Select(model.Token);
+      
+      //If the token is not found, an error must be thrown
+      if (refreshToken == null) throw Unauthorized.FailedAuthentication();
 
-      //TODO: If the token is not found, an error must be thrown
+      //On the off chance the refresh token has expired
+      if (refreshToken.IsExpired()) throw Unauthorized.NotAuthenticated();
+      
       var user = _userService.GetUser(refreshToken.UserId);
 
-      //TODO: If the user is not found, an error must be thrown
+      //If the user is not found, an error must be thrown
       _refreshTokenRepository.Delete(user.UserId, refreshToken.Token);
 
       return GetToken(user, ipAddress);
@@ -81,7 +87,7 @@ namespace InStock.Lib.Services
     //https://github.com/cornflourblue/dotnet-6-jwt-refresh-tokens-api
     private string GetUniqueToken()
     {
-      //TODO: Run away train situation?
+      //TODO: Run away train situation? Probably very unlikely to be a problem
       while (true)
       {
         // token is a cryptographically strong random sequence of values
