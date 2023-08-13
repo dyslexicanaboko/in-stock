@@ -12,16 +12,16 @@ import { Stock, StockV1CreatedModel } from "@/services/in-stock-api-models";
 import { ChangeEvent, useCallback, useState, useRef, useEffect } from "react";
 import Container from "@/components/container";
 import Link from "next/link";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
+import { EmptyString } from "@/services/common";
 
 export default function Page() {
-  const [symbol, setSymbol] = useState("");
-  //const symbol = useRef("");
-  const [notes, setNotes] = useState("");
+  const symbol = useRef(EmptyString);
+  const [notes, setNotes] = useState(EmptyString);
   const [view, setView] = useState<JSX.Element>();
   const _model = useRef<StockEdit>();
   const _qsp = useSearchParams();
-  const _qspRef = useRef("");
+  const _qspRef = useRef(EmptyString);
 
   const viewPleaseWait = (): void => setView(<Waiting />);
 
@@ -99,9 +99,9 @@ export default function Page() {
   );
 
   const handleCreate = useCallback((): void => {
-    console.log(`symbol: ${symbol}`);
+    console.log(`symbol: ${symbol.current}`);
 
-    createStock(symbol).then((model) => {
+    createStock(symbol.current).then((model) => {
       storeAsEditModel(model);
 
       const stock = StockView(model, true);
@@ -121,7 +121,7 @@ export default function Page() {
             <button onClick={() => handleUpdate(_model.current!)}>
               Save notes
             </button>
-            {getPositionsLink(symbol)}
+            {getPositionsLink(symbol.current)}
           </article>
         </Container>
       );
@@ -150,7 +150,7 @@ export default function Page() {
             Search for stock by symbol
             <input
               type="text"
-              onChange={(e) => setSymbol(e.target.value)}
+              onChange={(e) => (symbol.current = e.target.value)}
               onKeyDown={onKeyDown}
             />
           </label>
@@ -160,19 +160,25 @@ export default function Page() {
     );
   }, [handleCreate, onKeyDown]);
 
-  useEffect(() => {  
-    if(_qsp) {
-      const qspSymbol = _qsp.get("symbol");
-  
-      if(qspSymbol && _qspRef.current !== qspSymbol) {
-        _qspRef.current = qspSymbol;
-        
-        setSymbol(qspSymbol);
-  
-        handleCreate();
-      }
+  useEffect(() => {
+    if (!_qsp) return;
+    
+    const qspSymbol = _qsp.get("symbol");
+
+    if (!qspSymbol) {
+      _qspRef.current = EmptyString;
+
+      setView(undefined);
+
+      return;
+    }
+
+    if (_qspRef.current !== qspSymbol) {
+      symbol.current = qspSymbol;
+
+      handleCreate();
     }
   }, [_qsp, handleCreate]);
-  
+
   return view ? view : emptyCreateForm();
 }

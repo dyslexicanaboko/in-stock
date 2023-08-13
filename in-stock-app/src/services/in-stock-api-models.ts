@@ -46,3 +46,12 @@ export type PortfolioV1GetModel = {
 	totalGainPercentage: number,
 	gainRate: number
 };
+
+export type PositionV1GetModel = {
+	positionId: number;
+	stockId: number;
+	dateOpened: Date;
+	dateClosed?: Date;
+	price: number;
+	quantity: number;
+};
