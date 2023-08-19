@@ -1,3 +1,4 @@
+import { DaysInOneYear } from "@/services/common";
 import { PortfolioV1GetModel } from "@/services/in-stock-api-models";
 import {
   formatDate as fd,
@@ -27,9 +28,9 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
             <th scope="col">Years</th>
             <th scope="col">Current Price</th>
             <th scope="col">Current Value</th>
-            <th scope="col">Total Gain</th>
-            <th scope="col">Total Gain %</th>
-            <th scope="col">Gain Rate ($/day)</th>
+            <th scope="col">Gain</th>
+            <th scope="col">Gain %</th>
+            <th scope="col">$/day</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +49,7 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
                 <td>{fn(position.short)}</td>
                 <td>{fn(position.long)}</td>
                 <td>{fn(position.daysHeld, 2)}</td>
-                <td>{fn(position.daysHeld/365.0, 2)}</td>
+                <td>{fn(position.daysHeld/DaysInOneYear, 2)}</td>
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
                 <td>{fc(position.totalGain)}</td>

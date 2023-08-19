@@ -13,7 +13,7 @@ namespace InStock.Api
     public static void Configure(IHostBuilder host)
     {
       host.ConfigureServices(
-          (hostContext, services) =>
+          (_, services) =>
           {
             services.AddSingleton<IAppConfiguration, AppConfiguration>();
             services.AddScoped<ITransactionManager, TransactionManager>();
@@ -33,6 +33,7 @@ namespace InStock.Api
               "Trade",
               "User");
 
+            services.AddScoped<IPositionCalculator, PositionCalculator>();
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             services.AddScoped<IPortfolioService, PortfolioService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

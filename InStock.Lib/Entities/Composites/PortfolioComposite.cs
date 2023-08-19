@@ -1,7 +1,7 @@
 ﻿namespace InStock.Lib.Entities.Composites
 {
   public class PortfolioComposite
-    : IPortfolioComposite
+    : IPortfolioComposite, ICalculablePosition
   {
     //Database fields
     public int StockId { get; set; }

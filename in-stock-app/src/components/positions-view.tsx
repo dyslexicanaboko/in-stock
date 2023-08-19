@@ -1,13 +1,13 @@
-import { PositionV1GetModel } from "@/services/in-stock-api-models";
+import { DaysInOneYear } from "@/services/common";
+import { PositionV1GetCalculatedModel, PositionV1GetModel } from "@/services/in-stock-api-models";
 import {
   formatDate as fd,
   formatNumber as fn,
   formatCurrency as fc,
-  //formatPercent as fp
+  formatPercent as fp,
 } from "@/services/string-formats";
 
-//TODO: All of the data fields need to be formatted nicely
-export default function PositionsView(positions: PositionV1GetModel[]) {
+export default function PositionsView(positions: PositionV1GetCalculatedModel[]) {
   positions.sort((a, b) => parseInt(a.dateOpened.toString()) - parseInt(b.dateOpened.toString()));
   
   return (
@@ -16,10 +16,20 @@ export default function PositionsView(positions: PositionV1GetModel[]) {
         <thead>
           <tr>
             <th scope="col">Id</th>
+            <th scope="col">Shares</th>
+            <th scope="col">Price</th>
+            <th scope="col">Cost Basis</th>
             <th scope="col">Opened</th>
             <th scope="col">Closed</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
+            <th scope="col">Days</th>
+            <th scope="col">Years</th>
+            <th scope="col">Current Price</th>
+            <th scope="col">Current Value</th>
+            <th scope="col">Gain</th>
+            <th scope="col">Gain %</th>
+            <th scope="col">$/day</th>
+            <th scope="col">Capital Gains</th>
+            <th scope="col">Rank</th>
           </tr>
         </thead>
         <tbody>
@@ -35,10 +45,20 @@ export default function PositionsView(positions: PositionV1GetModel[]) {
             return (
               <tr key={key}>
                 <td>{position.positionId}</td>
+                <td>{fn(position.shares, 2)}</td>
+                <td>{fc(position.price)}</td>
+                <td>{fc(position.costBasis)}</td>
                 <td>{fd(position.dateOpened)}</td>
                 <td>{dateClosed}</td>
-                <td>{fc(position.price)}</td>
-                <td>{fn(position.quantity, 2)}</td>
+                <td>{fn(position.daysHeld, 2)}</td>
+                <td>{fn(position.daysHeld/DaysInOneYear, 2)}</td>
+                <td>{fc(position.currentPrice)}</td>
+                <td>{fc(position.currentValue)}</td>
+                <td>{fc(position.totalGain)}</td>
+                <td>{fp(position.totalGainPercentage)}</td>
+                <td>{fc(position.gainRate)}</td>
+                <td>{position.isLongPosition ? "long" : "short"}</td>
+                <td>{position.rank}</td>
               </tr>
             );
           })}

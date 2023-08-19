@@ -1,5 +1,6 @@
 ﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Results;
 using InStock.Lib.Validation;
@@ -9,21 +10,23 @@ namespace InStock.Lib.Services
   public class PositionService : IPositionService
   {
     private readonly IPositionRepository _repoPosition;
-
     private readonly IStockRepository _repoStock;
-
     private readonly IPositionValidation _validation;
+    private readonly IDateTimeService _dateTimeService;
+    private readonly IPositionCalculator _calculator;
 
     public PositionService(
       IPositionRepository repoPosition,
       IStockRepository repoStock,
-      IPositionValidation validation)
+      IPositionValidation validation,
+      IDateTimeService dateTimeService,
+      IPositionCalculator calculator)
     {
       _repoPosition = repoPosition;
-
       _repoStock = repoStock;
-
       _validation = validation;
+      _dateTimeService = dateTimeService;
+      _calculator = calculator;
     }
 
     public PositionEntity? GetPosition(int positionId)
@@ -35,9 +38,7 @@ namespace InStock.Lib.Services
       return dbEntity;
     }
 
-    //I am not going to check for the symbol (for now) in cases like this because it's non-consequential.
-    //I might change my mind later.
-    public IList<PositionEntity> GetPosition(int userId, string symbol)
+    public IList<PositionEntity> GetPositions(int userId, string symbol)
     {
       Validations.ThrowOnError(
         () => Validations.IsUserIdValid(userId, false),
@@ -48,6 +49,30 @@ namespace InStock.Lib.Services
         .ToList();
 
       return lst;
+    }
+
+    public async Task<IList<PositionComposite>> GetCalculatedPositions(int userId, string symbol)
+    {
+      var positions = GetPositions(userId, symbol)
+        .Select(x => new PositionComposite(symbol, x))
+        .OrderBy(x => x.Price)
+        .ToList();
+
+      var dtm = _dateTimeService.UtcNow;
+
+      for (var i = 0; i < positions.Count; i++)
+      {
+        var p = positions[i];
+
+        p.CostBasis = _calculator.CostBasis(p.Price, p.Quantity);
+
+        await _calculator.SetCalculableProperties(dtm, p);
+
+        p.IsLongPosition = _calculator.IsLongPosition(p.DaysHeld);
+        p.Rank = i + 1;
+      }
+      
+      return positions;
     }
 
     public IList<AddPositionResult> Add(PositionEntity position)

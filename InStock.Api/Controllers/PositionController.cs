@@ -1,4 +1,5 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
@@ -46,10 +47,20 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPosition>))]
     public ActionResult<IList<IPosition>> Get(string symbol)
     {
-      
-      var lst = _service.GetPosition(UserId, symbol);
+      var lst = _service.GetPositions(UserId, symbol);
 
       return Ok(_mapper.ToModel(lst));
+    }
+
+    //TODO: Not sure how to say - this is positions, but calculated - this feels wrong
+    // GET api/positions/MSFT/symbolCalculated
+    [HttpGet("{symbol}/symbolCalculated")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPositionComposite>))]
+    public async Task<ActionResult<IList<IPositionComposite>>> GetCalculated(string symbol)
+    {
+      var lst = await _service.GetCalculatedPositions(UserId, symbol);
+
+      return Ok(_mapper.ToCalculatedModel(lst));
     }
 
     // POST api/positions

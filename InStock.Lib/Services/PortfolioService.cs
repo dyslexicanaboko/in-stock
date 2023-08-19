@@ -1,7 +1,5 @@
 ﻿using InStock.Lib.DataAccess;
-using InStock.Lib.Entities;
 using InStock.Lib.Entities.Composites;
-using Microsoft.Extensions.Logging;
 
 namespace InStock.Lib.Services
 {
@@ -9,23 +7,22 @@ namespace InStock.Lib.Services
     : IPortfolioService
   {
     private readonly IPortfolioRepository _repoPortfolio;
-    //I don't like injecting a Service into a Service, but this is an edge case
-    private readonly IQuoteService _quoteService;
-    private readonly ILogger<PortfolioService> _logger;
+    private readonly IDateTimeService _dateTimeService;
+    private readonly IPositionCalculator _calculator;
 
     public PortfolioService(
-      ILogger<PortfolioService> logger,
       IPortfolioRepository repoPortfolio,
-      IQuoteService quoteService)
+      IDateTimeService dateTimeService,
+      IPositionCalculator calculator)
     {
-      _logger = logger;
       _repoPortfolio = repoPortfolio;
-      _quoteService = quoteService;
+      _dateTimeService = dateTimeService;
+      _calculator = calculator;
     }
 
     public async Task<IList<PortfolioComposite>> GetPortfolio(int userId)
     {
-      var dtm = DateTime.UtcNow;
+      var dtm = _dateTimeService.UtcNow;
 
       var lst = _repoPortfolio.Using(x => x.Select(userId)).ToList();
 
@@ -33,36 +30,10 @@ namespace InStock.Lib.Services
       //Cache is being utilized internally to guard against spamming the YahooApi and the DB
       foreach (var p in lst)
       {
-        QuoteEntity quote;
-
-        try
-        {
-          //The YahooApi can throw stupid unexpected exceptions sometimes
-          quote = await _quoteService.Add(p.StockId, p.Symbol);
-        }
-        catch (Exception ex)
-        {
-          _logger.LogError(ex, "YahooApi Failure");
-
-          quote = new QuoteEntity();
-        }
-
-        p.CurrentPrice = Convert.ToDecimal(quote.Price);
-        p.CurrentValue = p.CurrentPrice * p.Shares;
-        p.DaysHeld = Convert.ToDecimal((dtm - p.AcquiredOn).TotalDays);
-        p.TotalGain = p.CurrentValue - p.CostBasis;
-        p.TotalGainPercentage = 1M - SafeDivide(p.TotalGain, p.CostBasis);
-        p.GainRate = SafeDivide(p.TotalGain, p.DaysHeld);
+        await _calculator.SetCalculableProperties(dtm, p);
       }
 
       return lst;
-    }
-
-    private static decimal SafeDivide(decimal numerator, decimal divisor)
-    {
-      if (divisor == 0) return 0;
-
-      return numerator / divisor;
     }
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { getPositions } from "@/services/in-stock-api";
+import { getCalculatedPositions, getPositions } from "@/services/in-stock-api";
 import { useSearchParams } from "next/navigation";
 import { EmptyString } from "@/services/common";
 import Waiting from "@/components/waiting";
@@ -26,7 +26,7 @@ export default function Page() {
       return;
     }
 
-    getPositions(qspSymbol).then((models) => {
+    getCalculatedPositions(qspSymbol).then((models) => {
       setView(PositionsView(models));
     });
   }, [_qsp]);

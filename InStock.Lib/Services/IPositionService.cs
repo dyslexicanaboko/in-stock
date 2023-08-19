@@ -1,4 +1,5 @@
 ﻿using InStock.Lib.Entities;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Models.Results;
 
 namespace InStock.Lib.Services;
@@ -7,7 +8,9 @@ public interface IPositionService
 {
     PositionEntity? GetPosition(int positionId);
     
-    IList<PositionEntity> GetPosition(int userId, string symbol);
+    IList<PositionEntity> GetPositions(int userId, string symbol);
+
+    Task<IList<PositionComposite>> GetCalculatedPositions(int userId, string symbol);
 
     IList<AddPositionResult> Add(PositionEntity position);
 

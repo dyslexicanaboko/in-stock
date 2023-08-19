@@ -4,6 +4,7 @@ import {
   StockV1CreatedModel,
   PortfolioV1GetModel,
   PositionV1GetModel,
+  PositionV1GetCalculatedModel,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
@@ -150,6 +151,22 @@ export const getPositions = async (
   };
 
   const response = await fetch(positionsController(symbol + "/symbol"), request);
+
+  return response.json();
+};
+
+export const getCalculatedPositions = async (
+  symbol: string
+): Promise<PositionV1GetCalculatedModel[]> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(positionsController(symbol + "/symbolCalculated"), request);
 
   return response.json();
 };

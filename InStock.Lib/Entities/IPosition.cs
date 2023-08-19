@@ -2,17 +2,17 @@ namespace InStock.Lib.Entities
 {
     public interface IPosition
     {
-        int PositionId { get; }
+      public int PositionId { get; }
 
         int UserId { get; }
 
         int StockId { get; }
 
-        DateTime DateOpened { get; }
+        public DateTime DateOpened { get; }
 
-        DateTime? DateClosed { get; }
+        public DateTime? DateClosed { get; }
 
-        decimal Price { get; }
+        public decimal Price { get; }
 
         decimal Quantity { get; }
     }
