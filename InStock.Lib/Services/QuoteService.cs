@@ -8,6 +8,8 @@ namespace InStock.Lib.Services
 {
   public class QuoteService : IQuoteService
   {
+    private readonly IDateTimeService _dateService;
+
     private readonly IQuoteRepository _repoQuote;
 
     private readonly IStockRepository _repoStock;
@@ -19,10 +21,12 @@ namespace InStock.Lib.Services
     private readonly Dictionary<string, QuoteEntity> _quoteCache;
 
     public QuoteService(
+      IDateTimeService dateService,
       IQuoteRepository repoQuote,
       IStockRepository repoStock,
       IStockQuoteApiService stockQuoteApi)
     {
+      _dateService = dateService;
       _repoQuote = repoQuote;
 
       _repoStock = repoStock;
@@ -57,7 +61,7 @@ namespace InStock.Lib.Services
       if (_quoteCache.TryGetValue(symbol, out var cached)) return cached;
 
       //This is hard coded for now until I figure out how to deal with it properly
-      var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, DateTime.UtcNow, 5));
+      var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, _dateService.UtcNow, 5));
 
       return dbEntity;
     }

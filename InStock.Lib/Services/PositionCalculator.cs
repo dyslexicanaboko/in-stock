@@ -10,6 +10,8 @@ namespace InStock.Lib.Services
     bool IsLongPosition(decimal daysHeld);
 
     decimal CostBasis(decimal price, decimal shares);
+
+    decimal GainPercentage(decimal totalGain, decimal costBasis);
   }
 
   public class PositionCalculator
@@ -49,8 +51,23 @@ namespace InStock.Lib.Services
       target.CurrentValue = CostBasis(target.CurrentPrice, target.Shares);
       target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOn);
       target.TotalGain = target.CurrentValue - target.CostBasis;
-      target.TotalGainPercentage = 1M - SafeDivide(target.TotalGain, target.CostBasis);
+      target.TotalGainPercentage = GainPercentage(target.TotalGain, target.CostBasis);
       target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);
+    }
+
+    public decimal GainPercentage(decimal totalGain, decimal costBasis)
+    {
+      //gain >= cost -> 1 - q_pos
+      //gain < cost -> q_neg - 1
+
+      // Cost is always positive
+      //1 - (+gain / cost) -> 1 - (+quotient) = +result
+      //1 - (-gain / cost) -> 1 - (-quotient) = +result
+      var quotient = 1M - SafeDivide(totalGain, costBasis);
+
+      var polarity = totalGain < costBasis ? -1M : 1M;
+      
+      return quotient * polarity;
     }
 
     public decimal CostBasis(decimal price, decimal shares) => price * shares;

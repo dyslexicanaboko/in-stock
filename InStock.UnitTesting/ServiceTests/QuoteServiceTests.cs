@@ -1,16 +1,16 @@
 ﻿using FakeItEasy;
 using InStock.Lib.DataAccess;
-using InStock.Lib.Exceptions;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
 using NUnit.Framework;
 
 namespace InStock.UnitTesting.ServiceTests
 {
-    [TestFixture]
+  [TestFixture]
     public class QuoteServiceTests
         : TestBaseInStock
     {
+        private IDateTimeService _dateTimeService;
         private IStockRepository _repoStock;
         private IQuoteRepository _repoQuote;
         private IStockQuoteApiService _stockQuoteApi;
@@ -19,13 +19,15 @@ namespace InStock.UnitTesting.ServiceTests
         [SetUp]
         public void Setup()
         {
+            _dateTimeService = new DateTimeService();
+
             _repoStock = A.Fake<IStockRepository>();
             
             _repoQuote = A.Fake<IQuoteRepository>();
 
             _stockQuoteApi = A.Fake<IStockQuoteApiService>();
-
-            _service = new QuoteService(_repoQuote, _repoStock, _stockQuoteApi);
+      
+            _service = new QuoteService(_dateTimeService, _repoQuote, _repoStock, _stockQuoteApi);
         }
 
         [Test]
