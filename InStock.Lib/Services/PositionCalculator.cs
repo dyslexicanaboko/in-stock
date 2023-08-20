@@ -56,19 +56,7 @@ namespace InStock.Lib.Services
     }
 
     public decimal GainPercentage(decimal totalGain, decimal costBasis)
-    {
-      //gain >= cost -> 1 - q_pos
-      //gain < cost -> q_neg - 1
-
-      // Cost is always positive
-      //1 - (+gain / cost) -> 1 - (+quotient) = +result
-      //1 - (-gain / cost) -> 1 - (-quotient) = +result
-      var quotient = 1M - SafeDivide(totalGain, costBasis);
-
-      var polarity = totalGain < costBasis ? -1M : 1M;
-      
-      return quotient * polarity;
-    }
+      => SafeDivide(totalGain, costBasis);
 
     public decimal CostBasis(decimal price, decimal shares) => price * shares;
 

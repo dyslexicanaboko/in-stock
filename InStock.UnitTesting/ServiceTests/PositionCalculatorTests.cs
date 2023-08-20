@@ -26,12 +26,21 @@ namespace InStock.UnitTesting.ServiceTests
     private IPositionCalculator _sut;
 
     [Test]
+    public void SetCalculableProperties_WhenPositivePosition_PositivePercentageGain()
+    {
+      var actual = Math.Round(_sut.GainPercentage(50M, 100M), 2);
+
+      Assert.Greater(actual, 0);
+      Assert.AreEqual(0.5, actual);
+    }
+
+    [Test]
     public void SetCalculableProperties_WhenNegativePosition_NegativePercentageGain()
     {
       var actual = Math.Round(_sut.GainPercentage(-136.50M, 1_110.00M), 2);
 
       Assert.Less(actual, 0);
-      Assert.AreEqual(-1.12, actual);
+      Assert.AreEqual(-0.12, actual);
     }
   }
 }

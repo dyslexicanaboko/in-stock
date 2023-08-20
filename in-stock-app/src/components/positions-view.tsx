@@ -9,7 +9,10 @@ import {
 
 export default function PositionsView(positions: PositionV1GetCalculatedModel[]) {
   positions.sort((a, b) => parseInt(a.dateOpened.toString()) - parseInt(b.dateOpened.toString()));
-  
+  const ranks = Array.from(positions, (x) => x.rank);
+  const min = Math.min(...ranks);
+  const max = Math.max(...ranks);
+
   return (
     <>
       <table role="grid">
@@ -29,7 +32,6 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
             <th scope="col">Gain %</th>
             <th scope="col">$/day</th>
             <th scope="col">Capital Gains</th>
-            <th scope="col">Rank</th>
           </tr>
         </thead>
         <tbody>
@@ -42,11 +44,20 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
               dateClosed = "--";
             }
 
+            let s;
+
+            //Make CSS class for this style
+            if(position.rank === min) {
+              s = {color:"green"};
+            } else if (position.rank === max) {
+              s = {color:"red"};
+            }
+
             return (
               <tr key={key}>
                 <td>{position.positionId}</td>
                 <td>{fn(position.shares, 2)}</td>
-                <td>{fc(position.price)}</td>
+                <td style={s}>{fc(position.price)}</td>
                 <td>{fc(position.costBasis)}</td>
                 <td>{fd(position.dateOpened)}</td>
                 <td>{dateClosed}</td>
@@ -58,7 +69,6 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
                 <td>{fp(position.totalGainPercentage)}</td>
                 <td>{fc(position.gainRate)}</td>
                 <td>{position.isLongPosition ? "long" : "short"}</td>
-                <td>{position.rank}</td>
               </tr>
             );
           })}
