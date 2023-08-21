@@ -26,3 +26,15 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.good {
+  color:green;
+}
+
+.bad {
+  color:red;
+}
+
+input.number {
+  text-align: right;
+}

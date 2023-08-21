@@ -56,6 +56,14 @@ export type PositionV1GetModel = {
 	quantity: number;
 };
 
+export type PositionV1CreateModel = {
+	stockId: number;
+	dateOpened: Date;
+	dateClosed?: Date;
+	price: number;
+	quantity: number;
+};
+
 export type PositionV1GetCalculatedModel = {
 	positionId: number;
 	shares: number;

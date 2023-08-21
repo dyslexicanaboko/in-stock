@@ -3,6 +3,7 @@ using InStock.Lib.Entities;
 using InStock.Lib.Exceptions;
 using InStock.Lib.Models.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,14 +15,26 @@ namespace InStock.Lib.Services
   public class TokenService
     : ITokenService
   {
+    private readonly ILogger<TokenService> _logger;
+
     private readonly IConfiguration _configuration;
+
+    private readonly IDateTimeService _dateTimeService;
+
     private readonly IUserService _userService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
 
     //TODO: Relocate the UserService methods to this class instead
-    public TokenService(IConfiguration config, IUserService userService, IRefreshTokenRepository refreshTokenRepository)
+    public TokenService(
+      ILogger<TokenService> logger,
+      IConfiguration config,
+      IDateTimeService dateTimeService,
+      IUserService userService, 
+      IRefreshTokenRepository refreshTokenRepository)
     {
+      _logger = logger;
       _configuration = config;
+      _dateTimeService = dateTimeService;
       _userService = userService;
       _refreshTokenRepository = refreshTokenRepository;
     }
@@ -46,20 +59,31 @@ namespace InStock.Lib.Services
       
       var user = _userService.GetUser(refreshToken.UserId);
 
+      //TODO: Re-authenticate the user - as in, are they still allowed to login?
+
       //If the user is not found, an error must be thrown
+      if (user == null)
+      {
+        _logger.LogCritical($"User not found during token refresh. {refreshToken.UserId}");
+
+        throw Unauthorized.FailedAuthentication();
+      }
+
+      var token = GetToken(user, ipAddress);
+
+      //Only delete if and only if the token is returned successfully
       _refreshTokenRepository.Delete(user.UserId, refreshToken.Token);
 
-      return GetToken(user, ipAddress);
+      return token;
     }
 
     private string GetToken(UserEntity user, string ipAddress)
     {
-      var utcNow = DateTime.UtcNow;
+      var utcNow = _dateTimeService.UtcNow;
 
       var refreshToken = GenerateRefreshToken(user.UserId, utcNow, ipAddress);
 
       _refreshTokenRepository.DeleteExpired(user.UserId);
-      _refreshTokenRepository.Insert(refreshToken);
 
       //create claims details based on the user information
       var claims = new[] {
@@ -81,7 +105,12 @@ namespace InStock.Lib.Services
         expires: utcNow.AddMinutes(10),
         signingCredentials: signIn);
 
-      return new JwtSecurityTokenHandler().WriteToken(token);
+      var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+      //Only record the new refresh token after we have a successful generation
+      _refreshTokenRepository.Insert(refreshToken);
+
+      return jwt;
     }
 
     //https://github.com/cornflourblue/dotnet-6-jwt-refresh-tokens-api

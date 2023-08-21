@@ -2,12 +2,13 @@
 
 import { getCalculatedPositions } from "@/services/in-stock-api";
 import { useSearchParams } from "next/navigation";
-import { EmptyString } from "@/services/common";
+import { EmptyString, isNull } from "@/services/common";
 import Waiting from "@/components/waiting";
 import { useRef, useState, useEffect, useCallback } from "react";
 import PositionsView from "@/components/positions-view";
 import Container from "@/components/container";
-import { PositionV1GetCalculatedModel } from "@/services/in-stock-api-models";
+import { PositionV1CreateModel, PositionV1GetCalculatedModel } from "@/services/in-stock-api-models";
+import { formatDate, formatIsoDate } from "@/services/string-formats";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -17,6 +18,13 @@ export default function Page() {
   const _positions = useRef<PositionV1GetCalculatedModel[]>([]);
   const _modal = useRef<HTMLDialogElement>(null);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
+  const [position, setPosition] = useState<PositionV1CreateModel>({
+    stockId:0,
+    dateOpened: new Date(),
+    price: 0,
+    quantity: 0,
+    dateClosed: undefined
+  });
 
   const openPositionModal = useCallback(() : void => {
     const m = _modal.current;
@@ -46,30 +54,30 @@ export default function Page() {
             <a href="#" aria-label="Close" className="close" onClick={() => setModalVisibility(false)}></a>
             New position
           </header>
-          <div className="grid">
+          <div>
             <label>Shares</label>
-            <input type="number" />
+            <input type="number" className="number" defaultValue={position.quantity} onChange={(e) => setPosition({...position, quantity: parseFloat(e.target.value)})} />
           </div>
-          <div className="grid">
+          <div>
             <label>Price</label>
-            <input type="number" />
+            <input type="number" className="number" defaultValue={position.price} onChange={(e) => setPosition({...position, price: parseFloat(e.target.value)})} />
           </div>
-          <div className="grid">
+          <div>
             <label>Opened</label>
-            <input type="date" />
+            <input type="date" defaultValue={formatIsoDate(position.dateOpened)} onChange={(e) => { if(e.target.valueAsDate === null) return; setPosition({...position, dateOpened: e.target.valueAsDate})}} />
           </div>
-          <div className="grid">
+          <div>
             <label>Closed</label>
-            <input type="date" />
+            <input type="date" defaultValue={position.dateClosed ? formatIsoDate(position.dateClosed) : EmptyString} onChange={(e) => setPosition({...position, dateClosed: e.target.valueAsDate === null ? undefined : e.target.valueAsDate })} />
           </div>
           <footer>
-            <button>Save</button>  
+            <button onClick={() => { console.log(position); }}>Save</button>
           </footer>
         </article>
       </dialog>
       <Container><button onClick={() => setModalVisibility(true)}>Add</button></Container>
       {positions}</>);
-  }, []);
+  }, [position]);
 
   useEffect(() => {
     if (!_qsp) return;
