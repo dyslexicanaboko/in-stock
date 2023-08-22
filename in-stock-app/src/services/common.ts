@@ -21,3 +21,11 @@ export const isNull = (value: any) : boolean => {
 }
 
 export const isNotNull = (value: any) : boolean => value !== null;
+
+const n2 = (value: string) : string => {
+  if(value.includes(".")) return value;
+
+  return value + ".00";
+};
+
+export const toFloat = (value: string) : number => parseFloat(n2(value));

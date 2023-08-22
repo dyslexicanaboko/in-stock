@@ -1,21 +1,21 @@
 "use client";
 
-import { getCalculatedPositions } from "@/services/in-stock-api";
+import { createPosition, getCalculatedPositions, getStockBySymbol } from "@/services/in-stock-api";
 import { useSearchParams } from "next/navigation";
-import { EmptyString, isNull } from "@/services/common";
+import { EmptyString, toFloat } from "@/services/common";
 import Waiting from "@/components/waiting";
 import { useRef, useState, useEffect, useCallback } from "react";
 import PositionsView from "@/components/positions-view";
 import Container from "@/components/container";
 import { PositionV1CreateModel, PositionV1GetCalculatedModel } from "@/services/in-stock-api-models";
-import { formatDate, formatIsoDate } from "@/services/string-formats";
+import { formatIsoDate } from "@/services/string-formats";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
+  const _stockId = useRef(0);
   const _qsp = useSearchParams();
   const _qspRef = useRef(EmptyString);
   const [view, setView] = useState<JSX.Element>();
-  const _positions = useRef<PositionV1GetCalculatedModel[]>([]);
   const _modal = useRef<HTMLDialogElement>(null);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
   const [position, setPosition] = useState<PositionV1CreateModel>({
@@ -56,11 +56,11 @@ export default function Page() {
           </header>
           <div>
             <label>Shares</label>
-            <input type="number" className="number" defaultValue={position.quantity} onChange={(e) => setPosition({...position, quantity: parseFloat(e.target.value)})} />
+            <input type="number" className="number" defaultValue={position.quantity} onChange={(e) => setPosition({...position, quantity: toFloat(e.target.value)})} />
           </div>
           <div>
             <label>Price</label>
-            <input type="number" className="number" defaultValue={position.price} onChange={(e) => setPosition({...position, price: parseFloat(e.target.value)})} />
+            <input type="number" className="number" defaultValue={position.price} onChange={(e) => setPosition({...position, price: toFloat(e.target.value)})} />
           </div>
           <div>
             <label>Opened</label>
@@ -71,7 +71,20 @@ export default function Page() {
             <input type="date" defaultValue={position.dateClosed ? formatIsoDate(position.dateClosed) : EmptyString} onChange={(e) => setPosition({...position, dateClosed: e.target.valueAsDate === null ? undefined : e.target.valueAsDate })} />
           </div>
           <footer>
-            <button onClick={() => { console.log(position); }}>Save</button>
+            <button onClick={() => { 
+              var p = {...position, stockId: _stockId.current };
+
+              createPosition(p).then(() => {
+                getCalculatedPositions(_symbol.current)
+                  .then((models) => {
+                    renderPositions(models);  
+                  });
+              });
+
+              setPosition(p);
+              setModalVisibility(false);
+              setView(undefined);
+             }}>Save</button>
           </footer>
         </article>
       </dialog>
@@ -96,10 +109,13 @@ export default function Page() {
 
     _symbol.current = qspSymbol;
 
+    getStockBySymbol(qspSymbol)
+    .then((model) => {
+      _stockId.current = model.stockId;
+    });
+
     getCalculatedPositions(qspSymbol)
       .then((models) => {
-        _positions.current = models;
-        
         renderPositions(models);    
       });
   }, [_qsp, openPositionModal, renderPositions]);

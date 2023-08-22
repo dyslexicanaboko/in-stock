@@ -5,6 +5,7 @@ import {
   PortfolioV1GetModel,
   PositionV1GetModel,
   PositionV1GetCalculatedModel,
+  PositionV1CreateModel,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
@@ -31,9 +32,11 @@ const portfolioController = (path?: string): string => {
 const positionsController = (path?: string): string => {
   if (!path) {
     path = EmptyString;
+  } else {
+    path = "/" + path;
   }
 
-  return getUrl("api/positions/" + path);
+  return getUrl("api/positions" + path);
 };
 
 const getHeaders = async (): Promise<Headers> => {
@@ -167,6 +170,25 @@ export const getCalculatedPositions = async (
   };
 
   const response = await fetch(positionsController(symbol + "/symbolCalculated"), request);
+
+  return response.json();
+};
+
+export const createPosition = async (
+  position: PositionV1CreateModel
+): Promise<PositionV1GetModel> => {
+  const headers = await getHeaders();
+
+  const raw = JSON.stringify(position);
+
+  var request: RequestInit = {
+    method: "POST",
+    headers: headers,
+    body: raw,
+    redirect: "follow",
+  };
+
+  const response = await fetch(positionsController(), request);
 
   return response.json();
 };
