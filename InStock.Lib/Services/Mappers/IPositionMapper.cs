@@ -1,4 +1,5 @@
 using InStock.Lib.Entities;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
@@ -30,4 +31,6 @@ public interface IPositionMapper
     PositionV1PatchModel? ToPatchModel(PositionEntity? entity);
 
     PositionEntity? ToEntity(int positionId, int stockId, PositionV1PatchModel? model);
+
+    IList<PositionV1GetCalculatedModel> ToCalculatedModel(IList<PositionComposite>? target);
 }

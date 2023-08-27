@@ -19,6 +19,8 @@
       public const int EndDateLessThanStartDate = 40006;
      
       public const int Empty = 40007;
+      
+      public const int MalformedModel = 40008;
     }
 
     //HTTP 401xx Unauthorized - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
@@ -32,6 +34,11 @@
 
     //HTTP 403xx Forbidden - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
     //When the user does not have permission to do what they are trying to do
+    public static class Forbidden
+    {
+      public const int AccessDenied = 40301;
+    }
+
 
     //HTTP 404xx Not Found - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
     public static class NotFound

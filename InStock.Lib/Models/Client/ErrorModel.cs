@@ -1,4 +1,5 @@
-﻿using InStock.Lib.Exceptions;
+﻿using System.Net;
+using InStock.Lib.Exceptions;
 
 namespace InStock.Lib.Models.Client
 {
@@ -15,6 +16,11 @@ namespace InStock.Lib.Models.Client
       : this(message, errorCode)
     {
       Fields = exceptions.Select(x => new InvalidArgumentModel(x)).ToList();
+    }
+
+    public ErrorModel(Exception exception)
+      : this(exception.Message, (int)HttpStatusCode.InternalServerError)
+    {
     }
 
     public ErrorModel(BaseException exception)

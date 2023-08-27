@@ -7,9 +7,15 @@ namespace InStock.Api
 {
   public class ResponseMiddleware
   {
+    private readonly ILogger _logger;
     private readonly RequestDelegate _next;
 
-    public ResponseMiddleware(RequestDelegate next) => _next = next;
+    public ResponseMiddleware(ILogger logger, RequestDelegate next)
+    {
+      _logger = logger;
+
+      _next = next;
+    }
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -37,23 +43,30 @@ namespace InStock.Api
       {
         await Respond(context, HttpStatusCode.InternalServerError, ex);
       }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, "Unhandled exception in response middleware.");
 
-      //TODO: catch Exception - Unhandled exception, which requires logging
+        await Respond(context, HttpStatusCode.InternalServerError, new ErrorModel(ex));
+      }
     }
 
     private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, BadRequestException ex)
     {
       var model = new ErrorModel(ex);
 
-      var jsonResponse = JsonConvert.SerializeObject(model);
-
-      return Respond(context, httpStatusCode, jsonResponse);
+      return Respond(context, httpStatusCode, model);
     }
 
     private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, BaseException ex)
     {
       var model = new ErrorModel(ex);
 
+      return Respond(context, httpStatusCode, model);
+    }
+
+    private static Task Respond(HttpContext context, HttpStatusCode httpStatusCode, ErrorModel model)
+    {
       var jsonResponse = JsonConvert.SerializeObject(model);
 
       return Respond(context, httpStatusCode, jsonResponse);

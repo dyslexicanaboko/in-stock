@@ -1,0 +1,33 @@
+{
+  "name": "in-stock-app",
+  "version": "0.1.0",
+  "private": true,
+  "comments": "I attempted to get this to consume an HTTPS API and it doesn't work. Changed the API to HTTP for now which is a bad solution. scripts dev1 and dev2 are attempts that ended in failure.",
+  "scripts": {
+    "dev2": "set NODE_TLS_REJECT_UNAUTHORIZED=0 && node src/scripts/create-local-server.mjs",
+    "dev1": "set NODE_EXTRA_CA_CERTS=.\\certs\\.capath && node src/scripts/create-local-server.mjs",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "ssl:setup": "node src/scripts/create-ssl-certs.js"
+  },
+  "dependencies": {
+    "@picocss/pico": "^1.5.10",
+    "@types/node": "20.4.2",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.14",
+    "chalk": "^5.3.0",
+    "devcert": "^1.2.2",
+    "eslint": "8.45.0",
+    "eslint-config-next": "13.4.10",
+    "jwt-decode": "^3.1.2",
+    "next": "13.4.10",
+    "postcss": "8.4.26",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.1.6"
+  }
+}

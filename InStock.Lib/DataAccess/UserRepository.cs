@@ -22,6 +22,7 @@ namespace InStock.Lib.DataAccess
 			SELECT
 				UserId,
 				Name,
+				Username,
 				CreateOnUtc
 			FROM dbo.[User]
 			WHERE UserId = @UserId";
@@ -43,6 +44,7 @@ namespace InStock.Lib.DataAccess
 			SELECT
 				UserId,
 				Name,
+				Username,
 				CreateOnUtc
 			FROM dbo.[User]";
 

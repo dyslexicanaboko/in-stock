@@ -1,42 +1,63 @@
-﻿using InStock.Lib.DataAccess;
+﻿using System.Reflection;
+using InStock.Lib.DataAccess;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
-using System.Reflection;
+using Serilog;
 
 namespace InStock.Api
 {
   public static class ContainerConfig
   {
+    private const string Ns = "InStock.Lib";
+
     public static void Configure(IHostBuilder host)
     {
       host.ConfigureServices(
-        (hostContext, services) =>
-        {
-          services.AddSingleton<IAppConfiguration, AppConfiguration>();
-          services.AddScoped<ITransactionManager, TransactionManager>();
-          services.AddSingleton<IDateTimeService, DateTimeService>();
-          services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
+          (_, services) =>
+          {
+            services.AddSingleton<IAppConfiguration, AppConfiguration>();
+            services.AddScoped<ITransactionManager, TransactionManager>();
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddSingleton<IStockQuoteApiService, StockQuoteApiService>();
 
-          var asm = Assembly.Load("InStock.Lib");
-          var types = asm.GetTypes();
+            var asm = Assembly.Load("InStock.Lib");
+            var types = asm.GetTypes();
 
-          RegisterPipelines(
-            services,
-            types,
-            "Earnings",
-            "Position",
-            "Quote",
-            "Stock",
-            "Trade",
-            "User");
+            RegisterPipelines(
+              services,
+              types,
+              "Earnings",
+              "Position",
+              "Quote",
+              "Stock",
+              "Trade",
+              "User");
 
-          //Dependency injection below
-          //services.AddSingleton<IAppSettingsService, AppSettingsService>();
-          //TODO: Find a way to automate this bootstrapping per mapper and repo
-        });
+            services.AddScoped<IPositionCalculator, PositionCalculator>();
+            services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+            services.AddScoped<IPortfolioService, PortfolioService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<ITokenService, TokenService>();
+
+            //Dependency injection below
+            //services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            //TODO: Find a way to automate this bootstrapping per mapper and repo
+          })
+        .UseSerilog(
+          (hostContext, loggerConfiguration) =>
+          {
+            //TODO: Make this configurable
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "Log.log");
+
+            //Since this is configured here, don't do it in the JSON also otherwise the logging will appear twice
+            loggerConfiguration
+              .ReadFrom.Configuration(hostContext.Configuration)
+              .WriteTo.File(path, rollingInterval: RollingInterval.Day);
+
+            if (hostContext.HostingEnvironment.IsDevelopment())
+              loggerConfiguration.WriteTo.Seq("http://localhost:5341");
+          });
     }
-
-    private const string Ns = "InStock.Lib";
 
     //https://stackoverflow.com/questions/39174989/how-to-register-multiple-implementations-of-the-same-interface-in-asp-net-core
     //https://github.com/aspnet/DependencyInjection/blob/release/2.1/src/DI.Abstractions/ServiceProviderServiceExtensions.cs#L98-L118
@@ -50,6 +71,7 @@ namespace InStock.Api
       {
         //var iShared = types.Single(x => x.FullName == $"{ns}.Entities.I{root}");
         var entity = types.Single(x => x.FullName == $"{Ns}.Entities.{root}Entity");
+
         //var model = types.Single(x => x.FullName == $"{ns}.Models.{root}Model");
         var iRepository = types.Single(x => x.FullName == $"{Ns}.DataAccess.I{root}Repository");
         var repository = types.Single(x => x.FullName == $"{Ns}.DataAccess.{root}Repository");
@@ -78,7 +100,7 @@ namespace InStock.Api
 
         //    services.AddScoped(iMapRoot, mapper);
         //}
-        
+
         RegisterAsScoped(services, iMapper, mapper);
 
         RegisterAsScoped(services, iService, service);
@@ -95,24 +117,3 @@ namespace InStock.Api
     }
   }
 }
-
-// Keep this for later when I need to add in Serilog.
-/*
- .UseSerilog((hostContext, serviceProvider, LoggerConfiguration) =>
-            {
-                var profile = serviceProvider.GetService<IProfile>();
-
-                var path = profile.Audit.Path + "\\Log.log";
-
-                //Since this is configured here, don't do it in the JSON also otherwise the logging will appear twice
-                LoggerConfiguration
-                    .ReadFrom.Configuration(hostContext.Configuration)
-                    .WriteTo.File(path, rollingInterval: RollingInterval.Day)
-                    .WriteTo.Console();
-
-                if (hostContext.HostingEnvironment.IsDevelopment())
-                {
-                    LoggerConfiguration.WriteTo.Seq("http://localhost:5341");
-                }
-            })
- */

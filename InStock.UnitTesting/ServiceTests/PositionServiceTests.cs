@@ -21,7 +21,9 @@ namespace InStock.UnitTesting.ServiceTests
 
       _validation = new PositionValidation();
 
-      _service = new PositionService(_repoPosition, _repoStock, _validation);
+      var positionCalculator = A.Fake<IPositionCalculator>();
+
+      _service = new PositionService(_repoPosition, _repoStock, _validation, new DateTimeService(), positionCalculator);
     }
 
     private IStockRepository _repoStock;

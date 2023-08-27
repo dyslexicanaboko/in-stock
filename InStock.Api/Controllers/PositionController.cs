@@ -1,5 +1,5 @@
 ﻿using InStock.Lib.Entities;
-using InStock.Lib.Exceptions;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Services;
@@ -28,31 +28,42 @@ namespace InStock.Api.Controllers
       _mapper = mapper;
     }
 
-    // GET api/position/5
+    // GET api/positions/5
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IPosition))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
     public ActionResult<IPosition> Get(int id)
     {
-      var entity = _service.GetPosition(id);
+      //TODO: Need to verify that the user has access to the requested resource
+      var entity = _service.GetPosition(id); //TODO: UserId needs to be passed
 
       if (entity == null) throw Lib.Exceptions.NotFound.Position(id);
 
       return Ok(_mapper.ToModel(entity));
     }
 
-    // GET api/position/MSFT/symbol
+    // GET api/positions/MSFT/symbol
     [HttpGet("{symbol}/symbol")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPosition>))]
     public ActionResult<IList<IPosition>> Get(string symbol)
     {
-      
-      var lst = _service.GetPosition(UserId, symbol);
+      var lst = _service.GetPositions(UserId, symbol);
 
       return Ok(_mapper.ToModel(lst));
     }
 
-    // POST api/position
+    //TODO: Not sure how to say - this is positions, but calculated - this feels wrong
+    // GET api/positions/MSFT/symbolCalculated
+    [HttpGet("{symbol}/symbolCalculated")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPositionComposite>))]
+    public async Task<ActionResult<IList<IPositionComposite>>> GetCalculated(string symbol)
+    {
+      var lst = await _service.GetCalculatedPositions(UserId, symbol);
+
+      return Ok(_mapper.ToCalculatedModel(lst));
+    }
+
+    // POST api/positions
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]
@@ -75,7 +86,7 @@ namespace InStock.Api.Controllers
       return CreatedAtAction(nameof(Get), new { id = m!.PositionId }, m);
     }
 
-    // POST api/position/multiple
+    // POST api/positions/multiple
     [HttpPost("multiple")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(PositionV1CreateMultipleModel))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]
@@ -133,7 +144,7 @@ namespace InStock.Api.Controllers
       return NoContent();
     }
 
-    // DELETE api/position/5
+    // DELETE api/positions/5
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public ActionResult Delete(int id)
@@ -143,7 +154,7 @@ namespace InStock.Api.Controllers
       return NoContent();
     }
 
-    // DELETE api/position/MSFT/symbol
+    // DELETE api/positions/MSFT/symbol
     [HttpDelete("{symbol}/symbol")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModel))]

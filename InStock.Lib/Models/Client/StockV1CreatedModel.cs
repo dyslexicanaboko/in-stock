@@ -16,6 +16,8 @@ namespace InStock.Lib.Models.Client
             Symbol = target.Symbol;
 
             Name = target.Name;
+            
+            Notes = target.Notes;
         }
         
         public int StockId { get; set; }
@@ -23,5 +25,7 @@ namespace InStock.Lib.Models.Client
         public string Symbol { get; set; }
 
         public string Name { get; set; }
+        
+        public string? Notes { get; set; }
     }
 }

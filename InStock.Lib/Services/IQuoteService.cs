@@ -6,7 +6,7 @@ namespace InStock.Lib.Services
     {
         Task<QuoteEntity> Add(string symbol);
         
-        Task<QuoteEntity> Add(StockEntity stock);
+        Task<QuoteEntity> Add(int stockId, string symbol);
         
         QuoteEntity? GetQuote(int quoteId);
         

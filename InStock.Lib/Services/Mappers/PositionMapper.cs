@@ -1,4 +1,5 @@
 using InStock.Lib.Entities;
+using InStock.Lib.Entities.Composites;
 using InStock.Lib.Models;
 using InStock.Lib.Models.Client;
 using InStock.Lib.Models.Results;
@@ -26,7 +27,16 @@ namespace InStock.Lib.Services.Mappers
             return model;
         }
 
-        public PositionV1CreateModel? ToCreateModel(PositionEntity? entity)
+        public PositionV1GetCalculatedModel? ToModel(PositionComposite? composite)
+        {
+          if (composite == null) return null;
+
+          var model = new PositionV1GetCalculatedModel(composite);
+
+          return model;
+        }
+
+    public PositionV1CreateModel? ToCreateModel(PositionEntity? entity)
         {
             if (entity == null) return null;
             
@@ -109,6 +119,8 @@ namespace InStock.Lib.Services.Mappers
         }
 
         public IList<PositionModel> ToModel(IList<PositionEntity>? target) => ToList(target, ToModel);
+        
+        public IList<PositionV1GetCalculatedModel> ToCalculatedModel(IList<PositionComposite>? target) => ToList(target, ToModel);
         
         public IList<PositionEntity> ToEntity(int userId, IList<PositionV1CreateModel>? target) => ToList(userId, target, ToEntity);
     }
