@@ -6,6 +6,7 @@ import {
   PositionV1GetModel,
   PositionV1GetCalculatedModel,
   PositionV1CreateModel,
+  PositionV1PatchModel,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
@@ -37,6 +38,15 @@ const positionsController = (path?: string): string => {
   }
 
   return getUrl("api/positions" + path);
+};
+
+//Because JS is lame, there is no `nameof()` equivalent like in C#
+const getPatchOperation = (path: string, value: any) : any => {
+  return {
+    op: "replace",
+    path: "/" + path,
+    value: value,
+  }
 };
 
 const getHeaders = async (): Promise<Headers> => {
@@ -142,6 +152,22 @@ export const getPortfolio = async (
   return response.json();
 };
 
+export const getPosition = async (
+  id: number
+): Promise<PositionV1GetModel> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(positionsController(id.toString()), request);
+
+  return response.json();
+};
+
 export const getPositions = async (
   symbol: string
 ): Promise<PositionV1GetModel[]> => {
@@ -191,4 +217,28 @@ export const createPosition = async (
   const response = await fetch(positionsController(), request);
 
   return response.json();
+};
+
+export const updatePosition = async (
+  id: number,
+  model: PositionV1PatchModel
+): Promise<void> => {
+  const headers = await getHeaders();
+
+  //TODO: Automatically convert object to JsonPatchDocument
+  const raw = JSON.stringify([
+    getPatchOperation("dateOpened", model.dateOpened),
+    getPatchOperation("dateClosed", model.dateClosed),
+    getPatchOperation("price", model.price),
+    getPatchOperation("quantity", model.quantity),
+  ]);
+
+  var request: RequestInit = {
+    method: "PATCH",
+    headers: headers,
+    body: raw,
+    redirect: "follow",
+  };
+
+  await fetch(positionsController(id.toString()), request);
 };

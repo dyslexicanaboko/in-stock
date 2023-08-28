@@ -125,7 +125,8 @@ namespace InStock.Api.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
     public ActionResult Patch(int id, [FromBody] JsonPatchDocument<PositionV1PatchModel> patchDoc)
     {
-      //TODO: Need more sophisticated patching that only updates what has changed
+      //TODO: Need more sophisticated patching that only updates what has changed #23
+      //TODO: Needs proper validation #24
       var db = _service.GetPosition(id);
 
       //Preload with existing DB values

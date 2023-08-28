@@ -161,7 +161,6 @@ namespace InStock.Lib.DataAccess
 		public void Update(PositionEntity entity)
 		{
 			var sql = @"UPDATE dbo.Position SET 
-				StockId = @StockId,
 				DateOpened = @DateOpened,
 				DateClosed = @DateClosed,
 				Price = @Price,
@@ -173,7 +172,6 @@ namespace InStock.Lib.DataAccess
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
-			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
 			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
 			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);

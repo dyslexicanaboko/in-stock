@@ -24,7 +24,7 @@ namespace InStock.Lib.Services
     private readonly IUserService _userService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-    //TODO: Relocate the UserService methods to this class instead
+    //TODO: Relocate the Authentication methods here from the UserService class #25
     public TokenService(
       ILogger<TokenService> logger,
       IConfiguration config,
@@ -59,7 +59,7 @@ namespace InStock.Lib.Services
       
       var user = _userService.GetUser(refreshToken.UserId);
 
-      //TODO: Re-authenticate the user - as in, are they still allowed to login?
+      //TODO: Re-authenticate the user - as in, are they still allowed to login? #26
 
       //If the user is not found, an error must be thrown
       if (user == null)

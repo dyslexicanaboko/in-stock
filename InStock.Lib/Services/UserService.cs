@@ -6,6 +6,7 @@ using Crypto = BCrypt.Net.BCrypt; //Naming it so it's clear a 3rd party is being
 
 namespace InStock.Lib.Services
 {
+  //TODO: Authentication related code needs to leave this service #25
   public class UserService : IUserService
   {
     private readonly IUserRepository _repoUser;

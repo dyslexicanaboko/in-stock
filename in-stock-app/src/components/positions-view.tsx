@@ -1,5 +1,8 @@
 import { DaysInOneYear } from "@/services/common";
-import { PositionV1GetCalculatedModel, PositionV1GetModel } from "@/services/in-stock-api-models";
+import {
+  PositionV1GetCalculatedModel,
+  PositionV1GetModel,
+} from "@/services/in-stock-api-models";
 import {
   formatDate as fd,
   formatNumber as fn,
@@ -7,8 +10,15 @@ import {
   formatPercent as fp,
 } from "@/services/string-formats";
 
-export default function PositionsView(positions: PositionV1GetCalculatedModel[]) {
-  positions.sort((a, b) => parseInt(a.dateOpened.toString()) - parseInt(b.dateOpened.toString()));
+export default function PositionsView(
+  positions: PositionV1GetCalculatedModel[],
+  editAction: (positionId: number) => void,
+  deleteAction: (positionId: number) => void
+) {
+  positions.sort(
+    (a, b) =>
+      parseInt(a.dateOpened.toString()) - parseInt(b.dateOpened.toString())
+  );
   const ranks = Array.from(positions, (x) => x.rank);
   const min = Math.min(...ranks);
   const max = Math.max(...ranks);
@@ -32,13 +42,15 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
             <th scope="col">Gain %</th>
             <th scope="col">$/day</th>
             <th scope="col">Capital Gains</th>
+            <th scope="col">&nbsp;</th>
+            <th scope="col">&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           {positions.map((position, key) => {
             let dateClosed: string;
-            
-            if(position.dateClosed) {
+
+            if (position.dateClosed) {
               dateClosed = fd(position.dateClosed);
             } else {
               dateClosed = "--";
@@ -47,10 +59,10 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
             let s;
 
             //Make CSS class for this style
-            if(position.rank === min) {
-              s = {color:"green"};
+            if (position.rank === min) {
+              s = { color: "green" };
             } else if (position.rank === max) {
-              s = {color:"red"};
+              s = { color: "red" };
             }
 
             return (
@@ -62,13 +74,23 @@ export default function PositionsView(positions: PositionV1GetCalculatedModel[])
                 <td>{fd(position.dateOpened)}</td>
                 <td>{dateClosed}</td>
                 <td>{fn(position.daysHeld, 2)}</td>
-                <td>{fn(position.daysHeld/DaysInOneYear, 2)}</td>
+                <td>{fn(position.daysHeld / DaysInOneYear, 2)}</td>
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
                 <td>{fc(position.totalGain)}</td>
                 <td>{fp(position.totalGainPercentage)}</td>
                 <td>{fc(position.gainRate)}</td>
                 <td>{position.isLongPosition ? "long" : "short"}</td>
+                <td>
+                  <button onClick={() => editAction(position.positionId)}>
+                    📝
+                  </button>
+                </td>
+                <td>
+                  <button onClick={() => deleteAction(position.positionId)}>
+                    ❌
+                  </button>
+                </td>
               </tr>
             );
           })}
