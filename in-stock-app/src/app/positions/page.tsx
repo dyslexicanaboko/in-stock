@@ -26,6 +26,7 @@ export default function Page() {
   const _stockId = useRef(0);
   const _qsp = useSearchParams();
   const _qspRef = useRef(EmptyString);
+  const _positions = useRef<PositionV1GetCalculatedModel[]>([]);
   const [view, setView] = useState<JSX.Element>();
   const _modal = useRef<HTMLDialogElement>(null);
   const _modalProps = useRef<PositionModal>({
@@ -61,6 +62,14 @@ export default function Page() {
 
   const renderPositions = useCallback(
     (models: PositionV1GetCalculatedModel[]): void => {
+      const reloadPositions = (symbol: string) : void => {
+        getCalculatedPositions(symbol).then((models) => {
+          _positions.current = models;
+          
+          renderPositions(models);
+        });
+      };
+
       const launchModal = (mode: Mode, positionId: number): void => {    
         const props = _modalProps.current;
     
@@ -76,9 +85,7 @@ export default function Page() {
             };
     
             createPosition(model).then(() => {
-              getCalculatedPositions(_symbol.current).then((models) => {
-                renderPositions(models);
-              });
+              reloadPositions(_symbol.current);
             });
           };
 
@@ -106,9 +113,7 @@ export default function Page() {
               };
       
               updatePosition(positionId, model).then(() => {
-                getCalculatedPositions(_symbol.current).then((models) => {
-                  renderPositions(models);
-                });
+                reloadPositions(_symbol.current);
               });
             };
 
@@ -170,9 +175,14 @@ export default function Page() {
                   value={formatIsoDate(positionState.dateOpened)}
                   onChange={(e) => {
                     if (e.target.valueAsDate === null) return;
+                    
+                    console.log("onChange set");
+                    console.log(e.target.value);
+                    console.log(new Date(e.target.value));
+
                     setPositionState({
                       ...positionState,
-                      dateOpened: e.target.valueAsDate,
+                      dateOpened: new Date(e.target.value),
                     });
                   }}
                 />
@@ -238,6 +248,12 @@ export default function Page() {
 
     handleModalVisibility();
 
+    if(_symbol.current === qspSymbol) { 
+      renderPositions(_positions.current);
+
+      return;
+    }
+
     _symbol.current = qspSymbol;
 
     getStockBySymbol(qspSymbol).then((model) => {
@@ -245,6 +261,8 @@ export default function Page() {
     });
 
     getCalculatedPositions(qspSymbol).then((models) => {
+      _positions.current = models;
+    
       renderPositions(models);
     });
   }, [_qsp, handleModalVisibility, renderPositions]);

@@ -32,8 +32,13 @@ const percentFormat = new Intl.NumberFormat("en-US", {
 const twoDigits = (num: number) : string => num.toString().padStart(2, "0");
 
 //I hate JavaScript so much because of things like this
-export const formatIsoDate = (date: Date): string =>
-  `${date.getFullYear()}-${twoDigits(date.getMonth())}-${twoDigits(date.getDay())}`;
+export const formatIsoDate = (date: Date): string => {
+  const output = `${date.getFullYear()}-${twoDigits(date.getMonth() + 1)}-${twoDigits(date.getDate())}`;
+  
+  console.log(output);
+
+  return output;
+}
 
 export const formatDate = (date: Date): string =>
   dateOnlyFormat.format(new Date(date));
