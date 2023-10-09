@@ -24,9 +24,9 @@ public interface IPositionComposite
 
   int PositionId { get; set; }
 
-  DateTime DateOpened { get; set; }
+  DateTime DateOpenedUtc { get; set; }
 
-  DateTime? DateClosed { get; set; }
+  DateTime? DateClosedUtc { get; set; }
 
   decimal Price { get; set; }
 }

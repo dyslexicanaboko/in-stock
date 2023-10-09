@@ -30,9 +30,9 @@ namespace InStock.Lib.Validation
         .GreaterThan(0)
         .WithMessageAndErrorCode(NotGreaterThanZero(nameof(TradeEntity.Quantity)));
 
-      RuleFor(r => r.ExecutionDate)
+      RuleFor(r => r.ExecutionDateUtc)
         .GreaterThan(DateTime.MinValue)
-        .WithMessageAndErrorCode(NotGreaterThanDateTimeMin(nameof(TradeEntity.ExecutionDate)));
+        .WithMessageAndErrorCode(NotGreaterThanDateTimeMin(nameof(TradeEntity.ExecutionDateUtc)));
     }
   }
 }

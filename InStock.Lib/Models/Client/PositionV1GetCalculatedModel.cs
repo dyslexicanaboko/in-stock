@@ -23,8 +23,8 @@ namespace InStock.Lib.Models.Client
       GainRate = target.GainRate;
       IsLongPosition = target.IsLongPosition;
       Rank = target.Rank;
-      DateOpened = target.DateOpened;
-      DateClosed = target.DateClosed;
+      DateOpenedUtc = target.DateOpenedUtc;
+      DateClosedUtc = target.DateClosedUtc;
       Price = target.Price;
     }
 
@@ -39,8 +39,8 @@ namespace InStock.Lib.Models.Client
     public decimal GainRate { get; set; }
     public bool IsLongPosition { get; set; }
     public int Rank { get; set; }
-    public DateTime DateOpened { get; set; }
-    public DateTime? DateClosed { get; set; }
+    public DateTime DateOpenedUtc { get; set; }
+    public DateTime? DateClosedUtc { get; set; }
     public decimal Price { get; set; }
   }
 }

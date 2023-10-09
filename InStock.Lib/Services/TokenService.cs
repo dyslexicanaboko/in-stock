@@ -136,8 +136,8 @@ namespace InStock.Lib.Services
         RefreshTokenId = Guid.NewGuid(),
         UserId = userId,
         Token = GetUniqueToken(),
-        CreatedOn = utcNow,
-        ExpiresOn = utcNow.AddDays(7),
+        CreatedOnUtc = utcNow,
+        ExpiresOnUtc = utcNow.AddDays(7),
         CreatedByIp = ipAddress
       };
 

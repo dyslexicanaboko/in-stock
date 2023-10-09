@@ -22,8 +22,8 @@ namespace InStock.Lib.DataAccess
 				RefreshTokenId
 			 ,UserId
 			 ,Token
-			 ,CreatedOn
-			 ,ExpiresOn
+			 ,CreatedOnUtc
+			 ,ExpiresOnUtc
 			 ,CreatedByIp
 			FROM dbo.RefreshToken
 			WHERE UserId = @userId";
@@ -42,8 +42,8 @@ namespace InStock.Lib.DataAccess
 				RefreshTokenId
 			 ,UserId
 			 ,Token
-			 ,CreatedOn
-			 ,ExpiresOn
+			 ,CreatedOnUtc
+			 ,ExpiresOnUtc
 			 ,CreatedByIp
 			FROM dbo.RefreshToken
 			WHERE Token = @token";
@@ -62,15 +62,15 @@ namespace InStock.Lib.DataAccess
 				RefreshTokenId
 			 ,UserId
 			 ,Token
-			 ,CreatedOn
-			 ,ExpiresOn
+			 ,CreatedOnUtc
+			 ,ExpiresOnUtc
 			 ,CreatedByIp
 			) VALUES (
 				@RefreshTokenId
 			 ,@UserId
 			 ,@Token
-			 ,@CreatedOn
-			 ,@ExpiresOn
+			 ,@CreatedOnUtc
+			 ,@ExpiresOnUtc
 			 ,@CreatedByIp);";
 
 			using var connection = new SqlConnection(ConnectionString);
@@ -80,8 +80,8 @@ namespace InStock.Lib.DataAccess
 			p.Add("@RefreshTokenId", dbType: DbType.Guid, value: entity.RefreshTokenId);
 			p.Add("@UserId", dbType: DbType.Int32, value: entity.UserId);
 			p.Add("@Token", dbType: DbType.String, value: entity.Token, size: 255);
-			p.Add("@CreatedOn", dbType: DbType.DateTime2, value: entity.CreatedOn, size: 3);
-			p.Add("@ExpiresOn", dbType: DbType.DateTime2, value: entity.ExpiresOn, size: 3);
+			p.Add("@CreatedOnUtc", dbType: DbType.DateTime2, value: entity.CreatedOnUtc, size: 3);
+			p.Add("@ExpiresOnUtc", dbType: DbType.DateTime2, value: entity.ExpiresOnUtc, size: 3);
 			p.Add("@CreatedByIp", dbType: DbType.String, value: entity.CreatedByIp, size: 39);
 
 			connection.Execute(sql, entity);
@@ -89,7 +89,7 @@ namespace InStock.Lib.DataAccess
 
 		public void DeleteExpired(int userId)
 		{
-			const string sql = @"DELETE FROM dbo.RefreshToken WHERE UserId = @userId AND ExpiresOn <= SYSUTCDATETIME()";
+			const string sql = @"DELETE FROM dbo.RefreshToken WHERE UserId = @userId AND ExpiresOnUtc <= SYSUTCDATETIME()";
 
 			using var connection = new SqlConnection(ConnectionString);
 

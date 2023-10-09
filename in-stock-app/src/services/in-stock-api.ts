@@ -41,18 +41,18 @@ const positionsController = (path?: string): string => {
 };
 
 //Because JS is lame, there is no `nameof()` equivalent like in C#
-const getPatchOperation = (path: string, value: any) : any => {
+const getPatchOperation = (path: string, value: any): any => {
   return {
     op: "replace",
     path: "/" + path,
     value: value,
-  }
+  };
 };
 
 const getHeaders = async (): Promise<Headers> => {
   const token = await getToken();
 
-  if(token === EmptyToken) {
+  if (token === EmptyToken) {
     redirectToLoginPage();
   }
 
@@ -152,9 +152,7 @@ export const getPortfolio = async (
   return response.json();
 };
 
-export const getPosition = async (
-  id: number
-): Promise<PositionV1GetModel> => {
+export const getPosition = async (id: number): Promise<PositionV1GetModel> => {
   const headers = await getHeaders();
 
   var request: RequestInit = {
@@ -179,7 +177,10 @@ export const getPositions = async (
     redirect: "follow",
   };
 
-  const response = await fetch(positionsController(symbol + "/symbol"), request);
+  const response = await fetch(
+    positionsController(symbol + "/symbol"),
+    request
+  );
 
   return response.json();
 };
@@ -195,7 +196,10 @@ export const getCalculatedPositions = async (
     redirect: "follow",
   };
 
-  const response = await fetch(positionsController(symbol + "/symbolCalculated"), request);
+  const response = await fetch(
+    positionsController(symbol + "/symbolCalculated"),
+    request
+  );
 
   return response.json();
 };
@@ -227,8 +231,8 @@ export const updatePosition = async (
 
   //TODO: Automatically convert object to JsonPatchDocument
   const raw = JSON.stringify([
-    getPatchOperation("dateOpened", model.dateOpened),
-    getPatchOperation("dateClosed", model.dateClosed),
+    getPatchOperation("dateOpened", model.dateOpenedUtc),
+    getPatchOperation("dateClosed", model.dateClosedUtc),
     getPatchOperation("price", model.price),
     getPatchOperation("quantity", model.quantity),
   ]);

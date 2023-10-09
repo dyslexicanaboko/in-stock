@@ -49,7 +49,7 @@ namespace InStock.Lib.Services
 
       target.CurrentPrice = Convert.ToDecimal(quote.Price);
       target.CurrentValue = CostBasis(target.CurrentPrice, target.Shares);
-      target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOn);
+      target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOnUtc);
       target.TotalGain = target.CurrentValue - target.CostBasis;
       target.TotalGainPercentage = GainPercentage(target.TotalGain, target.CostBasis);
       target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);

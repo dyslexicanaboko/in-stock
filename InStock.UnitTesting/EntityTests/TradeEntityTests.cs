@@ -21,7 +21,7 @@ namespace InStock.UnitTesting.EntityTests
                 Price = 2,
                 Quantity = 2,
                 TradeType = TradeType.Sell,
-                ExecutionDate = TomorrowUtc
+                ExecutionDateUtc = TomorrowUtc
             };
 
             //Act / Assert
@@ -36,7 +36,7 @@ namespace InStock.UnitTesting.EntityTests
                 Price = 1,
                 Quantity = 1,
                 TradeType = TradeType.Buy,
-                ExecutionDate = TodayUtc
+                ExecutionDateUtc = TodayUtc
             };
     }
 }

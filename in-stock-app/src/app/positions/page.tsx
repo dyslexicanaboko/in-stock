@@ -62,28 +62,28 @@ export default function Page() {
 
   const renderPositions = useCallback(
     (models: PositionV1GetCalculatedModel[]): void => {
-      const reloadPositions = (symbol: string) : void => {
+      const reloadPositions = (symbol: string): void => {
         getCalculatedPositions(symbol).then((models) => {
           _positions.current = models;
-          
+
           renderPositions(models);
         });
       };
 
-      const launchModal = (mode: Mode, positionId: number): void => {    
+      const launchModal = (mode: Mode, positionId: number): void => {
         const props = _modalProps.current;
-    
+
         if (mode === Mode.Add) {
           props.title = "Add";
           props.action = (position: PositionModel) => {
             const model: PositionV1CreateModel = {
-              dateOpened: position.dateOpened,
-              dateClosed: position.dateClosed,
+              dateOpenedUtc: position.dateOpened,
+              dateClosedUtc: position.dateClosed,
               price: position.price,
               quantity: position.quantity,
               stockId: position.stockId,
             };
-    
+
             createPosition(model).then(() => {
               reloadPositions(_symbol.current);
             });
@@ -94,11 +94,11 @@ export default function Page() {
           getPosition(positionId).then((model) => {
             console.log("Position model");
             console.log(model);
-            
+
             setPositionState({
               stockId: _stockId.current,
-              dateOpened: new Date(model.dateOpened),
-              dateClosed: model.dateClosed,
+              dateOpened: new Date(model.dateOpenedUtc),
+              dateClosed: model.dateClosedUtc,
               price: model.price,
               quantity: model.quantity,
             });
@@ -106,12 +106,12 @@ export default function Page() {
             props.title = "Edit";
             props.action = (position: PositionModel) => {
               const model: PositionV1PatchModel = {
-                dateOpened: position.dateOpened,
-                dateClosed: position.dateClosed,
+                dateOpenedUtc: position.dateOpened,
+                dateClosedUtc: position.dateClosed,
                 price: position.price,
                 quantity: position.quantity,
               };
-      
+
               updatePosition(positionId, model).then(() => {
                 reloadPositions(_symbol.current);
               });
@@ -123,9 +123,13 @@ export default function Page() {
       };
 
       const positions = PositionsView(
-        models, 
-        (positionId: number) => { launchModal(Mode.Edit, positionId);},
-        (positionId: number) => { console.log(`Delete ${positionId}`);},
+        models,
+        (positionId: number) => {
+          launchModal(Mode.Edit, positionId);
+        },
+        (positionId: number) => {
+          console.log(`Delete ${positionId}`);
+        }
       );
 
       const props = _modalProps.current;
@@ -164,7 +168,10 @@ export default function Page() {
                   className="number"
                   value={positionState.price}
                   onChange={(e) =>
-                    setPositionState({ ...positionState, price: toFloat(e.target.value) })
+                    setPositionState({
+                      ...positionState,
+                      price: toFloat(e.target.value),
+                    })
                   }
                 />
               </div>
@@ -175,7 +182,7 @@ export default function Page() {
                   value={formatIsoDate(positionState.dateOpened)}
                   onChange={(e) => {
                     if (e.target.valueAsDate === null) return;
-                    
+
                     console.log("onChange set");
                     console.log(e.target.value);
                     console.log(new Date(e.target.value));
@@ -248,7 +255,7 @@ export default function Page() {
 
     handleModalVisibility();
 
-    if(_symbol.current === qspSymbol) { 
+    if (_symbol.current === qspSymbol) {
       renderPositions(_positions.current);
 
       return;
@@ -262,7 +269,7 @@ export default function Page() {
 
     getCalculatedPositions(qspSymbol).then((models) => {
       _positions.current = models;
-    
+
       renderPositions(models);
     });
   }, [_qsp, handleModalVisibility, renderPositions]);

@@ -9,8 +9,8 @@ namespace InStock.Lib.Models
             PositionId = entity.PositionId;
             UserId = entity.UserId;
             StockId = entity.StockId;
-            DateOpened = entity.DateOpened;
-            DateClosed = entity.DateClosed;
+            DateOpenedUtc = entity.DateOpenedUtc;
+            DateClosedUtc = entity.DateClosedUtc;
             Price = entity.Price;
             Quantity = entity.Quantity;
         }
@@ -20,8 +20,8 @@ namespace InStock.Lib.Models
             PositionId = target.PositionId;
             UserId = target.UserId;
             StockId = target.StockId;
-            DateOpened = target.DateOpened;
-            DateClosed = target.DateClosed;
+            DateOpenedUtc = target.DateOpenedUtc;
+            DateClosedUtc = target.DateClosedUtc;
             Price = target.Price;
             Quantity = target.Quantity;
         }
@@ -32,9 +32,9 @@ namespace InStock.Lib.Models
 
         public int StockId { get; }
 
-        public DateTime DateOpened { get; }
+        public DateTime DateOpenedUtc { get; }
 
-        public DateTime? DateClosed { get; }
+        public DateTime? DateClosedUtc { get; }
 
         public decimal Price { get; }
 

@@ -14,7 +14,7 @@ namespace InStock.Lib.Entities
 
         decimal Quantity { get; }
 
-        DateTime ExecutionDate { get; }
+        DateTime ExecutionDateUtc { get; }
 
         string? Confirmation { get; }
     }

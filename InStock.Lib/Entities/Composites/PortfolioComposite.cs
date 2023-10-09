@@ -6,7 +6,7 @@
     //Database fields
     public int StockId { get; set; }
     public string Symbol { get; set; }
-    public DateTime AcquiredOn { get; set; }
+    public DateTime AcquiredOnUtc { get; set; }
     public decimal Shares { get; set; }
     public decimal CostBasis { get; set; }
     public decimal LowestHeld { get; set; }

@@ -14,7 +14,7 @@ namespace InStock.Lib.Models.Client
             StockId = entity.StockId;
             Price = entity.Price;
             Quantity = entity.Quantity;
-            ExecutionDate = entity.ExecutionDate;
+            ExecutionDate = entity.ExecutionDateUtc;
             Confirmation = entity.Confirmation;
             TradeTypeId = entity.TradeTypeId;
         }

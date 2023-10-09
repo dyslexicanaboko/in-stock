@@ -30,13 +30,13 @@ namespace InStock.Lib.Validation
         .GreaterThan(0)
         .WithMessageAndErrorCode(NotGreaterThanZero(nameof(PositionEntity.Quantity)));
 
-      RuleFor(r => r.DateOpened)
+      RuleFor(r => r.DateOpenedUtc)
         .GreaterThan(DateTime.MinValue)
-        .WithMessageAndErrorCode(NotGreaterThanDateTimeMin(nameof(PositionEntity.DateOpened)))
+        .WithMessageAndErrorCode(NotGreaterThanDateTimeMin(nameof(PositionEntity.DateOpenedUtc)))
         .DependentRules(
           () =>
           {
-            RuleFor(r => r.DateClosed)
+            RuleFor(r => r.DateClosedUtc)
               .Must(
                 (entity, dateClosed) =>
                 {
@@ -44,12 +44,12 @@ namespace InStock.Lib.Validation
 
                   return Validations.IsEndDateGreaterThanStartDate(
                       dateClosed.Value,
-                      entity.DateOpened,
-                      nameof(entity.DateClosed),
+                      entity.DateOpenedUtc,
+                      nameof(entity.DateClosedUtc),
                       false) ==
                     null;
                 })
-              .WithMessageAndErrorCode(EndDateLessThanStartDate(nameof(PositionEntity.DateClosed)));
+              .WithMessageAndErrorCode(EndDateLessThanStartDate(nameof(PositionEntity.DateClosedUtc)));
           });
     }
   }

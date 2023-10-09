@@ -27,8 +27,8 @@ namespace InStock.Lib.DataAccess
 				PositionId,
 				UserId,
 				StockId,
-				DateOpened,
-				DateClosed,
+				DateOpenedUtc,
+				DateClosedUtc,
 				Price,
 				Quantity,
 				CreateOnUtc
@@ -53,8 +53,8 @@ namespace InStock.Lib.DataAccess
 				p.PositionId,
 				p.UserId,
 				p.StockId,
-				p.DateOpened,
-				p.DateClosed,
+				p.DateOpenedUtc,
+				p.DateClosedUtc,
 				p.Price,
 				p.Quantity,
 				p.CreateOnUtc
@@ -78,8 +78,8 @@ namespace InStock.Lib.DataAccess
 				PositionId,
 				UserId,
 				StockId,
-				DateOpened,
-				DateClosed,
+				DateOpenedUtc,
+				DateClosedUtc,
 				Price,
 				Quantity,
 				CreateOnUtc
@@ -99,8 +99,8 @@ namespace InStock.Lib.DataAccess
 				PositionId,
 				UserId,
 				StockId,
-				DateOpened,
-				DateClosed,
+				DateOpenedUtc,
+				DateClosedUtc,
 				Price,
 				Quantity,
 				CreateOnUtc
@@ -131,15 +131,15 @@ namespace InStock.Lib.DataAccess
 			var sql = @"INSERT INTO dbo.Position (
 				UserId,
 				StockId,
-				DateOpened,
-				DateClosed,
+				DateOpenedUtc,
+				DateClosedUtc,
 				Price,
 				Quantity
 			) VALUES (
 				@UserId,
 				@StockId,
-				@DateOpened,
-				@DateClosed,
+				@DateOpenedUtc,
+				@DateClosedUtc,
 				@Price,
 				@Quantity);
 
@@ -150,8 +150,8 @@ namespace InStock.Lib.DataAccess
 			var p = new DynamicParameters();
 			p.Add(name: "@UserId", dbType: DbType.Int32, value: entity.UserId);
 			p.Add(name: "@StockId", dbType: DbType.Int32, value: entity.StockId);
-			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
-			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
+			p.Add(name: "@DateOpenedUtc", dbType: DbType.DateTime2, value: entity.DateOpenedUtc, scale: 0);
+			p.Add(name: "@DateClosedUtc", dbType: DbType.DateTime2, value: entity.DateClosedUtc, scale: 0);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 
@@ -161,8 +161,8 @@ namespace InStock.Lib.DataAccess
 		public void Update(PositionEntity entity)
 		{
 			var sql = @"UPDATE dbo.Position SET 
-				DateOpened = @DateOpened,
-				DateClosed = @DateClosed,
+				DateOpenedUtc = @DateOpenedUtc,
+				DateClosedUtc = @DateClosedUtc,
 				Price = @Price,
 				Quantity = @Quantity,
 				UpdatedOnUtc = SYSUTCDATETIME()
@@ -172,8 +172,8 @@ namespace InStock.Lib.DataAccess
 			
 			var p = new DynamicParameters();
 			p.Add(name: "@PositionId", dbType: DbType.Int32, value: entity.PositionId);
-			p.Add(name: "@DateOpened", dbType: DbType.DateTime2, value: entity.DateOpened, scale: 0);
-			p.Add(name: "@DateClosed", dbType: DbType.DateTime2, value: entity.DateClosed, scale: 0);
+			p.Add(name: "@DateOpenedUtc", dbType: DbType.DateTime2, value: entity.DateOpenedUtc, scale: 0);
+			p.Add(name: "@DateClosedUtc", dbType: DbType.DateTime2, value: entity.DateClosedUtc, scale: 0);
 			p.Add(name: "@Price", dbType: DbType.Decimal, value: entity.Price, precision: 10, scale: 2);
 			p.Add(name: "@Quantity", dbType: DbType.Decimal, value: entity.Quantity, precision: 10, scale: 2);
 

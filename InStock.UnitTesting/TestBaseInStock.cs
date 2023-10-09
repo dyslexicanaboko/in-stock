@@ -56,7 +56,7 @@ namespace InStock.UnitTesting
                 UserId = SomeUserId,
                 Price = increment,
                 Quantity = increment,
-                DateOpened = TodayUtc.AddDays(-increment)
+                DateOpenedUtc = TodayUtc.AddDays(-increment)
             };
         }
 
@@ -84,7 +84,7 @@ namespace InStock.UnitTesting
                 TradeType = tradeType,
                 Price = increment,
                 Quantity = increment,
-                ExecutionDate = TodayUtc.AddDays(-increment)
+                ExecutionDateUtc = TodayUtc.AddDays(-increment)
             };
         }
 

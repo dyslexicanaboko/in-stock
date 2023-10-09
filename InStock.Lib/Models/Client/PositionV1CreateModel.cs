@@ -12,8 +12,8 @@ namespace InStock.Lib.Models.Client
         public PositionV1CreateModel(IPosition entity)
         {
             StockId = entity.StockId;
-            DateOpened = entity.DateOpened;
-            DateClosed = entity.DateClosed;
+            DateOpened = entity.DateOpenedUtc;
+            DateClosed = entity.DateClosedUtc;
             Price = entity.Price;
             Quantity = entity.Quantity;
         }

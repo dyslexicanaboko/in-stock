@@ -8,13 +8,13 @@
 
     public string Token { get; set; }
     
-    public DateTime ExpiresOn { get; set; }
+    public DateTime ExpiresOnUtc { get; set; }
     
-    public DateTime CreatedOn { get; set; }
+    public DateTime CreatedOnUtc { get; set; }
     
     public string CreatedByIp { get; set; }
 
-    public bool IsExpired() => DateTime.UtcNow >= ExpiresOn;
+    public bool IsExpired() => DateTime.UtcNow >= ExpiresOnUtc;
 
     //Not convinced I need any of this
     //public DateTime? Revoked { get; set; }

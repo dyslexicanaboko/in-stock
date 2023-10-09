@@ -11,8 +11,8 @@ namespace InStock.Lib.Models.Client
 
         public PositionV1PatchModel(IPosition entity)
         {
-            DateOpened = entity.DateOpened;
-            DateClosed = entity.DateClosed;
+            DateOpened = entity.DateOpenedUtc;
+            DateClosed = entity.DateClosedUtc;
             Price = entity.Price;
             Quantity = entity.Quantity;
         }

@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace InStock.Api;
 
@@ -35,7 +36,12 @@ public class Program
 //The controller was making non-nullable properties required without my permission
     builder.Services
       .AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
-      .AddNewtonsoftJson();
+      .AddNewtonsoftJson(
+        options =>
+        {
+          options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+          options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+        });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

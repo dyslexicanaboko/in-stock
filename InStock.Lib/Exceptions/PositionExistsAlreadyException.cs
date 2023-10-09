@@ -20,8 +20,8 @@ namespace InStock.Lib.Exceptions
                 $"A position with symbol `{symbol}` already exists with the following parameters:" +
                 $"{N}UserId: {position.UserId}, " +
                 $"{N}StockId: {position.StockId}, " +
-                $"{N}DateOpened: {position.DateOpened}, " +
-                $"{N}DateClosed: {position.DateClosed}, " +
+                $"{N}DateOpened: {position.DateOpenedUtc}, " +
+                $"{N}DateClosed: {position.DateClosedUtc}, " +
                 $"{N}Price: {position.Price}, " +
                 $"{N}Quantity: {position.Quantity}, " +
                 $"{N}Please revise your entry.";

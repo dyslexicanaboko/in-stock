@@ -8,9 +8,9 @@ namespace InStock.Lib.Entities
 
         int StockId { get; }
 
-        public DateTime DateOpened { get; }
+        public DateTime DateOpenedUtc { get; }
 
-        public DateTime? DateClosed { get; }
+        public DateTime? DateClosedUtc { get; }
 
         public decimal Price { get; }
 

@@ -64,7 +64,7 @@ namespace InStock.IntegrationTesting
                 UserId = SomeUserId,
                 Price = increment,
                 Quantity = increment,
-                DateOpened = TodayUtc.AddDays(-increment)
+                DateOpenedUtc = TodayUtc.AddDays(-increment)
             };
         }
     }

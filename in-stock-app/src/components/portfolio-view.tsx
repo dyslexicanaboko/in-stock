@@ -4,7 +4,7 @@ import {
   formatDate as fd,
   formatNumber as fn,
   formatCurrency as fc,
-  formatPercent as fp
+  formatPercent as fp,
 } from "@/services/string-formats";
 import Link from "next/link";
 
@@ -36,12 +36,14 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
         <tbody>
           {portfolio.map((position, key) => {
             const symbol = position.symbol.toUpperCase();
-            
+
             return (
               <tr key={key}>
                 <td>{position.stockId}</td>
-                <td><Link href={"/stock?symbol=" + symbol}>{symbol}</Link></td>
-                <td>{fd(position.acquiredOn)}</td>
+                <td>
+                  <Link href={"/stock?symbol=" + symbol}>{symbol}</Link>
+                </td>
+                <td>{fd(position.acquiredOnUtc)}</td>
                 <td>{fn(position.shares, 2)}</td>
                 <td>{fc(position.costBasis)}</td>
                 <td>{fc(position.lowestHeld)}</td>
@@ -49,7 +51,7 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
                 <td>{fn(position.short)}</td>
                 <td>{fn(position.long)}</td>
                 <td>{fn(position.daysHeld, 2)}</td>
-                <td>{fn(position.daysHeld/DaysInOneYear, 2)}</td>
+                <td>{fn(position.daysHeld / DaysInOneYear, 2)}</td>
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
                 <td>{fc(position.totalGain)}</td>

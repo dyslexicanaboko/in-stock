@@ -12,7 +12,7 @@ namespace InStock.Lib.Models
             StockId = entity.StockId;
             Price = entity.Price;
             Quantity = entity.Quantity;
-            ExecutionDate = entity.ExecutionDate;
+            ExecutionDate = entity.ExecutionDateUtc;
             Confirmation = entity.Confirmation;
 
             TradeType = new TradeTypeV1Model(entity.TradeTypeId);
@@ -25,7 +25,7 @@ namespace InStock.Lib.Models
             StockId = entity.StockId;
             Price = entity.Price;
             Quantity = entity.Quantity;
-            ExecutionDate = entity.ExecutionDate;
+            ExecutionDate = entity.ExecutionDateUtc;
             Confirmation = entity.Confirmation;
 
             TradeType = new TradeTypeV1Model(entity.TradeType);

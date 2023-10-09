@@ -19,7 +19,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            ExecutionDate = model.ExecutionDate;
+            ExecutionDateUtc = model.ExecutionDateUtc;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeTypeId;
         }
@@ -31,7 +31,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            ExecutionDate = model.ExecutionDate;
+            ExecutionDateUtc = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeType.TradeTypeId;
         }
@@ -42,7 +42,7 @@ namespace InStock.Lib.Entities
             StockId = model.StockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            ExecutionDate = model.ExecutionDate;
+            ExecutionDateUtc = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeTypeId;
         }
@@ -53,7 +53,7 @@ namespace InStock.Lib.Entities
             StockId = stockId;
             Price = model.Price;
             Quantity = model.Quantity;
-            ExecutionDate = model.ExecutionDate;
+            ExecutionDateUtc = model.ExecutionDate;
             Confirmation = model.Confirmation;
             TradeTypeId = model.TradeTypeId;
         }
@@ -76,7 +76,7 @@ namespace InStock.Lib.Entities
 
         public decimal Quantity { get; set; }
 
-        public DateTime ExecutionDate { get; set; }
+        public DateTime ExecutionDateUtc { get; set; }
 
         public string? Confirmation { get; set; }
 
@@ -109,7 +109,7 @@ namespace InStock.Lib.Entities
                 UserId == other.UserId &&
                 StockId == other.StockId &&
                 TradeTypeId == other.TradeTypeId &&
-                ExecutionDate == other.ExecutionDate &&
+                ExecutionDateUtc == other.ExecutionDateUtc &&
                 Price == other.Price &&
                 Quantity == other.Quantity;
 
@@ -122,7 +122,7 @@ namespace InStock.Lib.Entities
                 UserId.GetHashCode() +
                 StockId.GetHashCode() +
                 TradeTypeId.GetHashCode() +
-                ExecutionDate.GetHashCode() +
+                ExecutionDateUtc.GetHashCode() +
                 Price.GetHashCode() +
                 Quantity.GetHashCode();
 

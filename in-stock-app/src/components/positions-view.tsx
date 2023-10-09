@@ -17,7 +17,8 @@ export default function PositionsView(
 ) {
   positions.sort(
     (a, b) =>
-      parseInt(a.dateOpened.toString()) - parseInt(b.dateOpened.toString())
+      parseInt(a.dateOpenedUtc.toString()) -
+      parseInt(b.dateOpenedUtc.toString())
   );
   const ranks = Array.from(positions, (x) => x.rank);
   const min = Math.min(...ranks);
@@ -50,8 +51,8 @@ export default function PositionsView(
           {positions.map((position, key) => {
             let dateClosed: string;
 
-            if (position.dateClosed) {
-              dateClosed = fd(position.dateClosed);
+            if (position.dateClosedUtc) {
+              dateClosed = fd(position.dateClosedUtc);
             } else {
               dateClosed = "--";
             }
@@ -71,7 +72,7 @@ export default function PositionsView(
                 <td>{fn(position.shares, 2)}</td>
                 <td style={s}>{fc(position.price)}</td>
                 <td>{fc(position.costBasis)}</td>
-                <td>{fd(position.dateOpened)}</td>
+                <td>{fd(position.dateOpenedUtc)}</td>
                 <td>{dateClosed}</td>
                 <td>{fn(position.daysHeld, 2)}</td>
                 <td>{fn(position.daysHeld / DaysInOneYear, 2)}</td>

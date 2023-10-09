@@ -17,8 +17,8 @@ namespace InStock.Lib.Entities
             PositionId = model.PositionId;
             UserId = model.UserId;
             StockId = model.StockId;
-            DateOpened = model.DateOpened;
-            DateClosed = model.DateClosed;
+            DateOpenedUtc = model.DateOpenedUtc;
+            DateClosedUtc = model.DateClosedUtc;
             Price = model.Price;
             Quantity = model.Quantity;
         }
@@ -28,8 +28,8 @@ namespace InStock.Lib.Entities
             PositionId = target.PositionId;
             UserId = target.UserId;
             StockId = target.StockId;
-            DateOpened = target.DateOpened;
-            DateClosed = target.DateClosed;
+            DateOpenedUtc = target.DateOpenedUtc;
+            DateClosedUtc = target.DateClosedUtc;
             Price = target.Price;
             Quantity = target.Quantity;
         }
@@ -38,8 +38,8 @@ namespace InStock.Lib.Entities
         {
             UserId = userId;
             StockId = model.StockId;
-            DateOpened = model.DateOpened;
-            DateClosed = model.DateClosed;
+            DateOpenedUtc = model.DateOpened;
+            DateClosedUtc = model.DateClosed;
             Price = model.Price;
             Quantity = model.Quantity;
         }
@@ -48,8 +48,8 @@ namespace InStock.Lib.Entities
         {
             PositionId = positionId;
             StockId = stockId;
-            DateOpened = model.DateOpened;
-            DateClosed = model.DateClosed;
+            DateOpenedUtc = model.DateOpened;
+            DateClosedUtc = model.DateClosed;
             Price = model.Price;
             Quantity = model.Quantity;
         }
@@ -60,9 +60,9 @@ namespace InStock.Lib.Entities
 
         public int StockId { get; set; }
 
-        public DateTime DateOpened { get; set; }
+        public DateTime DateOpenedUtc { get; set; }
 
-        public DateTime? DateClosed { get; set; }
+        public DateTime? DateClosedUtc { get; set; }
 
         public decimal Price { get; set; }
 
@@ -96,8 +96,8 @@ namespace InStock.Lib.Entities
             var areEqual =
                 UserId == other.UserId &&
                 StockId == other.StockId &&
-                DateOpened == other.DateOpened &&
-                DateClosed == other.DateClosed &&
+                DateOpenedUtc == other.DateOpenedUtc &&
+                DateClosedUtc == other.DateClosedUtc &&
                 Price == other.Price &&
                 Quantity == other.Quantity;
 
@@ -109,8 +109,8 @@ namespace InStock.Lib.Entities
             var hc =
                 UserId.GetHashCode() +
                 StockId.GetHashCode() +
-                DateOpened.GetHashCode() +
-                DateClosed.GetHashCode() + //When this is null it's zero
+                DateOpenedUtc.GetHashCode() +
+                DateClosedUtc.GetHashCode() + //When this is null it's zero
                 Price.GetHashCode() +
                 Quantity.GetHashCode();
 

@@ -5,7 +5,7 @@
     int StockId { get; set; }
 
     public string Symbol { get; set; }
-    DateTime AcquiredOn { get; set; }
+    DateTime AcquiredOnUtc { get; set; }
 
     public decimal Shares { get; set; }
 

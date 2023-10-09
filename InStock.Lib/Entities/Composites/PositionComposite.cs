@@ -14,14 +14,14 @@
       PositionId = position.PositionId;
       UserId = position.UserId;
       StockId = position.StockId;
-      DateOpened = position.DateOpened;
-      DateClosed = position.DateClosed;
+      DateOpenedUtc = position.DateOpenedUtc;
+      DateClosedUtc = position.DateClosedUtc;
       Price = position.Price;
       Quantity = position.Quantity;
     }
 
     public string Symbol { get; set; }
-    public DateTime AcquiredOn { get => DateOpened; set => DateOpened = value; }
+    public DateTime AcquiredOnUtc { get => DateOpenedUtc; set => DateOpenedUtc = value; }
     public decimal Shares { get => Quantity; set => Quantity = value; }
     public decimal CostBasis { get; set; }
     public decimal DaysHeld { get; set; }

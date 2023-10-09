@@ -20,7 +20,7 @@ namespace InStock.UnitTesting.EntityTests
                 UserId = 2,
                 Price = 2,
                 Quantity = 2,
-                DateOpened = TomorrowUtc
+                DateOpenedUtc = TomorrowUtc
             };
 
             //Act / Assert
@@ -34,7 +34,7 @@ namespace InStock.UnitTesting.EntityTests
                 UserId = 1,
                 Price = 1,
                 Quantity = 1,
-                DateOpened = TodayUtc
+                DateOpenedUtc = TodayUtc
             };
     }
 }

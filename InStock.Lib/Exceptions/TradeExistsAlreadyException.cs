@@ -21,7 +21,7 @@ namespace InStock.Lib.Exceptions
                 $"{N}UserId: {trade.UserId}, " +
                 $"{N}StockId: {trade.StockId}, " +
                 $"{N}TradeTypeId: {trade.TradeTypeId} ({trade.TradeType})," +
-                $"{N}ExecutionDate: {trade.ExecutionDate}, " +
+                $"{N}ExecutionDate: {trade.ExecutionDateUtc}, " +
                 $"{N}Price: {trade.Price}, " +
                 $"{N}Quantity: {trade.Quantity}, " +
                 $"{N}Please revise your entry.";
