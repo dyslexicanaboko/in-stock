@@ -14,7 +14,7 @@ const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
 const dateOnlyFormat = new Intl.DateTimeFormat("en-US", {
   year: "2-digit",
   month: "2-digit",
-  day: "2-digit"
+  day: "2-digit",
 });
 
 const currencyFormat = new Intl.NumberFormat("en-US", {
@@ -29,16 +29,23 @@ const percentFormat = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
 });
 
-const twoDigits = (num: number) : string => num.toString().padStart(2, "0");
+const twoDigits = (num: number): string => num.toString().padStart(2, "0");
 
 //I hate JavaScript so much because of things like this
 export const formatIsoDate = (date: Date): string => {
-  const output = `${date.getFullYear()}-${twoDigits(date.getMonth() + 1)}-${twoDigits(date.getDate())}`;
-  
-  console.log(output);
+  console.log("Incoming Date");
+  console.log("Milliseconds", date.getTime());
+  console.log("ISO         ", date.toISOString());
+  console.log("Local       ", date.toLocaleString());
+
+  const output = `${date.getFullYear()}-${twoDigits(
+    date.getMonth() + 1
+  )}-${twoDigits(date.getDate())}`;
+
+  console.log("Date string", output);
 
   return output;
-}
+};
 
 export const formatDate = (date: Date): string =>
   dateOnlyFormat.format(new Date(date));

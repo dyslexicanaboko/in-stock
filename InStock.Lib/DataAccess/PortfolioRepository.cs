@@ -20,13 +20,13 @@ namespace InStock.Lib.DataAccess
 			SELECT
 					s.StockId
 				 ,s.Symbol
-				 ,MIN(p.DateOpened) AS AcquiredOn
+				 ,MIN(p.DateOpenedUtc) AS AcquiredOnUtc
 				 ,SUM(p.Quantity) AS Shares
 				 ,SUM(p.Quantity * p.Price) AS CostBasis
 				 ,MIN(p.Price) AS LowestHeld
 				 ,MAX(p.Price) AS HighestHeld
-				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, SYSUTCDATETIME()) < 365, 1, 0)) AS Short
-				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpened, SYSUTCDATETIME()) >= 365, 1, 0)) AS Long
+				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpenedUtc, SYSUTCDATETIME()) < 365, 1, 0)) AS Short
+				 ,SUM(IIF(DATEDIFF(DAY, p.DateOpenedUtc, SYSUTCDATETIME()) >= 365, 1, 0)) AS Long
 			FROM dbo.Position p
 				INNER JOIN dbo.Stock s
 					ON s.StockId = p.StockId

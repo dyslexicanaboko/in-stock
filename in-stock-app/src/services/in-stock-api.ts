@@ -163,7 +163,17 @@ export const getPosition = async (id: number): Promise<PositionV1GetModel> => {
 
   const response = await fetch(positionsController(id.toString()), request);
 
-  return response.json();
+  const json = await response.json();
+
+  //Since JavaScript cannot be trusted to do its job, we have to do it manually.
+  //The Date conversions aren't working sometimes, even when the string format is correct.
+  return {
+    ...json,
+    dateOpenedUtc: new Date(json.dateOpenedUtc),
+    dateClosedUtc: json.dateClosedUtc
+      ? new Date(json.dateClosedUtc)
+      : undefined,
+  };
 };
 
 export const getPositions = async (

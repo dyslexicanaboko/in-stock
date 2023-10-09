@@ -8,7 +8,7 @@ import {
   updatePosition,
 } from "@/services/in-stock-api";
 import { useSearchParams } from "next/navigation";
-import { EmptyString, toFloat } from "@/services/common";
+import { EmptyString, toFloat, getDateWithOffset } from "@/services/common";
 import Waiting from "@/components/waiting";
 import { useRef, useState, useEffect, useCallback } from "react";
 import PositionsView from "@/components/positions-view";
@@ -36,10 +36,10 @@ export default function Page() {
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
   const [positionState, setPositionState] = useState<PositionModel>({
     stockId: 0,
-    dateOpened: new Date(),
+    dateOpenedUtc: new Date(),
     price: 0,
     quantity: 0,
-    dateClosed: undefined,
+    dateClosedUtc: undefined,
   });
 
   const handleModalVisibility = useCallback((): void => {
@@ -77,8 +77,8 @@ export default function Page() {
           props.title = "Add";
           props.action = (position: PositionModel) => {
             const model: PositionV1CreateModel = {
-              dateOpenedUtc: position.dateOpened,
-              dateClosedUtc: position.dateClosed,
+              dateOpenedUtc: position.dateOpenedUtc,
+              dateClosedUtc: position.dateClosedUtc,
               price: position.price,
               quantity: position.quantity,
               stockId: position.stockId,
@@ -97,8 +97,8 @@ export default function Page() {
 
             setPositionState({
               stockId: _stockId.current,
-              dateOpened: new Date(model.dateOpenedUtc),
-              dateClosed: model.dateClosedUtc,
+              dateOpenedUtc: model.dateOpenedUtc,
+              dateClosedUtc: model.dateClosedUtc,
               price: model.price,
               quantity: model.quantity,
             });
@@ -106,8 +106,8 @@ export default function Page() {
             props.title = "Edit";
             props.action = (position: PositionModel) => {
               const model: PositionV1PatchModel = {
-                dateOpenedUtc: position.dateOpened,
-                dateClosedUtc: position.dateClosed,
+                dateOpenedUtc: position.dateOpenedUtc,
+                dateClosedUtc: position.dateClosedUtc,
                 price: position.price,
                 quantity: position.quantity,
               };
@@ -179,17 +179,17 @@ export default function Page() {
                 <label>Opened</label>
                 <input
                   type="date"
-                  value={formatIsoDate(positionState.dateOpened)}
+                  value={formatIsoDate(positionState.dateOpenedUtc)}
                   onChange={(e) => {
                     if (e.target.valueAsDate === null) return;
 
                     console.log("onChange set");
-                    console.log(e.target.value);
-                    console.log(new Date(e.target.value));
+                    console.log(e.target.valueAsNumber);
+                    console.log(new Date(e.target.valueAsNumber));
 
                     setPositionState({
                       ...positionState,
-                      dateOpened: new Date(e.target.value),
+                      dateOpenedUtc: getDateWithOffset(e.target.valueAsDate),
                     });
                   }}
                 />
@@ -199,14 +199,14 @@ export default function Page() {
                 <input
                   type="date"
                   value={
-                    positionState.dateClosed
-                      ? formatIsoDate(positionState.dateClosed)
+                    positionState.dateClosedUtc
+                      ? formatIsoDate(positionState.dateClosedUtc)
                       : EmptyString
                   }
                   onChange={(e) =>
                     setPositionState({
                       ...positionState,
-                      dateClosed:
+                      dateClosedUtc:
                         e.target.valueAsDate === null
                           ? undefined
                           : e.target.valueAsDate,
