@@ -209,7 +209,7 @@ export default function Page() {
                       dateClosedUtc:
                         e.target.valueAsDate === null
                           ? undefined
-                          : e.target.valueAsDate,
+                          : getDateWithOffset(e.target.valueAsDate),
                     })
                   }
                 />
