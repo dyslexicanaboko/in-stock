@@ -8,6 +8,11 @@ export type PositionModal = {
   action: (position: PositionModel) => void;
 };
 
+export type PositionDeleteModal = {
+  positionId: number;
+  action: (positionId: number) => void;
+};
+
 export type PositionModel = {
   stockId: number;
   dateOpenedUtc: Date;

@@ -33,16 +33,16 @@ const twoDigits = (num: number): string => num.toString().padStart(2, "0");
 
 //I hate JavaScript so much because of things like this
 export const formatIsoDate = (date: Date): string => {
-  console.log("Incoming Date");
-  console.log("Milliseconds", date.getTime());
-  console.log("ISO         ", date.toISOString());
-  console.log("Local       ", date.toLocaleString());
+  // console.log("Incoming Date");
+  // console.log("Milliseconds", date.getTime());
+  // console.log("ISO         ", date.toISOString());
+  // console.log("Local       ", date.toLocaleString());
 
   const output = `${date.getFullYear()}-${twoDigits(
     date.getMonth() + 1
   )}-${twoDigits(date.getDate())}`;
 
-  console.log("Date string", output);
+  //console.log("Date string", output);
 
   return output;
 };

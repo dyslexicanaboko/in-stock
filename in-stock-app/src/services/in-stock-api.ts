@@ -256,3 +256,15 @@ export const updatePosition = async (
 
   await fetch(positionsController(id.toString()), request);
 };
+
+export const deletePosition = async (id: number): Promise<void> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "DELETE",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  await fetch(positionsController(id.toString()), request);
+};
