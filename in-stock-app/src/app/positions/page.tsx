@@ -27,6 +27,9 @@ import {
   PositionModel,
 } from "../view-models/positions";
 import _ from "lodash";
+import DeleteModal, {
+  IActions as IDeleteModalActions,
+} from "@/components/delete-modal";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -40,14 +43,13 @@ export default function Page() {
     title: EmptyString,
     action: () => {},
   });
-  const _modalDeleteProps = useRef<PositionDeleteModal>({
+  const _modalDeleteActionData = useRef<PositionDeleteModal>({
     positionId: 0,
     action: () => {},
   });
-  const _modalDelete = useRef<HTMLDialogElement>(null);
+  const _modalDeleteActions = useRef<IDeleteModalActions>(null);
   const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-  const [modalDeleteVisibility, setModalDeleteVisibility] =
-    useState<boolean>(false);
+
   const [positionState, setPositionState] = useState<PositionModel>({
     stockId: 0,
     dateOpenedUtc: new Date(),
@@ -73,24 +75,6 @@ export default function Page() {
       console.log("Open modal");
     }
   }, [modalVisibility]);
-
-  const handleModalDeleteVisibility = useCallback((): void => {
-    const m = _modalDelete.current;
-
-    if (!m) return;
-
-    if (m.open && !modalDeleteVisibility) {
-      m.close();
-
-      setModalDeleteVisibility(false);
-
-      console.log("Close modal delete");
-    } else if (!m.open && modalDeleteVisibility) {
-      m.showModal();
-
-      console.log("Open modal delete");
-    }
-  }, [modalDeleteVisibility]);
 
   const renderPositions = useCallback(
     (models: PositionV1GetCalculatedModel[]): void => {
@@ -155,16 +139,14 @@ export default function Page() {
       };
 
       const launchModalDelete = (positionId: number): void => {
-        console.log("Modal delete", positionId);
-
-        _modalDeleteProps.current.positionId = positionId;
-        _modalDeleteProps.current.action = (positionId: number) => {
+        _modalDeleteActionData.current.positionId = positionId;
+        _modalDeleteActionData.current.action = (positionId: number) => {
           deletePosition(positionId).then(() => {
             reloadPositions(_symbol.current);
           });
         };
 
-        setModalDeleteVisibility(true);
+        _modalDeleteActions.current?.show();
       };
 
       const positions = PositionsView(
@@ -275,34 +257,17 @@ export default function Page() {
               </footer>
             </article>
           </dialog>
-          <dialog id="positionModalDelete" ref={_modalDelete}>
-            <article>
-              <header>
-                <a
-                  href="#"
-                  aria-label="Close"
-                  className="close"
-                  onClick={() => setModalDeleteVisibility(false)}
-                ></a>
-                Delete position
-              </header>
-              <div>Are you sure?</div>
-              <footer>
-                <button
-                  className="contrast outline"
-                  onClick={() => {
-                    _modalDeleteProps.current.action(
-                      _modalDeleteProps.current.positionId
-                    );
-                    setModalDeleteVisibility(false);
-                    setView(undefined);
-                  }}
-                >
-                  Delete
-                </button>
-              </footer>
-            </article>
-          </dialog>
+          <DeleteModal
+            ref={_modalDeleteActions}
+            title="Delete positions"
+            onClickAction={() => {
+              _modalDeleteActionData.current.action(
+                _modalDeleteActionData.current.positionId
+              );
+            }}
+          >
+            <p>Are you sure you want to delete this position?</p>
+          </DeleteModal>
           <Container>
             <button onClick={() => launchModal(Mode.Add, 0)}>Add</button>
           </Container>
@@ -327,7 +292,6 @@ export default function Page() {
     }
 
     handleModalVisibility();
-    handleModalDeleteVisibility();
 
     if (_symbol.current === qspSymbol) {
       renderPositions(_positions.current);
@@ -346,12 +310,7 @@ export default function Page() {
 
       renderPositions(models);
     });
-  }, [
-    _qsp,
-    handleModalDeleteVisibility,
-    handleModalVisibility,
-    renderPositions,
-  ]);
+  }, [_qsp, handleModalVisibility, renderPositions, _modalDeleteActions]);
 
   return view ? view : <Waiting />;
 }

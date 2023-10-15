@@ -5,39 +5,39 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { isLoggedIn, logout } from "@/services/user-info";
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/navigation";
 import { redirectToLoginPage } from "@/services/common";
 
 const Navbar = () => {
-  const router = useRouter();
+  //const router = useRouter();
   const [view, setView] = useState<JSX.Element>();
 
-  const getView = (button: JSX.Element) : JSX.Element => (
-      <nav>
-        <ul>
-          <li>Stock</li>
-          <li>
-            <Link href="/stock" className="secondary">
-              Search
-            </Link>
-          </li>
-          <li>Portfolio</li>
-          <li>
-            <Link href="/portfolio" className="secondary">
-              Positions
-            </Link>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <strong>In Stock</strong>
-          </li>
-        </ul>
-        <ul>
-          <li>{button}</li>
-        </ul>
-      </nav>
-    );
+  const getView = (button: JSX.Element): JSX.Element => (
+    <nav>
+      <ul>
+        <li>Stock</li>
+        <li>
+          <Link href="/stock" className="secondary">
+            Search
+          </Link>
+        </li>
+        <li>Portfolio</li>
+        <li>
+          <Link href="/portfolio" className="secondary">
+            Positions
+          </Link>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <strong>In Stock</strong>
+        </li>
+      </ul>
+      <ul>
+        <li>{button}</li>
+      </ul>
+    </nav>
+  );
 
   const logoutHandler = (): void => {
     logout();
@@ -51,7 +51,7 @@ const Navbar = () => {
   useEffect(() => {
     isLoggedIn().then((loginStatus) => {
       let button;
-  
+
       if (loginStatus) {
         button = <button onClick={() => logoutHandler()}>Logout</button>;
       } else {
@@ -61,7 +61,7 @@ const Navbar = () => {
           </Link>
         );
       }
-  
+
       setView(getView(button));
     });
   }, []);

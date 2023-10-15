@@ -41,6 +41,7 @@ public class Program
         {
           options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
           options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+          options.SerializerSettings.DateParseHandling = DateParseHandling.DateTime;
         });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

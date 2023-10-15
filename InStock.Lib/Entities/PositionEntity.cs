@@ -38,8 +38,8 @@ namespace InStock.Lib.Entities
         {
             UserId = userId;
             StockId = model.StockId;
-            DateOpenedUtc = model.DateOpened;
-            DateClosedUtc = model.DateClosed;
+            DateOpenedUtc = model.DateOpenedUtc;
+            DateClosedUtc = model.DateClosedUtc;
             Price = model.Price;
             Quantity = model.Quantity;
         }

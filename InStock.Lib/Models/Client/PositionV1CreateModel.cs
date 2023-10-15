@@ -12,17 +12,17 @@ namespace InStock.Lib.Models.Client
         public PositionV1CreateModel(IPosition entity)
         {
             StockId = entity.StockId;
-            DateOpened = entity.DateOpenedUtc;
-            DateClosed = entity.DateClosedUtc;
+            DateOpenedUtc = entity.DateOpenedUtc;
+            DateClosedUtc = entity.DateClosedUtc;
             Price = entity.Price;
             Quantity = entity.Quantity;
         }
 
         public int StockId { get; set; }
 
-        public DateTime DateOpened { get; set; }
+        public DateTime DateOpenedUtc { get; set; }
 
-        public DateTime? DateClosed { get; set; }
+        public DateTime? DateClosedUtc { get; set; }
 
         public decimal Price { get; set; }
 
