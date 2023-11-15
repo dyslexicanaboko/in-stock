@@ -10,11 +10,17 @@ import {
   formatPercent as fp,
 } from "@/services/string-formats";
 
-export default function PositionsView(
-  positions: PositionV1GetCalculatedModel[],
-  editAction: (positionId: number) => void,
-  deleteAction: (positionId: number) => void
-) {
+interface IProps {
+  positions: PositionV1GetCalculatedModel[];
+  editAction: (positionId: number) => void;
+  deleteAction: (positionId: number) => void;
+}
+
+const PositionsTable: React.FC<IProps> = ({
+  positions,
+  editAction,
+  deleteAction,
+}) => {
   positions.sort(
     (a, b) =>
       parseInt(a.dateOpenedUtc.toString()) -
@@ -99,4 +105,6 @@ export default function PositionsView(
       </table>
     </>
   );
-}
+};
+
+export default PositionsTable;

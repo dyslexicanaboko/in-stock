@@ -12,7 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { EmptyString, toFloat, getDateWithOffset } from "@/services/common";
 import Waiting from "@/components/waiting";
 import { useRef, useState, useEffect, useCallback } from "react";
-import PositionsView from "@/components/positions-view";
+import PositionsTable from "@/components/positions-table";
 import Container from "@/components/container";
 import {
   PositionV1CreateModel,
@@ -232,15 +232,15 @@ export default function Page() {
           <Container>
             <button onClick={() => launchAddEditModal(Mode.Add, 0)}>Add</button>
           </Container>
-          {PositionsView(
-            models,
-            (positionId: number) => {
+          <PositionsTable
+            positions={models}
+            editAction={(positionId: number) => {
               launchAddEditModal(Mode.Edit, positionId);
-            },
-            (positionId: number) => {
+            }}
+            deleteAction={(positionId: number) => {
               launchModalDelete(positionId);
-            }
-          )}
+            }}
+          />
         </>
       );
     },
