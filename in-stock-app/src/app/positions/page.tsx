@@ -22,14 +22,16 @@ import {
 import { formatIsoDate } from "@/services/string-formats";
 import {
   Mode,
-  PositionDeleteModal,
-  PositionModal,
+  PositionDeleteModalModel,
+  PositionAddEditModalModel,
   PositionModel,
 } from "../view-models/positions";
-import _ from "lodash";
 import DeleteModal, {
   IActions as IDeleteModalActions,
 } from "@/components/delete-modal";
+import AddEditModal, {
+  IActions as IAddEditModalActions,
+} from "@/components/add-edit-modal";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -38,18 +40,17 @@ export default function Page() {
   const _qspRef = useRef(EmptyString);
   const _positions = useRef<PositionV1GetCalculatedModel[]>([]);
   const [view, setView] = useState<JSX.Element>();
-  const _modal = useRef<HTMLDialogElement>(null);
-  const _modalProps = useRef<PositionModal>({
+  const _modalAddEditActions = useRef<IAddEditModalActions>(null);
+  const _modalAddEditActionData = useRef<PositionAddEditModalModel>({
     title: EmptyString,
-    action: () => {},
-  });
-  const _modalDeleteActionData = useRef<PositionDeleteModal>({
-    positionId: 0,
+    buttonText: EmptyString,
     action: () => {},
   });
   const _modalDeleteActions = useRef<IDeleteModalActions>(null);
-  const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-
+  const _modalDeleteActionData = useRef<PositionDeleteModalModel>({
+    positionId: 0,
+    action: () => {},
+  });
   const [positionState, setPositionState] = useState<PositionModel>({
     stockId: 0,
     dateOpenedUtc: new Date(),
@@ -57,24 +58,6 @@ export default function Page() {
     quantity: 0,
     dateClosedUtc: undefined,
   });
-
-  const handleModalVisibility = useCallback((): void => {
-    const m = _modal.current;
-
-    if (!m) return;
-
-    if (m.open && !modalVisibility) {
-      m.close();
-
-      setModalVisibility(false);
-
-      console.log("Close modal");
-    } else if (!m.open && modalVisibility) {
-      m.showModal();
-
-      console.log("Open modal");
-    }
-  }, [modalVisibility]);
 
   const renderPositions = useCallback(
     (models: PositionV1GetCalculatedModel[]): void => {
@@ -86,11 +69,12 @@ export default function Page() {
         });
       };
 
-      const launchModal = (mode: Mode, positionId: number): void => {
-        const props = _modalProps.current;
+      const launchAddEditModal = (mode: Mode, positionId: number): void => {
+        const props = _modalAddEditActionData.current;
 
         if (mode === Mode.Add) {
           props.title = "Add";
+          props.buttonText = "Save";
           props.action = (position: PositionModel) => {
             const model: PositionV1CreateModel = {
               dateOpenedUtc: position.dateOpenedUtc,
@@ -105,7 +89,7 @@ export default function Page() {
             });
           };
 
-          setModalVisibility(true);
+          _modalAddEditActions.current?.show();
         } else {
           getPosition(positionId).then((model) => {
             console.log("Position model");
@@ -120,6 +104,7 @@ export default function Page() {
             });
 
             props.title = "Edit";
+            props.buttonText = "Update";
             props.action = (position: PositionModel) => {
               const model: PositionV1PatchModel = {
                 dateOpenedUtc: position.dateOpenedUtc,
@@ -133,7 +118,7 @@ export default function Page() {
               });
             };
 
-            setModalVisibility(true);
+            _modalAddEditActions.current?.show();
           });
         }
       };
@@ -149,114 +134,90 @@ export default function Page() {
         _modalDeleteActions.current?.show();
       };
 
-      const positions = PositionsView(
-        models,
-        (positionId: number) => {
-          launchModal(Mode.Edit, positionId);
-        },
-        (positionId: number) => {
-          launchModalDelete(positionId);
-        }
-      );
-
-      const props = _modalProps.current;
+      const props = _modalAddEditActionData.current;
 
       setView(
         <>
-          <dialog id="positionModal" ref={_modal}>
-            <article>
-              <header>
-                <a
-                  href="#"
-                  aria-label="Close"
-                  className="close"
-                  onClick={() => setModalVisibility(false)}
-                ></a>
-                {props.title} position
-              </header>
-              <div>
-                <label>Shares</label>
-                <input
-                  type="number"
-                  className="number"
-                  value={positionState.quantity}
-                  onChange={(e) =>
-                    setPositionState({
-                      ...positionState,
-                      quantity: toFloat(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label>Price</label>
-                <input
-                  type="number"
-                  className="number"
-                  value={positionState.price}
-                  onChange={(e) =>
-                    setPositionState({
-                      ...positionState,
-                      price: toFloat(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label>Opened</label>
-                <input
-                  type="date"
-                  value={formatIsoDate(positionState.dateOpenedUtc)}
-                  onChange={(e) => {
-                    if (e.target.valueAsDate === null) return;
+          <AddEditModal
+            ref={_modalAddEditActions}
+            title={props.title}
+            buttonText={props.buttonText}
+            onClickAction={() => {
+              var p = { ...positionState, stockId: _stockId.current };
 
-                    console.log("onChange set");
-                    console.log(e.target.valueAsNumber);
-                    console.log(new Date(e.target.valueAsNumber));
+              props.action(p);
+              setPositionState(p);
+              setView(undefined);
+            }}
+          >
+            <div>
+              <label>Shares</label>
+              <input
+                type="number"
+                className="number"
+                value={positionState.quantity}
+                onChange={(e) =>
+                  setPositionState({
+                    ...positionState,
+                    quantity: toFloat(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div>
+              <label>Price</label>
+              <input
+                type="number"
+                className="number"
+                value={positionState.price}
+                onChange={(e) =>
+                  setPositionState({
+                    ...positionState,
+                    price: toFloat(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div>
+              <label>Opened</label>
+              <input
+                type="date"
+                value={formatIsoDate(positionState.dateOpenedUtc)}
+                onChange={(e) => {
+                  if (e.target.valueAsDate === null) return;
 
-                    setPositionState({
-                      ...positionState,
-                      dateOpenedUtc: getDateWithOffset(e.target.valueAsDate),
-                    });
-                  }}
-                />
-              </div>
-              <div>
-                <label>Closed</label>
-                <input
-                  type="date"
-                  value={
-                    positionState.dateClosedUtc
-                      ? formatIsoDate(positionState.dateClosedUtc)
-                      : EmptyString
-                  }
-                  onChange={(e) =>
-                    setPositionState({
-                      ...positionState,
-                      dateClosedUtc:
-                        e.target.valueAsDate === null
-                          ? undefined
-                          : getDateWithOffset(e.target.valueAsDate),
-                    })
-                  }
-                />
-              </div>
-              <footer>
-                <button
-                  onClick={() => {
-                    var p = { ...positionState, stockId: _stockId.current };
+                  console.log("onChange set");
+                  console.log(e.target.valueAsNumber);
+                  console.log(new Date(e.target.valueAsNumber));
 
-                    props.action(p);
-                    setPositionState(p);
-                    setModalVisibility(false);
-                    setView(undefined);
-                  }}
-                >
-                  Save
-                </button>
-              </footer>
-            </article>
-          </dialog>
+                  setPositionState({
+                    ...positionState,
+                    dateOpenedUtc: getDateWithOffset(e.target.valueAsDate),
+                  });
+                }}
+              />
+            </div>
+            <div>
+              <label>Closed</label>
+              <input
+                type="date"
+                value={
+                  positionState.dateClosedUtc
+                    ? formatIsoDate(positionState.dateClosedUtc)
+                    : EmptyString
+                }
+                onChange={(e) =>
+                  setPositionState({
+                    ...positionState,
+                    dateClosedUtc:
+                      e.target.valueAsDate === null
+                        ? undefined
+                        : getDateWithOffset(e.target.valueAsDate),
+                  })
+                }
+              />
+            </div>
+          </AddEditModal>
           <DeleteModal
             ref={_modalDeleteActions}
             title="Delete positions"
@@ -269,9 +230,17 @@ export default function Page() {
             <p>Are you sure you want to delete this position?</p>
           </DeleteModal>
           <Container>
-            <button onClick={() => launchModal(Mode.Add, 0)}>Add</button>
+            <button onClick={() => launchAddEditModal(Mode.Add, 0)}>Add</button>
           </Container>
-          {positions}
+          {PositionsView(
+            models,
+            (positionId: number) => {
+              launchAddEditModal(Mode.Edit, positionId);
+            },
+            (positionId: number) => {
+              launchModalDelete(positionId);
+            }
+          )}
         </>
       );
     },
@@ -291,8 +260,6 @@ export default function Page() {
       return;
     }
 
-    handleModalVisibility();
-
     if (_symbol.current === qspSymbol) {
       renderPositions(_positions.current);
 
@@ -310,7 +277,7 @@ export default function Page() {
 
       renderPositions(models);
     });
-  }, [_qsp, handleModalVisibility, renderPositions, _modalDeleteActions]);
+  }, [_qsp, renderPositions, _modalDeleteActions]);
 
   return view ? view : <Waiting />;
 }

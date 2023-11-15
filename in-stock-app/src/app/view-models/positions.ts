@@ -3,12 +3,13 @@ import {
   PositionV1PatchModel,
 } from "../../services/in-stock-api-models";
 
-export type PositionModal = {
+export type PositionAddEditModalModel = {
   title: string;
+  buttonText: string;
   action: (position: PositionModel) => void;
 };
 
-export type PositionDeleteModal = {
+export type PositionDeleteModalModel = {
   positionId: number;
   action: (positionId: number) => void;
 };
