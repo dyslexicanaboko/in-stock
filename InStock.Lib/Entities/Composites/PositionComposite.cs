@@ -1,5 +1,9 @@
 ﻿namespace InStock.Lib.Entities.Composites
 {
+  /// <summary>
+  /// Represents the core data that makes up a position, but also includes calculated fields that are not
+  /// stored in the database. One object represents only a single row, position or tax-lot.
+  /// </summary>
   public class PositionComposite
     : PositionEntity, ICalculablePosition, IPositionComposite
   {

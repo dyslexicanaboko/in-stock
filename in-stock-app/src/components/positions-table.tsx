@@ -1,8 +1,5 @@
 import { DaysInOneYear } from "@/services/common";
-import {
-  PositionV1GetCalculatedModel,
-  PositionV1GetModel,
-} from "@/services/in-stock-api-models";
+import { PositionV1GetCalculatedModel } from "@/services/in-stock-api-models";
 import {
   formatDate as fd,
   formatNumber as fn,
@@ -21,11 +18,12 @@ const PositionsTable: React.FC<IProps> = ({
   editAction,
   deleteAction,
 }) => {
-  positions.sort(
-    (a, b) =>
-      parseInt(a.dateOpenedUtc.toString()) -
-      parseInt(b.dateOpenedUtc.toString())
-  );
+  positions.sort((a, b) => {
+    //If you don't convert these Date objects to Date objects again, it will just fail. Because JavaScript.
+    const dateA = new Date(a.dateOpenedUtc);
+    const dateB = new Date(b.dateOpenedUtc);
+    return dateA.getTime() - dateB.getTime();
+  });
   const ranks = Array.from(positions, (x) => x.rank);
   const min = Math.min(...ranks);
   const max = Math.max(...ranks);

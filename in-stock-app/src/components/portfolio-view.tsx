@@ -8,7 +8,6 @@ import {
 } from "@/services/string-formats";
 import Link from "next/link";
 
-//TODO: All of the data fields need to be formatted nicely
 export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
   return (
     <>

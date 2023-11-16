@@ -19,17 +19,29 @@ namespace InStock.Api.Controllers
     }
 
     // GET api/portfolios/5
-    [HttpGet("{id}")]
+    [HttpGet("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IPortfolioComposite))]
     [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorModel))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
-    public async Task<ActionResult<IPortfolioComposite>> Get(int id)
+    public async Task<ActionResult<IPortfolioComposite>> Get(int userId)
     {
-      if (UserId != id) throw Lib.Exceptions.Forbidden.AccessDenied();
+      if (UserId != userId) throw Lib.Exceptions.Forbidden.AccessDenied();
 
-      var composite = await _service.GetPortfolio(id);
+      var composite = await _service.GetPortfolio(userId);
 
-      if (composite == null) throw Lib.Exceptions.NotFound.User(id);
+      return Ok(composite);
+    }
+
+    // GET api/portfolios/5/stock/7
+    [HttpGet("{userId}/stock/{stockId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IPortfolioComposite))]
+    [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorModel))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorModel))]
+    public async Task<ActionResult<IPortfolioComposite>> Get(int userId, int stockId)
+    {
+      if (UserId != userId) throw Lib.Exceptions.Forbidden.AccessDenied();
+
+      var composite = await _service.GetPortfolio(userId, stockId);
 
       return Ok(composite);
     }

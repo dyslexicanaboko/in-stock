@@ -1,5 +1,9 @@
 ﻿namespace InStock.Lib.Entities.Composites
 {
+  /// <summary>
+  /// Rolled up data that represents the position overview in a portfolio. Each portfolio object includes calculated
+  /// fields that are not stored in the database.
+  /// </summary>
   public class PortfolioComposite
     : IPortfolioComposite, ICalculablePosition
   {
@@ -11,6 +15,8 @@
     public decimal CostBasis { get; set; }
     public decimal LowestHeld { get; set; }
     public decimal HighestHeld { get; set; }
+    public decimal AveragePrice { get; set; }
+    
     public int Short { get; set; }
     public int Long { get; set; }
 

@@ -152,6 +152,26 @@ export const getPortfolio = async (
   return response.json();
 };
 
+export const getStockPosition = async (
+  userId: number,
+  stockId: number
+): Promise<PortfolioV1GetModel> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(
+    portfolioController(userId.toString()) + `/stock/${stockId.toString()}`,
+    request
+  );
+
+  return response.json();
+};
+
 export const getPosition = async (id: number): Promise<PositionV1GetModel> => {
   const headers = await getHeaders();
 

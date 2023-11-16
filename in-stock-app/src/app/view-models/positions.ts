@@ -1,8 +1,3 @@
-import {
-  PositionV1CreateModel,
-  PositionV1PatchModel,
-} from "../../services/in-stock-api-models";
-
 export type PositionAddEditModalModel = {
   title: string;
   buttonText: string;

@@ -13,6 +13,8 @@ public static class NotFound
 
   public static NotFoundException Stock(int id) => GetNotFound("Stock", id, ErrorCodes.NotFound.StockById);
 
+  public static NotFoundException Portfolio(int userId, int stockId) => GetNotFound($"Portfolio for user {userId} does not contain positions for stock {stockId}.", ErrorCodes.NotFound.PortfolioPosition);
+
   public static NotFoundException Stock(string symbol) => GetNotFound(
     $"A stock with symbol `{symbol}` could not be found. Consider adding it first.",
     ErrorCodes.NotFound.StockBySymbol);

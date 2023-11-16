@@ -1,5 +1,7 @@
 ﻿using InStock.Lib.DataAccess;
 using InStock.Lib.Entities.Composites;
+using InStock.Lib.Exceptions;
+using InStock.Lib.Validation;
 
 namespace InStock.Lib.Services
 {
@@ -22,6 +24,8 @@ namespace InStock.Lib.Services
 
     public async Task<IList<PortfolioComposite>> GetPortfolio(int userId)
     {
+      Validations.IsUserIdValid(userId);
+
       var dtm = _dateTimeService.UtcNow;
 
       var lst = _repoPortfolio.Using(x => x.Select(userId)).ToList();
@@ -34,6 +38,23 @@ namespace InStock.Lib.Services
       }
 
       return lst;
+    }
+
+    public async Task<PortfolioComposite> GetPortfolio(int userId, int stockId)
+    {
+      Validations.ThrowOnError(
+        () => Validations.IsUserIdValid(userId, false),
+        () => Validations.IsGreaterThanZero(stockId, nameof(stockId)));
+
+      var dtm = _dateTimeService.UtcNow;
+
+      var portfolio = _repoPortfolio.Using(x => x.Select(userId, stockId));
+
+      if (portfolio == null) throw NotFound.Portfolio(userId, stockId);
+
+      await _calculator.SetCalculableProperties(dtm, portfolio);
+
+      return portfolio;
     }
   }
 }

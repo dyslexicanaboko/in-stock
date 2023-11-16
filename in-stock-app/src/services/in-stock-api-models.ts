@@ -40,6 +40,7 @@ export type PortfolioV1GetModel = {
   short: number;
   long: number;
   daysHeld: number;
+  averagePrice: number;
   currentPrice: number;
   currentValue: number;
   totalGain: number;

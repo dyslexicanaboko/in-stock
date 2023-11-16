@@ -32,6 +32,7 @@ import DeleteModal, {
 import AddEditModal, {
   IActions as IAddEditModalActions,
 } from "@/components/add-edit-modal";
+import PositionOverview from "@/components/position-overview";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -39,6 +40,7 @@ export default function Page() {
   const _qsp = useSearchParams();
   const _qspRef = useRef(EmptyString);
   const _positions = useRef<PositionV1GetCalculatedModel[]>([]);
+  const _positionChanged = useRef(0);
   const [view, setView] = useState<JSX.Element>();
   const _modalAddEditActions = useRef<IAddEditModalActions>(null);
   const _modalAddEditActionData = useRef<PositionAddEditModalModel>({
@@ -62,6 +64,8 @@ export default function Page() {
   const renderPositions = useCallback(
     (models: PositionV1GetCalculatedModel[]): void => {
       const reloadPositions = (symbol: string): void => {
+        _positionChanged.current++;
+
         getCalculatedPositions(symbol).then((models) => {
           _positions.current = models;
 
@@ -229,6 +233,10 @@ export default function Page() {
           >
             <p>Are you sure you want to delete this position?</p>
           </DeleteModal>
+          <PositionOverview
+            stockId={_stockId.current}
+            change={_positionChanged.current}
+          />
           <Container>
             <button onClick={() => launchAddEditModal(Mode.Add, 0)}>Add</button>
           </Container>

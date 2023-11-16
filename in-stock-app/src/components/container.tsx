@@ -1,10 +1,10 @@
-interface IParentComponent {
+interface IProps {
   children: React.ReactNode;
 }
 
 //Absolute nightmare to pass components to your custom component
 //https://linguinecode.com/post/pass-react-component-as-prop-with-typescript
-const Container : React.FC<IParentComponent> = (props: IParentComponent) => {
+const Container: React.FC<IProps> = (props: IProps) => {
   const { children } = props;
 
   return (

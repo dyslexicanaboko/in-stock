@@ -62,6 +62,8 @@
       public const int User = 40409;
       
       public const int UserCredentials = 40410;
+      
+      public const int PortfolioPosition = 40411;
     }
 
     //HTTP 500xx Internal Server Error - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
