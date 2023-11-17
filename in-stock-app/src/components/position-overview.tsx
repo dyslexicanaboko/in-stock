@@ -18,7 +18,7 @@ interface IProps {
 
 const PositionOverview: React.FC<IProps> = ({ stockId, change }) => {
   const [view, setView] = useState<JSX.Element>();
-  const [update, setUpdate] = useState<number>();
+  //const [update, setUpdate] = useState<number>();
 
   useEffect(() => {
     getStockPosition(getUserId(), stockId).then((position) => {
@@ -32,6 +32,8 @@ const PositionOverview: React.FC<IProps> = ({ stockId, change }) => {
 const renderPosition = (position: PortfolioV1GetModel): JSX.Element => {
   const symbol = position.symbol.toUpperCase();
 
+  const positiveGain = position.totalGain < 0;
+
   return (
     <>
       <div className="grid">
@@ -39,7 +41,7 @@ const renderPosition = (position: PortfolioV1GetModel): JSX.Element => {
         <article>
           <div className="grid">
             <label>Symbol</label>
-            <label>{symbol}</label>
+            <input type="text" value={symbol} readOnly />
           </div>
           <div className="grid">
             <label>Shares</label>
@@ -84,24 +86,36 @@ const renderPosition = (position: PortfolioV1GetModel): JSX.Element => {
             <label>{fc(position.currentValue)}</label>
           </div>
           <div className="grid">
-            <label>Gain</label>
-            <label>{fc(position.totalGain)}</label>
-          </div>
-          <div className="grid">
-            <label>Gain %</label>
-            <label>{fp(position.totalGainPercentage)}</label>
-          </div>
-          <div className="grid">
-            <label>Gain rate ($/day)</label>
-            <label>{fc(position.gainRate)}</label>
-          </div>
-          <div className="grid">
             <label>Current Price</label>
             <label>{fc(position.currentPrice)}</label>
           </div>
           <div className="grid">
             <label>Average Price</label>
             <label>{fc(position.averagePrice)}</label>
+          </div>
+          <div className="grid">
+            <label>Gain</label>
+            <input
+              type="text"
+              value={fc(position.totalGain)}
+              aria-invalid={positiveGain}
+            />
+          </div>
+          <div className="grid">
+            <label>Gain %</label>
+            <input
+              type="text"
+              value={fp(position.totalGainPercentage)}
+              aria-invalid={positiveGain}
+            />
+          </div>
+          <div className="grid">
+            <label>Gain rate ($/day)</label>
+            <input
+              type="text"
+              value={fc(position.gainRate)}
+              aria-invalid={positiveGain}
+            />
           </div>
         </article>
         <div></div>

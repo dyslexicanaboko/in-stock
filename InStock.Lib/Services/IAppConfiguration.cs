@@ -3,4 +3,6 @@
 public interface IAppConfiguration
 {
     string GetConnectionString();
+
+    int QuoteCacheWindowMinutes { get; }
 }

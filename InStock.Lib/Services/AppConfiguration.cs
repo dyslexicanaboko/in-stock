@@ -2,19 +2,21 @@
 
 namespace InStock.Lib.Services
 {
-    public class AppConfiguration : IAppConfiguration
+  public class AppConfiguration
+    : IAppConfiguration
+  {
+    private readonly IConfiguration _configuration;
+
+    public AppConfiguration(IConfiguration configuration) => _configuration = configuration;
+
+    public string GetConnectionString()
     {
-        public string GetConnectionString()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+      var connectionString = _configuration.GetConnectionString("InStock");
 
-            var configuration = builder.Build();
-
-            var connectionString = configuration.GetConnectionString("InStock");
-
-            return connectionString!;
-        }
+      return connectionString!;
     }
+
+    /// <inheritdoc />
+    public int QuoteCacheWindowMinutes => _configuration.GetValue("QuoteCacheWindowMinutes", defaultValue: 5);
+  }
 }

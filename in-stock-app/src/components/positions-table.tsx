@@ -33,7 +33,6 @@ const PositionsTable: React.FC<IProps> = ({
       <table role="grid">
         <thead>
           <tr>
-            <th scope="col">Id</th>
             <th scope="col">Shares</th>
             <th scope="col">Price</th>
             <th scope="col">Cost Basis</th>
@@ -61,20 +60,21 @@ const PositionsTable: React.FC<IProps> = ({
               dateClosed = "--";
             }
 
-            let s;
+            let minMaxClass;
 
             //Make CSS class for this style
             if (position.rank === min) {
-              s = { color: "green" };
+              minMaxClass = "least-expensive good";
             } else if (position.rank === max) {
-              s = { color: "red" };
+              minMaxClass = "most-expensive bad";
             }
+
+            let gainClass = position.totalGain > 0 ? "good" : "bad";
 
             return (
               <tr key={key}>
-                <td>{position.positionId}</td>
                 <td>{fn(position.shares, 2)}</td>
-                <td style={s}>{fc(position.price)}</td>
+                <td className={minMaxClass}>{fc(position.price)}</td>
                 <td>{fc(position.costBasis)}</td>
                 <td>{fd(position.dateOpenedUtc)}</td>
                 <td>{dateClosed}</td>
@@ -82,9 +82,11 @@ const PositionsTable: React.FC<IProps> = ({
                 <td>{fn(position.daysHeld / DaysInOneYear, 2)}</td>
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
-                <td>{fc(position.totalGain)}</td>
-                <td>{fp(position.totalGainPercentage)}</td>
-                <td>{fc(position.gainRate)}</td>
+                <td className={gainClass}>{fc(position.totalGain)}</td>
+                <td className={gainClass}>
+                  {fp(position.totalGainPercentage)}
+                </td>
+                <td className={gainClass}>{fc(position.gainRate)}</td>
                 <td>{position.isLongPosition ? "long" : "short"}</td>
                 <td>
                   <button onClick={() => editAction(position.positionId)}>

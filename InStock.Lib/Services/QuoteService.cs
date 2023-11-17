@@ -20,12 +20,17 @@ namespace InStock.Lib.Services
     //Temporary solution until a better one is found (Redis?)
     private readonly Dictionary<string, QuoteEntity> _quoteCache;
 
+    private readonly IAppConfiguration _configuration;
+
     public QuoteService(
+      IAppConfiguration configuration,
       IDateTimeService dateService,
       IQuoteRepository repoQuote,
       IStockRepository repoStock,
       IStockQuoteApiService stockQuoteApi)
     {
+      _configuration = configuration;
+
       _dateService = dateService;
       _repoQuote = repoQuote;
 
@@ -61,7 +66,7 @@ namespace InStock.Lib.Services
       if (_quoteCache.TryGetValue(symbol, out var cached)) return cached;
 
       //This is hard coded for now until I figure out how to deal with it properly
-      var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, _dateService.UtcNow, 5));
+      var dbEntity = _repoQuote.Using(x => x.SelectRecent(symbol, _dateService.UtcNow, _configuration.QuoteCacheWindowMinutes));
 
       return dbEntity;
     }

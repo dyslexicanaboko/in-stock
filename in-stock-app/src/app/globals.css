@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@picocss/pico';
+@import "@picocss/pico";
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -28,13 +28,23 @@ body {
 }
 
 .good {
-  color:green;
+  color: green;
 }
 
 .bad {
-  color:red;
+  color: red;
 }
 
 input.number {
   text-align: right;
+}
+
+.most-expensive::after {
+  content: url("images/icons8-expensive-price-50.png");
+  padding-left: 5px;
+}
+
+.least-expensive::after {
+  content: url("images/icons8-low-price-50.png");
+  padding-left: 5px;
 }
