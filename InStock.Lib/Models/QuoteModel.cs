@@ -11,7 +11,7 @@ namespace InStock.Lib.Models
             Date = entity.Date;
             Price = entity.Price;
             Volume = entity.Volume;
-            CreateOnUtc = entity.CreateOnUtc;
+            CreateOnUtc = entity.CreatedOnUtc;
         }
 
         public QuoteModel(IQuote target)

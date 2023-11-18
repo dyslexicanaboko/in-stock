@@ -11,6 +11,8 @@ namespace InStock.Lib.Services
 
     decimal CostBasis(decimal price, decimal shares);
 
+    decimal Gain(decimal currentValue, decimal costBasis);
+
     decimal GainPercentage(decimal totalGain, decimal costBasis);
   }
 
@@ -50,10 +52,12 @@ namespace InStock.Lib.Services
       target.CurrentPrice = Convert.ToDecimal(quote.Price);
       target.CurrentValue = CostBasis(target.CurrentPrice, target.Shares);
       target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOnUtc);
-      target.TotalGain = target.CurrentValue - target.CostBasis;
+      target.TotalGain = Gain(target.CurrentValue, target.CostBasis);
       target.TotalGainPercentage = GainPercentage(target.TotalGain, target.CostBasis);
       target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);
     }
+
+    public decimal Gain(decimal currentValue, decimal costBasis) => currentValue - costBasis;
 
     public decimal GainPercentage(decimal totalGain, decimal costBasis)
       => SafeDivide(totalGain, costBasis);

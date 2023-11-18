@@ -17,7 +17,7 @@ namespace InStock.Lib.Entities
             Date = model.Date;
             Price = model.Price;
             Volume = model.Volume;
-            CreateOnUtc = model.CreateOnUtc;
+            CreatedOnUtc = model.CreateOnUtc;
         }
 
         public QuoteEntity(IQuote target)
@@ -39,6 +39,6 @@ namespace InStock.Lib.Entities
 
         public long Volume { get; set; }
 
-        public DateTime CreateOnUtc { get; set; }
+        public DateTime CreatedOnUtc { get; set; }
     }
 }
