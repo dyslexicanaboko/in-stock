@@ -1,20 +1,25 @@
 ﻿using InStock.Lib.Entities.Results;
+using InStock.Lib.Services.Factory;
 
 namespace InStock.Lib.Services
 {
   public class TradeAnalysisService
     : ITradeAnalysisService
   {
+    private readonly IGainFactory _gainFactory;
+
     private readonly IPositionCalculator _positionCalculator;
 
     private readonly IPositionService _positionService;
 
     public TradeAnalysisService(
       IPositionService positionService,
-      IPositionCalculator positionCalculator)
+      IPositionCalculator positionCalculator,
+      IGainFactory gainFactory)
     {
       _positionService = positionService;
       _positionCalculator = positionCalculator;
+      _gainFactory = gainFactory;
     }
 
     public async Task<List<CoverPositionLossResult>> CoverPositionLosses(
@@ -43,15 +48,7 @@ namespace InStock.Lib.Services
 
         var projectedSale = _positionCalculator.CostBasis(desiredSalesPrice, proposedShares);
 
-        //var profit = CalculateProfit(
-        //  projectedSale,
-        //  totalBadShares,
-        //  currentPrice,
-        //  totalLoss);
-
-        var projectedGain = _positionCalculator.Gain(projectedSale, totalCostBasis);
-
-        var projectedGainPercentage = _positionCalculator.GainPercentage(projectedGain, totalCostBasis);
+        var projectedGain = _gainFactory.Create(projectedSale, totalCostBasis);
 
         lst.Add(
           new CoverPositionLossResult(
@@ -61,11 +58,36 @@ namespace InStock.Lib.Services
             totalBadShares,
             currentPrice,
             totalLoss,
-            projectedGain,
-            projectedGainPercentage));
+            projectedGain));
       }
 
       return lst;
+    }
+
+    public async Task<ExitPositionWithYieldResult> ExitPositionWithYield(
+      int userId,
+      string symbol,
+      decimal desiredYield)
+    {
+      var positions = await _positionService.GetCalculatedPositions(userId, symbol);
+
+      var shares = positions.Sum(x => x.Shares);
+      var currentValue = positions.Sum(x => x.CurrentValue);
+      var costBasis = positions.Sum(x => x.CostBasis);
+      var currentGain = _gainFactory.Create(currentValue, costBasis);
+
+      var theoreticalValue = _positionCalculator.TheoreticalValue(desiredYield, costBasis);
+      var theoreticalPrice = _positionCalculator.TheoreticalPrice(theoreticalValue, shares);
+      var theoreticalGain = _gainFactory.Create(theoreticalValue, costBasis);
+
+      return new ExitPositionWithYieldResult(
+        desiredYield,
+        theoreticalPrice,
+        theoreticalValue,
+        theoreticalGain,
+        positions.First().CurrentPrice,
+        currentValue,
+        currentGain);
     }
 
     private static decimal CalculateProfit(

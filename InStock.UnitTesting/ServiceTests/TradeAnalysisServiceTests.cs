@@ -3,6 +3,7 @@ using InStock.Lib.DataAccess;
 using InStock.Lib.Entities;
 using InStock.Lib.Entities.Results;
 using InStock.Lib.Services;
+using InStock.Lib.Services.Factory;
 using InStock.Lib.Validation;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
@@ -49,12 +50,12 @@ namespace InStock.UnitTesting.ServiceTests
         dtmService,
         calculator);
 
-      _sut = new TradeAnalysisService(positionService, calculator);
+      _sut = new TradeAnalysisService(positionService, calculator, new GainFactory(calculator));
     }
 
     private ITradeAnalysisService _sut;
 
-    private readonly List<PositionEntity> _positions = new List<PositionEntity>
+    private readonly List<PositionEntity> _positions = new()
     {
       new PositionEntity
       {
@@ -123,24 +124,13 @@ namespace InStock.UnitTesting.ServiceTests
         CreateOnUtc = DateTime.Parse("3/27/2023 04:27:48"),
       }
     };
-
-    /*
-     * The goal here was to cover the losses.
-     * I don't know that the stock will get back to 85, it did brush 82 in the past year (2023).
-     * Calculating the current position based on the 11/07 price, the position's value is -582.
-     * The strategy I am using right now is the total quantity that's under water and a multiplier.
-     * So it's 33 shares, upping it to 50 or 66 whatever I can afford.
-     * So that's roughly a multiplier of 2.
-     * I think I can sell for 82.
-     * Right now the stock is half off, so I need to take advantage of this to wait for the upswing.
-     * I am not sure if it will go lower, but this is already a 52 week low.
-     */
+    
     [Test]
-    public async Task CoverPositionLosses_WhenStockIsUnderWater_ThenThreeProposalsAreOffered()
+    public async Task CoverPositionLosses_WhenStockIsUnderWater_ThenAProposalIsOffered()
     {
       //Arrange
-      var multipliers = 1;
-      var desiredSalesPrice = 45M;
+      const int multipliers = 1;
+      const decimal desiredSalesPrice = 45M;
 
       var expected = new CoverPositionLossResult(
         desiredSalesPrice,
@@ -149,8 +139,7 @@ namespace InStock.UnitTesting.ServiceTests
         50,
         30.81M,
         -357.24M,
-        352.26M,
-        0.1856M);
+        new GainResult(352.26M, 0.1856M));
 
       //Act
       var results = await _sut.CoverPositionLosses(
@@ -170,8 +159,41 @@ namespace InStock.UnitTesting.ServiceTests
       Assert.AreEqual(expected.TotalBadShares, actual.TotalBadShares);
       Assert.AreEqual(expected.CurrentPrice, actual.CurrentPrice);
       Assert.AreEqual(expected.TotalLoss, actual.TotalLoss);
-      Assert.AreEqual(expected.ProjectedGain, actual.ProjectedGain);
-      Assert.AreEqual((double)expected.ProjectedGainPercentage, (double)actual.ProjectedGainPercentage, 0.01D);
+      Assert.AreEqual(expected.ProjectedGain.Gain, actual.ProjectedGain.Gain);
+      AssertAreEqual(expected.ProjectedGain.GainPercentage, actual.ProjectedGain.GainPercentage);
+    }
+
+    [Test]
+    public async Task ExitPositionWithYield_WhenAYieldIsDesired_ThenAProposalIsOfferedMatchingTheYield()
+    {
+      //Arrange
+      const decimal desiredYield = 0.25M;
+
+      var expected = new ExitPositionWithYieldResult(
+        desiredYield,
+        47.44M,
+        2372.18M,
+        new GainResult(474.44M, desiredYield),
+        30.81M,
+        1540.50M,
+        new GainResult(-357.24M, -0.188245M));
+
+      //Act
+      var results = await _sut.ExitPositionWithYield(
+        SomeUserId,
+        SomeSymbol,
+        desiredYield);
+
+      //Assert
+      Assert.AreEqual(expected.DesiredYield, results.DesiredYield);
+      AssertAreEqual(expected.TheoreticalPrice, results.TheoreticalPrice);
+      AssertAreEqual(expected.TheoreticalValue, results.TheoreticalValue);
+      AssertAreEqual(expected.TheoreticalGain.Gain, results.TheoreticalGain.Gain);
+      AssertAreEqual(expected.TheoreticalGain.GainPercentage, results.TheoreticalGain.GainPercentage);
+      Assert.AreEqual(expected.CurrentPrice, results.CurrentPrice);
+      Assert.AreEqual(expected.CurrentValue, results.CurrentValue);
+      AssertAreEqual(expected.CurrentGain.Gain, results.CurrentGain.Gain);
+      AssertAreEqual(expected.CurrentGain.GainPercentage, results.CurrentGain.GainPercentage);
     }
   }
 }

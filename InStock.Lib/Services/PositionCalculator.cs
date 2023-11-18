@@ -14,6 +14,10 @@ namespace InStock.Lib.Services
     decimal Gain(decimal currentValue, decimal costBasis);
 
     decimal GainPercentage(decimal totalGain, decimal costBasis);
+
+    decimal TheoreticalValue(decimal gainPercentage, decimal costBasis);
+
+    decimal TheoreticalPrice(decimal theoreticalValue, decimal shares);
   }
 
   public class PositionCalculator
@@ -57,10 +61,18 @@ namespace InStock.Lib.Services
       target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);
     }
 
+    //currentValue - costBasis = gain
     public decimal Gain(decimal currentValue, decimal costBasis) => currentValue - costBasis;
 
+    //(currentValue - costBasis) / costBasis = gainPercentage
     public decimal GainPercentage(decimal totalGain, decimal costBasis)
       => SafeDivide(totalGain, costBasis);
+
+    //(currentValue - costBasis) / costBasis = gainPercentage -> (gainPercentage * costBasis) + costBasis = theoreticalValue
+    public decimal TheoreticalValue(decimal gainPercentage, decimal costBasis)
+      => (gainPercentage * costBasis) + costBasis;
+
+    public decimal TheoreticalPrice(decimal theoreticalValue, decimal shares) => SafeDivide(theoreticalValue, shares);
 
     public decimal CostBasis(decimal price, decimal shares) => price * shares;
 

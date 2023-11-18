@@ -9,4 +9,9 @@ public interface ITradeAnalysisService
     string symbol,
     decimal desiredSalesPrice,
     int multipliers = 1);
+
+  Task<ExitPositionWithYieldResult> ExitPositionWithYield(
+    int userId,
+    string symbol,
+    decimal desiredYield);
 }

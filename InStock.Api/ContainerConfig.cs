@@ -2,6 +2,7 @@
 using InStock.Lib.DataAccess;
 using InStock.Lib.Services;
 using InStock.Lib.Services.ApiClient;
+using InStock.Lib.Services.Factory;
 using Serilog;
 
 namespace InStock.Api
@@ -34,8 +35,10 @@ namespace InStock.Api
               "User");
 
             services.AddScoped<IPositionCalculator, PositionCalculator>();
+            services.AddScoped<IGainFactory, GainFactory>();
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             services.AddScoped<IPortfolioService, PortfolioService>();
+            services.AddScoped<ITradeAnalysisService, TradeAnalysisService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ITokenService, TokenService>();
 

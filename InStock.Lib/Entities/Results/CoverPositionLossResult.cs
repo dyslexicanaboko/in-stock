@@ -9,8 +9,7 @@
       decimal totalBadShares,
       decimal currentPrice,
       decimal totalLoss,
-      decimal projectedGain,
-      decimal projectedGainPercentage)
+      GainResult projectedGain)
     {
       DesiredSalesPrice = desiredSalesPrice;
       Multiplier = multiplier;
@@ -19,7 +18,6 @@
       CurrentPrice = currentPrice;
       TotalLoss = totalLoss;
       ProjectedGain = projectedGain;
-      ProjectedGainPercentage = projectedGainPercentage;
     }
 
     public decimal DesiredSalesPrice { get; }
@@ -34,8 +32,6 @@
 
     public decimal TotalLoss { get; }
 
-    public decimal ProjectedGain { get; }
-    
-    public decimal ProjectedGainPercentage { get; }
+    public GainResult ProjectedGain { get; }
   }
 }
