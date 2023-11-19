@@ -62,7 +62,7 @@ namespace InStock.Api.Controllers
 
       return Ok(_mapper.ToCalculatedModel(lst));
     }
-
+    
     // POST api/positions
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IPosition))]
