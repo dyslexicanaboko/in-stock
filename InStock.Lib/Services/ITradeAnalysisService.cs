@@ -4,11 +4,11 @@ namespace InStock.Lib.Services;
 
 public interface ITradeAnalysisService
 {
-  Task<List<CoverPositionLossResult>> CoverPositionLosses(
+  Task<CoverPositionLossResult> CoverPositionLosses(
     int userId,
     string symbol,
     decimal desiredSalesPrice,
-    int multipliers = 1);
+    int proposals = 1);
 
   Task<ExitPositionWithYieldResult> ExitPositionWithYield(
     int userId,

@@ -28,7 +28,7 @@ public interface IPortfolioComposite
 
   decimal TotalGain { get; set; }
 
-  decimal TotalGainPercentage { get; set; }
+  decimal TotalGainRate { get; set; }
 
   decimal GainRate { get; set; }
 }

@@ -18,20 +18,20 @@ namespace InStock.Api.Controllers
       _service = service;
     }
 
-    // GET api/positions/MSFT/coverLosses/45.00?multipliers=3
+    // GET api/positions/MSFT/coverLosses/45.00?proposals=3
     [HttpGet("coverLosses/{desiredPrice}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPositionComposite>))]
-    public async Task<ActionResult<IList<CoverPositionLossResult>>> CoverLosses(string symbol, decimal desiredPrice, [FromQuery] int? multipliers)
+    public async Task<ActionResult<IList<CoverPositionLossResult>>> CoverLosses(string symbol, decimal desiredPrice, [FromQuery] int? proposals)
     {
-      var lst = await _service.CoverPositionLosses(UserId, symbol, desiredPrice, multipliers ?? 1);
+      var lst = await _service.CoverPositionLosses(UserId, symbol, desiredPrice, proposals ?? 1);
 
       return Ok(lst);
     }
 
-    // GET api/positions/MSFT/coverLosses/45.00?multipliers=3
+    // GET api/positions/MSFT/exitWithYield/5000.00
     [HttpGet("exitWithYield/{desiredYield}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<IPositionComposite>))]
-    public async Task<ActionResult<IList<CoverPositionLossResult>>> CoverLosses(string symbol, decimal desiredYield)
+    public async Task<ActionResult<IList<CoverPositionLossResult>>> ExitWithYield(string symbol, decimal desiredYield)
     {
       var proposal = await _service.ExitPositionWithYield(UserId, symbol, desiredYield);
 

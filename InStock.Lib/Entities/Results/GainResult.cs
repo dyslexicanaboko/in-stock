@@ -4,14 +4,14 @@
   {
     public GainResult(
       decimal gain,
-      decimal gainPercentage)
+      decimal gainRate)
     {
       Gain = gain;
-      GainPercentage = gainPercentage;
+      GainRate = gainRate;
     }
 
     public decimal Gain { get; }
 
-    public decimal GainPercentage { get; }
+    public decimal GainRate { get; }
   }
 }

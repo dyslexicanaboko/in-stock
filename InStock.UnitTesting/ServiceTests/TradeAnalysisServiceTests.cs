@@ -124,43 +124,49 @@ namespace InStock.UnitTesting.ServiceTests
         CreateOnUtc = DateTime.Parse("3/27/2023 04:27:48"),
       }
     };
-    
+
     [Test]
     public async Task CoverPositionLosses_WhenStockIsUnderWater_ThenAProposalIsOffered()
     {
       //Arrange
-      const int multipliers = 1;
+      const int proposals = 1;
       const decimal desiredSalesPrice = 45M;
 
       var expected = new CoverPositionLossResult(
         desiredSalesPrice,
-        1,
         50,
         50,
         30.81M,
-        -357.24M,
-        new GainResult(352.26M, 0.1856M));
+        -357.24M);
+
+      expected.Proposals.Add(
+        new CoverPositionLossProposal(
+          1,
+          50,
+          1M,
+          1540.50M,
+          new GainResult(352.26M, 0.1856M)));
 
       //Act
-      var results = await _sut.CoverPositionLosses(
+      var actual = await _sut.CoverPositionLosses(
         SomeUserId,
         SomeSymbol,
-        desiredSalesPrice,
-        multipliers);
+        desiredSalesPrice);
 
       //Assert
-      Assert.AreEqual(multipliers, results.Count);
+      Assert.AreEqual(proposals, actual.Proposals.Count);
 
-      var actual = results.Single();
+      var pActual = actual.Proposals.Single();
+      var pExpected = expected.Proposals.Single();
 
       Assert.AreEqual(expected.DesiredSalesPrice, actual.DesiredSalesPrice);
-      Assert.AreEqual(expected.Multiplier, actual.Multiplier);
-      Assert.AreEqual(expected.ProposedShares, actual.ProposedShares);
-      Assert.AreEqual(expected.TotalBadShares, actual.TotalBadShares);
+      Assert.AreEqual(pExpected.Proposal, pActual.Proposal);
+      Assert.AreEqual(pExpected.SharesToBuy, pActual.SharesToBuy);
+      Assert.AreEqual(expected.BadShares, actual.BadShares);
       Assert.AreEqual(expected.CurrentPrice, actual.CurrentPrice);
-      Assert.AreEqual(expected.TotalLoss, actual.TotalLoss);
-      Assert.AreEqual(expected.ProjectedGain.Gain, actual.ProjectedGain.Gain);
-      AssertAreEqual(expected.ProjectedGain.GainPercentage, actual.ProjectedGain.GainPercentage);
+      Assert.AreEqual(expected.CurrentLoss, actual.CurrentLoss);
+      Assert.AreEqual(pExpected.Gain.Gain, pActual.Gain.Gain);
+      AssertAreEqual(pExpected.Gain.GainRate, pActual.Gain.GainRate);
     }
 
     [Test]
@@ -189,11 +195,11 @@ namespace InStock.UnitTesting.ServiceTests
       AssertAreEqual(expected.TheoreticalPrice, results.TheoreticalPrice);
       AssertAreEqual(expected.TheoreticalValue, results.TheoreticalValue);
       AssertAreEqual(expected.TheoreticalGain.Gain, results.TheoreticalGain.Gain);
-      AssertAreEqual(expected.TheoreticalGain.GainPercentage, results.TheoreticalGain.GainPercentage);
+      AssertAreEqual(expected.TheoreticalGain.GainRate, results.TheoreticalGain.GainRate);
       Assert.AreEqual(expected.CurrentPrice, results.CurrentPrice);
       Assert.AreEqual(expected.CurrentValue, results.CurrentValue);
       AssertAreEqual(expected.CurrentGain.Gain, results.CurrentGain.Gain);
-      AssertAreEqual(expected.CurrentGain.GainPercentage, results.CurrentGain.GainPercentage);
+      AssertAreEqual(expected.CurrentGain.GainRate, results.CurrentGain.GainRate);
     }
   }
 }

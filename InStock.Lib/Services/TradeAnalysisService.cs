@@ -22,11 +22,11 @@ namespace InStock.Lib.Services
       _gainFactory = gainFactory;
     }
 
-    public async Task<List<CoverPositionLossResult>> CoverPositionLosses(
+    public async Task<CoverPositionLossResult> CoverPositionLosses(
       int userId,
       string symbol,
       decimal desiredSalesPrice,
-      int multipliers = 1)
+      int proposals = 1)
     {
       var positions = await _positionService.GetCalculatedPositions(userId, symbol);
 
@@ -36,32 +36,35 @@ namespace InStock.Lib.Services
 
       var currentPrice = positions.First().CurrentPrice;
       var totalShares = positions.Sum(x => x.Shares);
-      var totalLoss = badPositions.Sum(x => x.TotalGain); // Total Loss is already a negative number 
+      var currentLoss = badPositions.Sum(x => x.TotalGain); // Total Loss is already a negative number 
       var totalBadShares = badPositions.Sum(x => x.Shares);
       var totalCostBasis = positions.Sum(x => x.CostBasis);
 
-      var lst = new List<CoverPositionLossResult>(multipliers);
+      var result = new CoverPositionLossResult(
+        desiredSalesPrice,
+        totalShares,
+        totalBadShares,
+        currentPrice,
+        currentLoss);
 
-      for (var i = 1; i <= multipliers; i++)
+      for (var p = 1; p <= proposals; p++)
       {
-        var proposedShares = i * totalShares;
+        var proposedShares = _positionCalculator.Round(p * totalBadShares);
 
-        var projectedSale = _positionCalculator.CostBasis(desiredSalesPrice, proposedShares);
+        var projectedSale = _positionCalculator.CostBasis(desiredSalesPrice, proposedShares + totalShares);
 
         var projectedGain = _gainFactory.Create(projectedSale, totalCostBasis);
 
-        lst.Add(
-          new CoverPositionLossResult(
-            desiredSalesPrice,
-            i,
+        result.Proposals.Add(
+          new CoverPositionLossProposal(
+            p,
             proposedShares,
-            totalBadShares,
-            currentPrice,
-            totalLoss,
+            proposedShares * currentPrice,
+            projectedSale,
             projectedGain));
       }
 
-      return lst;
+      return result;
     }
 
     public async Task<ExitPositionWithYieldResult> ExitPositionWithYield(

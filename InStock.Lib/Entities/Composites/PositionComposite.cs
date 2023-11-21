@@ -32,7 +32,7 @@
     public decimal CurrentPrice { get; set; }
     public decimal CurrentValue { get; set; }
     public decimal TotalGain { get; set; }
-    public decimal TotalGainPercentage { get; set; }
+    public decimal TotalGainRate { get; set; }
     public decimal GainRate { get; set; }
     public bool IsLongPosition { get; set; }
     public int Rank { get; set; }

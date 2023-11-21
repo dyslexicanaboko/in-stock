@@ -11,11 +11,13 @@ namespace InStock.Lib.Services
 
     decimal CostBasis(decimal price, decimal shares);
 
+    decimal Round(decimal value);
+
     decimal Gain(decimal currentValue, decimal costBasis);
 
-    decimal GainPercentage(decimal totalGain, decimal costBasis);
+    decimal GainRate(decimal totalGain, decimal costBasis);
 
-    decimal TheoreticalValue(decimal gainPercentage, decimal costBasis);
+    decimal TheoreticalValue(decimal gainRate, decimal costBasis);
 
     decimal TheoreticalPrice(decimal theoreticalValue, decimal shares);
   }
@@ -57,24 +59,26 @@ namespace InStock.Lib.Services
       target.CurrentValue = CostBasis(target.CurrentPrice, target.Shares);
       target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOnUtc);
       target.TotalGain = Gain(target.CurrentValue, target.CostBasis);
-      target.TotalGainPercentage = GainPercentage(target.TotalGain, target.CostBasis);
+      target.TotalGainRate = GainRate(target.TotalGain, target.CostBasis);
       target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);
     }
 
     //currentValue - costBasis = gain
     public decimal Gain(decimal currentValue, decimal costBasis) => currentValue - costBasis;
 
-    //(currentValue - costBasis) / costBasis = gainPercentage
-    public decimal GainPercentage(decimal totalGain, decimal costBasis)
-      => SafeDivide(totalGain, costBasis);
+    //(currentValue - costBasis) / costBasis = gainRate
+    public decimal GainRate(decimal totalGain, decimal costBasis)
+      => Round(SafeDivide(totalGain, costBasis));
 
-    //(currentValue - costBasis) / costBasis = gainPercentage -> (gainPercentage * costBasis) + costBasis = theoreticalValue
-    public decimal TheoreticalValue(decimal gainPercentage, decimal costBasis)
-      => (gainPercentage * costBasis) + costBasis;
+    //(currentValue - costBasis) / costBasis = gainRate -> (gainRate * costBasis) + costBasis = theoreticalValue
+    public decimal TheoreticalValue(decimal gainRate, decimal costBasis)
+      => Round(gainRate * costBasis + costBasis);
 
-    public decimal TheoreticalPrice(decimal theoreticalValue, decimal shares) => SafeDivide(theoreticalValue, shares);
+    public decimal TheoreticalPrice(decimal theoreticalValue, decimal shares) => Round(SafeDivide(theoreticalValue, shares));
 
-    public decimal CostBasis(decimal price, decimal shares) => price * shares;
+    public decimal CostBasis(decimal price, decimal shares) => Round(price * shares);
+
+    public decimal Round(decimal value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
 
     public decimal DaysHeld(DateTime asOfUtc, DateTime acquisitionDate) => Convert.ToDecimal((asOfUtc - acquisitionDate).TotalDays);
 

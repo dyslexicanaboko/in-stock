@@ -4,34 +4,28 @@
   {
     public CoverPositionLossResult(
       decimal desiredSalesPrice,
-      int multiplier,
-      decimal proposedShares,
-      decimal totalBadShares,
+      decimal totalShares,
+      decimal badShares,
       decimal currentPrice,
-      decimal totalLoss,
-      GainResult projectedGain)
+      decimal currentLoss)
     {
       DesiredSalesPrice = desiredSalesPrice;
-      Multiplier = multiplier;
-      ProposedShares = proposedShares;
-      TotalBadShares = totalBadShares;
+      TotalShares = totalShares;
+      BadShares = badShares;
       CurrentPrice = currentPrice;
-      TotalLoss = totalLoss;
-      ProjectedGain = projectedGain;
+      CurrentLoss = currentLoss;
     }
 
     public decimal DesiredSalesPrice { get; }
 
-    public int Multiplier { get; }
-
-    public decimal ProposedShares { get; }
-
-    public decimal TotalBadShares { get; }
+    public decimal TotalShares { get; }
+    
+    public decimal BadShares { get; }
 
     public decimal CurrentPrice { get; }
 
-    public decimal TotalLoss { get; }
+    public decimal CurrentLoss { get; }
 
-    public GainResult ProjectedGain { get; }
+    public List<CoverPositionLossProposal> Proposals { get; } = new ();
   }
 }

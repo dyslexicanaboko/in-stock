@@ -15,9 +15,9 @@ namespace InStock.Lib.Services.Factory
     public GainResult Create(decimal totalValue, decimal costBasis)
     {
       var gain = _calculator.Gain(totalValue, costBasis);
-      var gainPercentage = _calculator.GainPercentage(gain, costBasis);
+      var gainRate = _calculator.GainRate(gain, costBasis);
 
-      return new GainResult(gain, gainPercentage);
+      return new GainResult(gain, gainRate);
     }
   }
 }

@@ -20,7 +20,7 @@
 
     public decimal TotalGain { get; set; }
 
-    public decimal TotalGainPercentage { get; set; }
+    public decimal TotalGainRate { get; set; }
 
     public decimal GainRate { get; set; }
   }
