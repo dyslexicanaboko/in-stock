@@ -105,15 +105,15 @@ const renderPosition = (position: PortfolioV1GetModel): JSX.Element => {
             <label>Gain %</label>
             <input
               type="text"
-              value={fp(position.totalGainPercentage)}
+              value={fp(position.totalGainRate)}
               aria-invalid={positiveGain}
             />
           </div>
           <div className="grid">
-            <label>Gain rate ($/day)</label>
+            <label>$/day</label>
             <input
               type="text"
-              value={fc(position.gainRate)}
+              value={fc(position.gainPerDay)}
               aria-invalid={positiveGain}
             />
           </div>

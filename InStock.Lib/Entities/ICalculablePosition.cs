@@ -22,6 +22,6 @@
 
     public decimal TotalGainRate { get; set; }
 
-    public decimal GainRate { get; set; }
+    public decimal GainPerDay { get; set; }
   }
 }

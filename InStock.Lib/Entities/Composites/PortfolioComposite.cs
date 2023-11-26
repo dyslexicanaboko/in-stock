@@ -26,6 +26,6 @@
     public decimal CurrentValue { get; set; }
     public decimal TotalGain { get; set; }
     public decimal TotalGainRate { get; set; }
-    public decimal GainRate { get; set; }
+    public decimal GainPerDay { get; set; }
   }
 }

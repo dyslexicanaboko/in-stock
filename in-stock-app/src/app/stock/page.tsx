@@ -56,8 +56,16 @@ export default function Page() {
     [_model]
   );
 
+  //TODO: I hate that I am using line breaks for spacing here. Need to come back to this.
   const getPositionsLink = (symbol: string): JSX.Element => (
-    <Link href={"/positions?symbol=" + symbol}>Edit position</Link>
+    <>
+      <br />
+      <hr />
+      <br />
+      <Link href={"/positions?symbol=" + symbol} role="button">
+        Your positions
+      </Link>
+    </>
   );
 
   const handleUpdate = useCallback(
@@ -162,7 +170,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!_qsp) return;
-    
+
     const qspSymbol = _qsp.get("symbol");
 
     if (!qspSymbol) {

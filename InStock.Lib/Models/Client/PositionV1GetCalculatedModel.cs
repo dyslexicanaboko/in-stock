@@ -20,7 +20,7 @@ namespace InStock.Lib.Models.Client
       CurrentValue = target.CurrentValue;
       TotalGain = target.TotalGain;
       TotalGainRate = target.TotalGainRate;
-      GainRate = target.GainRate;
+      GainPerDay = target.GainPerDay;
       IsLongPosition = target.IsLongPosition;
       Rank = target.Rank;
       DateOpenedUtc = target.DateOpenedUtc;
@@ -36,7 +36,7 @@ namespace InStock.Lib.Models.Client
     public decimal CurrentValue { get; set; }
     public decimal TotalGain { get; set; }
     public decimal TotalGainRate { get; set; }
-    public decimal GainRate { get; set; }
+    public decimal GainPerDay { get; set; }
     public bool IsLongPosition { get; set; }
     public int Rank { get; set; }
     public DateTime DateOpenedUtc { get; set; }

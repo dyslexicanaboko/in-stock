@@ -60,7 +60,7 @@ namespace InStock.Lib.Services
       target.DaysHeld = DaysHeld(asOfUtc, target.AcquiredOnUtc);
       target.TotalGain = Gain(target.CurrentValue, target.CostBasis);
       target.TotalGainRate = GainRate(target.TotalGain, target.CostBasis);
-      target.GainRate = SafeDivide(target.TotalGain, target.DaysHeld);
+      target.GainPerDay = SafeDivide(target.TotalGain, target.DaysHeld);
     }
 
     //currentValue - costBasis = gain

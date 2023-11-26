@@ -16,7 +16,7 @@ public interface IPositionComposite
 
   decimal TotalGainRate { get; set; }
 
-  decimal GainRate { get; set; }
+  decimal GainPerDay { get; set; }
 
   bool IsLongPosition { get; set; }
 

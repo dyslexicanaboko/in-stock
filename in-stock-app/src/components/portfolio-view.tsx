@@ -54,8 +54,8 @@ export default function PortfolioView(portfolio: PortfolioV1GetModel[]) {
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
                 <td>{fc(position.totalGain)}</td>
-                <td>{fp(position.totalGainPercentage)}</td>
-                <td>{fc(position.gainRate)}</td>
+                <td>{fp(position.totalGainRate)}</td>
+                <td>{fc(position.gainPerDay)}</td>
               </tr>
             );
           })}

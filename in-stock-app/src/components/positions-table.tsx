@@ -83,10 +83,8 @@ const PositionsTable: React.FC<IProps> = ({
                 <td>{fc(position.currentPrice)}</td>
                 <td>{fc(position.currentValue)}</td>
                 <td className={gainClass}>{fc(position.totalGain)}</td>
-                <td className={gainClass}>
-                  {fp(position.totalGainPercentage)}
-                </td>
-                <td className={gainClass}>{fc(position.gainRate)}</td>
+                <td className={gainClass}>{fp(position.totalGainRate)}</td>
+                <td className={gainClass}>{fc(position.gainPerDay)}</td>
                 <td>{position.isLongPosition ? "long" : "short"}</td>
                 <td>
                   <button onClick={() => editAction(position.positionId)}>

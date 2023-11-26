@@ -44,8 +44,8 @@ export type PortfolioV1GetModel = {
   currentPrice: number;
   currentValue: number;
   totalGain: number;
-  totalGainPercentage: number;
-  gainRate: number;
+  totalGainRate: number;
+  gainPerDay: number;
 };
 
 export type PositionV1GetModel = {
@@ -80,8 +80,8 @@ export type PositionV1GetCalculatedModel = {
   currentPrice: number;
   currentValue: number;
   totalGain: number;
-  totalGainPercentage: number;
-  gainRate: number;
+  totalGainRate: number;
+  gainPerDay: number;
   isLongPosition: boolean;
   rank: number;
   dateOpenedUtc: Date;
