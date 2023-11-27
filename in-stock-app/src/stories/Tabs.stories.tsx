@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import "../app/globals.css";
 
 import TabContainer from "../components/tab-container";
 
@@ -19,5 +20,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const content = (index: number): JSX.Element => {
+  return (
+    <>
+      <hr />
+      <div>
+        <span>tab {index}</span>
+      </div>
+    </>
+  );
+};
+
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const OneTab: Story = { args: { children: "One Tab" } };
+export const OneTab: Story = {
+  args: {
+    tabs: [
+      { title: "Tab 1", selected: false, content: content(1) },
+      { title: "Tab 2", selected: false, content: content(2) },
+      { title: "Tab 3", selected: false, content: content(3) },
+    ],
+  },
+};

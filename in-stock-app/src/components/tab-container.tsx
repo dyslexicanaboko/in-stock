@@ -1,20 +1,52 @@
+import { useRef, useState } from "react";
+
 interface IProps {
-  children: React.ReactNode;
+  tabs: ITab[];
 }
 
-//Absolute nightmare to pass components to your custom component
-//https://linguinecode.com/post/pass-react-component-as-prop-with-typescript
+interface ITab {
+  title: string;
+  selected: boolean;
+  content: React.ReactNode;
+}
+
 const TabContainer: React.FC<IProps> = (props: IProps) => {
-  const { children } = props;
+  const tabs = useRef<ITab[]>(props.tabs);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  let selectedIndex = tabs.current.findIndex((tab) => tab.selected);
+
+  if (selectedIndex === -1) selectedIndex = 0;
+
+  const changeTab = (index: number): void => {
+    tabs.current.forEach((tab, i) => {
+      tab.selected = i === index;
+    });
+
+    setCurrentIndex(index);
+  };
 
   return (
-    <main className="container">
-      <div className="grid">
-        <div />
-        {children}
-        <div />
-      </div>
-    </main>
+    <article>
+      <header>
+        <nav>
+          <ul>
+            {tabs.current.map((tab, i) => {
+              const role = i === selectedIndex ? "button" : "";
+
+              return (
+                <li key={i}>
+                  <button role={role} onClick={() => changeTab(i)}>
+                    {tab.title}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </header>
+      {tabs.current[selectedIndex].content}
+    </article>
   );
 };
 
