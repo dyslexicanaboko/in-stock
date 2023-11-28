@@ -88,3 +88,25 @@ export type PositionV1GetCalculatedModel = {
   dateClosedUtc?: Date;
   price: number;
 };
+
+export type CoverPositionLossV1Model = {
+  desiredSalesPrice: number;
+  totalShares: number;
+  badShares: number;
+  currentPrice: number;
+  currentLoss: number;
+  proposals: CoverPositionLossProposalV1Model[];
+};
+
+export type CoverPositionLossProposalV1Model = {
+  proposal: number;
+  sharesToBuy: number;
+  cost: number;
+  sale: number;
+  gain: GainV1Model;
+};
+
+export type GainV1Model = {
+  gain: number;
+  gainRate: number;
+};

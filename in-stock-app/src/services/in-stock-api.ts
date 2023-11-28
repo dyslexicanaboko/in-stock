@@ -7,6 +7,7 @@ import {
   PositionV1GetCalculatedModel,
   PositionV1CreateModel,
   PositionV1PatchModel,
+  CoverPositionLossV1Model,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
@@ -287,4 +288,33 @@ export const deletePosition = async (id: number): Promise<void> => {
   };
 
   await fetch(positionsController(id.toString()), request);
+};
+
+export const getPositionCoverLosses = async (
+  symbol: string,
+  desiredSalesPrice: number,
+  proposals: number
+): Promise<CoverPositionLossV1Model> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(
+    positionsController(
+      symbol +
+        "/" +
+        symbol +
+        "/coverLosses/" +
+        desiredSalesPrice.toString() +
+        "/?proposals=" +
+        proposals.toString()
+    ),
+    request
+  );
+
+  return response.json();
 };
