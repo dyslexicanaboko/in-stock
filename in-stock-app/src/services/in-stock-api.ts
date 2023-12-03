@@ -306,8 +306,6 @@ export const getPositionCoverLosses = async (
   const response = await fetch(
     positionsController(
       symbol +
-        "/" +
-        symbol +
         "/coverLosses/" +
         desiredSalesPrice.toString() +
         "/?proposals=" +

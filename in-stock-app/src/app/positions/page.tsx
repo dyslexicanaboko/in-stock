@@ -33,6 +33,8 @@ import AddEditModal, {
   IActions as IAddEditModalActions,
 } from "@/components/add-edit-modal";
 import PositionOverview from "@/components/position-overview";
+import TabContainer from "@/components/tab-container";
+import PositionCoverLosses from "@/components/position-cover-losses";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -248,6 +250,20 @@ export default function Page() {
             deleteAction={(positionId: number) => {
               launchModalDelete(positionId);
             }}
+          />
+          <TabContainer
+            tabs={[
+              {
+                title: "Cover Losses",
+                selected: true,
+                content: <PositionCoverLosses symbol={_symbol.current} />,
+              },
+              {
+                title: "Exit with Yield",
+                selected: false,
+                content: <div>Exit with yield control goes here</div>,
+              },
+            ]}
           />
         </>
       );

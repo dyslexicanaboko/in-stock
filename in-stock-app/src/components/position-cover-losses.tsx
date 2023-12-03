@@ -60,38 +60,36 @@ const PositionCoverLosses: React.FC<IProps> = ({ symbol }) => {
           </div>
         </article>
         <hr />
-        {result.proposals.map((proposal, key) => {
-          //const positiveGain = result.totalGain < 0;
-
-          return (
-            <article key={key}>
-              <div className="grid">
+        <article>
+          <div className="grid">
+            <div className="grid">
+              <div>
                 <label>Proposal</label>
-                <label>{proposal.proposal}</label>
-              </div>
-              <div className="grid">
                 <label>Shares to Buy</label>
-                <label>{fn(proposal.sharesToBuy, 2)}</label>
-              </div>
-              <div className="grid">
                 <label>Cost</label>
-                <label>{fc(proposal.cost)}</label>
-              </div>
-              <div className="grid">
                 <label>sale</label>
-                <label>{fc(proposal.sale)}</label>
-              </div>
-              <div className="grid">
                 <label>Gain</label>
-                <input type="text" value={fc(proposal.gain.gain)} />
-              </div>
-              <div className="grid">
                 <label>Gain %</label>
-                <input type="text" value={fp(proposal.gain.gainRate)} />
               </div>
-            </article>
-          );
-        })}
+            </div>
+            {result.proposals.map((proposal, key) => {
+              //const positiveGain = result.totalGain < 0;
+
+              return (
+                <div className="grid" key={key}>
+                  <div>
+                    <label>{proposal.proposal}</label>
+                    <label>{fn(proposal.sharesToBuy, 2)}</label>
+                    <label>{fc(proposal.cost)}</label>
+                    <label>{fc(proposal.sale)}</label>
+                    <label>{fc(proposal.gain.gain)}</label>
+                    <label>{fp(proposal.gain.gainRate)}</label>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </article>
       </>
     );
   };
