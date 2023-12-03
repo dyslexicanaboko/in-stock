@@ -8,6 +8,7 @@ import {
   PositionV1CreateModel,
   PositionV1PatchModel,
   CoverPositionLossV1Model,
+  ExitPositionWithYieldV1Model,
 } from "./in-stock-api-models";
 import { BaseUrl } from "@/app/config";
 import { EmptyToken, getToken } from "./user-info";
@@ -311,6 +312,26 @@ export const getPositionCoverLosses = async (
         "/?proposals=" +
         proposals.toString()
     ),
+    request
+  );
+
+  return response.json();
+};
+
+export const getPositionExitWithYield = async (
+  symbol: string,
+  desiredYield: number
+): Promise<ExitPositionWithYieldV1Model> => {
+  const headers = await getHeaders();
+
+  var request: RequestInit = {
+    method: "GET",
+    headers: headers,
+    redirect: "follow",
+  };
+
+  const response = await fetch(
+    positionsController(symbol + "/exitWithYield/" + desiredYield.toString()),
     request
   );
 

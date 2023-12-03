@@ -110,3 +110,13 @@ export type GainV1Model = {
   gain: number;
   gainRate: number;
 };
+
+export type ExitPositionWithYieldV1Model = {
+  desiredYield: number;
+  theoreticalValue: number;
+  theoreticalPrice: number;
+  theoreticalGain: GainV1Model;
+  currentValue: number;
+  currentPrice: number;
+  currentGain: GainV1Model;
+};

@@ -35,6 +35,7 @@ import AddEditModal, {
 import PositionOverview from "@/components/position-overview";
 import TabContainer from "@/components/tab-container";
 import PositionCoverLosses from "@/components/position-cover-losses";
+import PositionExitWithYield from "@/components/position-exit-with-yield";
 
 export default function Page() {
   const _symbol = useRef(EmptyString);
@@ -261,7 +262,7 @@ export default function Page() {
               {
                 title: "Exit with Yield",
                 selected: false,
-                content: <div>Exit with yield control goes here</div>,
+                content: <PositionExitWithYield symbol={_symbol.current} />,
               },
             ]}
           />
